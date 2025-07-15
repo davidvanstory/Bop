@@ -1,0 +1,237 @@
+---
+alwaysApply: true
+---
+
+## Core Development Guidelines
+
+- Use strict typing in GDScript for better error detection and IDE support
+- Implement \_ready() and other lifecycle functions with explicit super() calls
+- Use @onready annotations instead of direct node references in \_ready()
+- Prefer composition over inheritance where possible
+- Use signals for loose coupling between nodes
+- Follow Godot's node naming conventions (PascalCase for nodes, snake_case for methods)
+
+## Code Style
+
+- Use type hints for all variables and function parameters
+- Document complex functions with docstrings
+- Keep methods focused and under 30 lines when possible
+- Use meaningful variable and function names
+- Group related properties and methods together
+
+## Naming Conventions
+
+- Files: Use snake_case for all filenames (e.g., player_character.gd, main_menu.tscn)
+- Classes: Use PascalCase for custom class names with class_name (e.g., PlayerCharacter)
+- Variables: Use snake_case for all variables including member variables (e.g., health_points)
+- Constants: Use ALL_CAPS_SNAKE_CASE for constants (e.g., MAX_HEALTH)
+- Functions: Use snake_case for all functions including lifecycle functions (e.g., move_player())
+- Enums: Use PascalCase for enum type names and ALL_CAPS_SNAKE_CASE for enum values
+- Nodes: Use PascalCase for node names in the scene tree (e.g., PlayerCharacter, MainCamera)
+- Signals: Use snake_case in past tense to name events (e.g., health_depleted, enemy_defeated)
+
+## Scene Organization
+
+- Keep scene tree depth minimal for better performance
+- Use scene inheritance for reusable components
+- Implement proper scene cleanup on queue_free()
+- Use SubViewport nodes carefully due to performance impact
+- Provide step-by-step instructions to create Godot scene(s) instead of providing scene source code
+
+## Signal Best Practices
+
+- Use clear, contextual signal names that describe their purpose (e.g., player_health_changed)
+- Utilize typed signals to improve safety and IDE assistance (e.g., signal item_collected(item_name: String))
+- Connect signals in code for dynamic nodes, and in the editor for static relationships
+- Avoid overusing signals - reserve them for important events, not frequent updates
+- Pass only necessary data through signal arguments, avoiding entire node references when possible
+- Use an autoload "EventBus" singleton for global signals that need to reach distant nodes
+- Minimize signal bubbling through multiple parent nodes
+- Always disconnect signals when nodes are freed to prevent memory leaks
+- Document signals with comments explaining their purpose and parameters
+
+## Resource Management
+
+- Implement proper resource cleanup in \_exit_tree()
+- Use preload() for essential resources, load() for optional ones
+- Consider PackedByteArray storage impact on backwards compatibility
+- Implement resource unloading for unused assets
+
+## Performance Best Practices
+
+- Use node groups judiciously for managing collections, and prefer direct node references for frequent, specific access to individual nodes.
+- Implement object pooling for frequently spawned objects
+- Use physics layers to optimize collision detection
+- Prefer packed arrays (PackedVector2Array, etc.) over regular arrays
+
+## Error Handling
+
+- Implement graceful fallbacks for missing resources
+- Use assert() for development-time error checking
+- Log errors appropriately in production builds
+- Handle network errors gracefully in multiplayer games
+
+## TileMap Implementation
+- Build Levels with TileMapLayer. TileMap node is deprecated - use multiple TileMapLayer nodes instead
+- Create a TileSet resource: A TileSet is a collection of tiles that you create from a spritesheet 
+- Use a TileMap node: In your level scene, add a TileMap node and assign your TileSet resource to it.
+- Convert existing TileMaps using the TileMap bottom panel toolbox option "Extract TileMap layers"
+- Access TileMap layers through TileMapLayer nodes
+- Update navigation code to use TileMapLayer.get_navigation_map()
+- Store layer-specific properties on individual TileMapLayer nodes
+
+
+## Theme and UI
+- Create a Theme resource: Go to the Inspector for your root UI node (e.g., a Control or CanvasLayer node). In the theme property, click <empty> and New Theme
+- Define UI style: In this theme, you can set the default font, font size, font color, etc., for all Label nodes, Button nodes, and more
+- For HUD (lives, score) and menus etc., don't set the font and color on every single Label node individually.
+
+    # Example file system for Assets and UI
+
+    assets/
+        audio/
+        fonts/
+        placeholder_art/
+        jumper_pack/
+        simplified_pack/
+        final_art/ (empty for now)
+    scenes/
+        player/
+        player.tscn
+        player.gd
+        levels/
+        ui/
+
+## Use Export Variables for Everything Visual
+- Never hardcode asset file paths in your code. Instead, create a variable for the asset and use the @export keyword. 
+- Don't build your player, enemies, or power-ups directly in your main level scene. Create a dedicated scene for each reusable object.
+
+    # Example
+    # in player.gd
+    @export var player_texture : Texture2D
+    @export var pop_sound : AudioStream
+
+    func _ready():
+        # The code doesn't know or care what the texture is. It just uses it.
+        $Sprite2D.texture = player_texture
+
+    func on_death():
+        # The code doesn't care which sound file it's playing.
+        $AudioStreamPlayer.stream = pop_sound
+        $AudioStreamPlayer.play()
+
+
+    # Example Player.tscn
+    - RigidBody2D (this is the root, with player.gd script attached)
+        - Sprite2D (this displays the texture)
+        - CollisionShape2D (this defines the physics hitbox)
+        - AudioStreamPlayer (for the pop sound)
+
+## State Machine
+    - You define all possible states (e.g., NORMAL, SLOW_MO, DEAD).
+    - Your _physics_process loop's only job is to call the function for the current state (e.g., state_machine.update()).
+    - Each state has its own logic. The NORMAL state handles regular bouncing. The SLOW_MO state handles slower bouncing.
+    - You define clear transitions (e.g., picking up a power-up transitions you from NORMAL to SLOW_MO).
+
+
+    # Example State Machine scripts
+        #state.gd
+            class_name State
+            extends Node
+
+            @export
+            var animation_name: String
+            @export
+            var move_speed: float = 400
+
+            var gravity: int = ProjectSettings.get_setting("physics/2d/default_gravity")
+
+            ## Hold a reference to the parent so that it can be controlled by the state
+            var parent: Player
+
+            func enter() -> void:
+                parent.animations.play(animation_name)
+
+            func exit() -> void:
+                pass
+
+            func process_input(event: InputEvent) -> State:
+                return null
+
+            func process_frame(delta: float) -> State:
+                return null
+
+            func process_physics(delta: float) -> State:
+                return null
+
+        extends Node
+
+    #state_machine.gd
+        @export
+        var starting_state: State
+
+        var current_state: State
+
+        # Initialize the state machine by giving each child state a reference to the
+        # parent object it belongs to and enter the default starting_state.
+        func init(parent: Player) -> void:
+            for child in get_children():
+                child.parent = parent
+
+            # Initialize to the default state
+            change_state(starting_state)
+
+        # Change to the new state by first calling any exit logic on the current state.
+        func change_state(new_state: State) -> void:
+            if current_state:
+                current_state.exit()
+
+            current_state = new_state
+            current_state.enter()
+            
+        # Pass through functions for the Player to call,
+        # handling state changes as needed.
+        func process_physics(delta: float) -> void:
+            var new_state = current_state.process_physics(delta)
+            if new_state:
+                change_state(new_state)
+
+        func process_input(event: InputEvent) -> void:
+            var new_state = current_state.process_input(event)
+            if new_state:
+                change_state(new_state)
+
+        func process_frame(delta: float) -> void:
+            var new_state = current_state.process_frame(delta)
+            if new_state:
+                change_state(new_state)
+
+    #state_machine.tscn
+        [gd_scene load_steps=2 format=3 uid="uid://bsgtr5x44hma2"]
+
+        [ext_resource type="Script" path="res://src/state_machine/state_machine.gd" id="1_3qyia"]
+
+        [node name="state_machine" type="Node"]
+        script = ExtResource("1_3qyia")
+
+
+## Physics
+    Guideline: Go to Project > Project Settings > Layer Names > 2D Physics. Name your first few layers: world, player, hazards, collectible, phasewall. Then, in the Inspector for each scene (Player.tscn, Spike.tscn, etc.), assign them to their correct layer and, most importantly, set their Mask. The Mask tells an object what layers it "listens" to for collisions. The player should listen to world, hazards, and collectible, but a collectible only needs to listen to the player.
+
+## Groups for broad communication
+    - Put all your hazards in a "hazard" group. When your player hits something, you can check if that object is_in_group("hazard") instead of checking its specific name or type. This is incredibly flexible.
+    - Guideline: Use Groups to ask "What kind of thing are you?" not "Who are you?" When your player's body collides with something, the code should not be if body.name == "Spike" or if body is Spike. It should be if body.is_in_group("hazards").
+    Action: Add your Spike.tscn, Crusher.tscn, and RotatingBlade.tscn to the "hazards" group in the Node panel. This way, you can create a dozen new types of hazards, and your player's collision code will work for all of them without a single change.
+
+## Global Event Bus
+    - For events that many different parts of the game might care about (like player_died or hoop_collected), have your GameState Autoload act as an "Event Bus." It can define signals (signal player_died), and other nodes can connect to them. This prevents nodes from having to know about each other directly, which is a very robust and decoupled design.
+    - Guideline: Nodes should announce what happened to them, not command other nodes. A node should never have to get a reference to another node to tell it something. 
+        Action: In GameState.gd, define signals like signal player_died, signal hoop_collected(value), signal powerup_activated(type).
+        Wrong: get_node("/root/Main/UI").update_hoop_count(new_total)
+        Right: The hoop, upon collection, calls GameState.emit_signal("hoop_collected", 1). The UI script, in its _ready() function, connects to this signal: GameState.hoop_collected.connect(self.on_hoop_collected). This way, the UI and the hoop don't know about each other at all; they only know about the global game state.
+
+#Resource Files for Data
+    - For things like your 5 levels, don't hardcode enemy positions in Level.tscn. Create your own custom Resource type (e.g., LevelData.tres) that stores the positions and types of enemies for each level. Your Level.tscn then just loads the correct resource and uses that data to build the scene. This separates your game's data from its logic, making it much easier to edit levels.
+    - Guideline: Your code should define behavior. Your Resources should define data. Your level scenes should be as "dumb" as possible. Action: Create a new script that extends Resource. Call it LevelData.gd. In it, define exported variables: @export var spike_positions : Array[Vector2], @export var powerup_data : Array[Dictionary], @export var level_goal_position : Vector2. For each level, create a new LevelData resource file (level_1.tres, level_2.tres, etc.). Click on it and fill in all the data in the Inspector. Your main Level.tscn script will have one @export var level_data : LevelData. You just drag your desired .tres file into it. The script then reads this data and programmatically places the spikes and power-ups. Now you can design dozens of levels without ever changing your core level scene code.
+
+

@@ -1,0 +1,101 @@
+The physics parameters you choose will define the entire "feel" of your game. Getting them right is the difference between a character that feels floaty and unresponsive versus one that feels tight, predictable, and fun.
+
+Here is a breakdown of the key physics parameters you will use in Godot for "Bop," where to find them, and why they are important for your specific gameplay.
+
+1. Project-Wide Physics Settings
+
+        These settings form the foundation of your game's world. You'll set them once and rarely change them.
+
+        Location: Project > Project Settings > Physics > 2d
+
+        Parameter: Default Gravity
+
+        What it is: The constant downward acceleration applied to all RigidBody2D nodes in your game. It's measured in pixels per second squared.
+
+        Why it's important for "Bop": This, combined with your ball's Bounce property, dictates the fundamental "metronomic pace" of your game. A higher value means faster falling and sharper, quicker bounces. A lower value will feel more "floaty."
+
+        Recommended Starting Value: A good starting point is Godot's default of 980. You can increase it to 1200 or higher for a "tighter" feel, or lower it for a "softer" feel.
+
+        Parameter: Default Linear Damp
+
+        What it is: A default "friction" or "drag" applied to all physics bodies.
+
+        Why it's important for "Bop": It's generally better to leave this at 0 and set damping on individual bodies instead, giving you more control.
+
+2. The Player Ball (RigidBody2D) Parameters
+
+        This is where you'll do most of your tuning. Select your Player.tscn's root RigidBody2D node to find these in the Inspector.
+
+        Parameter: Mass
+
+        What it is: The object's inertia.
+
+        Why it's important for "Bop": In a single-player game where only one ball exists, Mass has very little effect. However, for your future multiplayer mode, it will determine how two balls interact if they collide. For now, leave it at 1.
+
+        Parameter: Gravity Scale
+
+        What it is: A multiplier for the project's Default Gravity. A value of 1 means normal gravity. 2 means double gravity. 0 means no gravity. -1 means it will fall up.
+
+        Why it's important for "Bop": This is essential for your "Sink/Float" power-up.
+
+        Normal State: Gravity Scale = 1.0
+
+        Float Power-up: Set Gravity Scale to 0.5 or 0.7 to make the ball fall slower and have longer, higher bounces.
+
+        Sink Power-up: Set Gravity Scale to 1.5 or 2.0 to make the ball fall faster and have shorter, quicker bounces.
+
+        Parameter: Linear > Damping
+
+        What it is: This property simulates air resistance or friction. It makes an object slow down and come to a stop on its own. A value of -1 uses the project default, 0 means no damping (it will slide forever, like on ice), and higher values increase the drag.
+
+        Why it's important for "Bop": This is the key to achieving the "slight acceleration and deceleration" you want. If Damping is 0, the ball will stop moving horizontally the instant the player releases the key. If you set it to a small value like 0.5 or 1, the ball will smoothly slide to a stop, feeling much less abrupt.
+
+        Resource: Physics Material
+
+        What it is: This is a separate resource you create and assign to the RigidBody2D. It controls how the object behaves when it collides with other objects.
+
+        Parameter: Bounce
+
+        What it is: A value from 0 to 1 representing how much energy is conserved after a collision. 0 means the object stops dead (like a beanbag). 1 means it bounces back with 100% of its energy.
+
+        Why it's important for "Bop": This is the heart of your game. You'll want a high value like 1 to maintain the constant bouncing. In practice, you might use 0.99 to prevent any weird physics bugs from adding energy over time. You can also modify this property for power-ups.
+
+        Parameter: Friction
+
+        What it is: Determines how much an object's velocity is affected by sliding along another object. 0 is like ice, 1 is like sandpaper.
+
+        Why it's important for "Bop": You will likely want this to be very low (0 or 0.1). You want the player to have full control over horizontal movement. High friction would cause the ball to slow down horizontally every time it scrapes the floor, which would feel unresponsive.
+
+3. Environment and Hazard Parameters
+
+        Different objects in your scene need to behave differently. This is controlled by their Body Type.
+
+        Object Type: StaticBody2D
+
+        Used for: Your floors, ceilings, walls, and any non-moving spikes.
+
+        Key Property: These bodies do not move. They are infinitely heavy and are not affected by gravity or collisions. They are the immovable foundation of your level. Their Physics Material can also have Friction and Bounce properties to affect how the player interacts with them.
+
+        Object Type: AnimatableBody2D
+
+        Used for: Your moving hazards like the vertically moving knife/crusher or the rotating blade.
+
+        Key Property: This body type is not controlled by the physics engine (gravity doesn't affect it), but it does affect other physics bodies when it moves. You move it from your code using a Tween or an AnimationPlayer. This is perfect for objects that need to follow a predictable, non-physical path while still being a dangerous obstacle.
+
+4. Collision System Parameters
+
+        These aren't physics properties, but they are critical for making the physics work correctly.
+
+        Location: Select any physics body, and in the Inspector, find the Collision section.
+
+        Parameters: Layer and Mask
+
+        What they are: Layer is the category an object belongs to. Mask is the categories an object looks for to collide with.
+
+        Why it's important for "Bop": This allows you to control what interacts with what. For example:
+
+        Player: Belongs to the "player" layer. Its mask should include "world," "hazards," and "collectibles."
+
+        Spike: Belongs to the "hazards" layer. Its mask only needs to include "player." This is an important optimization—you don't need to check if a spike is colliding with another spike.
+
+        Golden Hoop: Belongs to the "collectibles" layer. Its mask only needs to include "player."

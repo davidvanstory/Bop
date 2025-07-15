@@ -1,0 +1,130 @@
+---
+description: Whenever core functionality of the codebase is being set up check this multiplayer rule and apply guidelines if code changes are relevan tto multiplayer
+alwaysApply: false
+---
+
+
+Godot Multiplayer Architecture Guide for "Bop"
+
+This document outlines the core architectural decisions and best practices for implementing multiplayer in the game "Bop" using Godot's High-Level Multiplayer API.
+
+High-Level vs. Low-Level API: The Decision
+
+For "Bop", we will exclusively use the High-Level Multiplayer API.
+
+Why? It is simpler, less error-prone, and specifically designed for the kind of real-time game state synchronization that "Bop" requires. It allows us to focus on game logic rather than networking boilerplate. While the Low-Level API offers more control, the High-Level API provides the best balance of performance, stability, and development speed for this project.
+
+The Core Principle: Server Authority
+
+Before any code is written, every decision must follow this rule: The Server is the Law.
+
+In a 2-player game, one player will act as the host (server) and the other will be the client. The server's computer is the single source of truth for the game state (player positions, score, lives, etc.). The client sends its input to the server and then displays the state that the server sends back. This architecture is essential for preventing cheating and keeping the game state perfectly synchronized between players.
+
+Key Implementation Guidelines
+
+Here are the four essential guidelines for building "Bop" with Godot's High-Level Multiplayer API.
+
+## Guideline 1: Use MultiplayerSpawner for All Networked Objects
+
+        Problem: How do we create a Player object on the server and ensure the client also creates the exact same Player object and links them together?
+
+        Solution: Never use add_child() directly for networked objects. Use a MultiplayerSpawner as the single point of entry for any object that needs to exist on both screens.
+
+        How to Implement:
+
+        In your Level.tscn, create a single node of type MultiplayerSpawner.
+
+        In the Inspector for this node, add your Player.tscn to its list of spawnable scenes.
+
+        When a new player connects, the server's code will call multiplayer_spawner.spawn(player_scene) instead of add_child().
+
+        Godot's multiplayer API will automatically handle creating the player on the server, creating a corresponding player on all clients, and linking them across the network.
+
+## Guideline 2: Use RPCs for Player Input (Intent), Not State
+
+        Problem: How does the client tell the server they want to move left or right?
+
+        Solution: The client calls a Remote Procedure Call (RPC) to announce its intent to move. It should never tell the server its new position directly.
+
+        How to Implement:
+
+        In your Player.gd script, create a function to receive input and mark it with the @rpc annotation. This tells Godot that this function can be called over the network.
+
+        Generated gdscript
+        # In Player.gd
+        # This function is designed to be called remotely BY a client ON the server.
+        # "call_local" also runs it on the client for immediate feedback (client-side prediction).
+        @rpc("call_local", "reliable")
+        func set_player_input(horizontal_intent: float):
+            # The server uses this value to move the authoritative player body.
+            # The client uses this value for its local prediction.
+            self.direction = horizontal_intent
+
+
+        In the _physics_process loop, only the player who owns the character can send their input.
+
+        Generated gdscript
+        # In Player.gd, inside _physics_process(delta)
+        func _physics_process(delta):
+            if is_multiplayer_authority(): # This is true only for the player you control.
+                var input_direction = Input.get_axis("move_left", "move_right")
+                # This RPC is sent to the server automatically because of the @rpc annotation.
+                set_player_input(input_direction)
+
+            # ... rest of physics movement code using self.direction ...
+    
+
+        The Golden Rule: A client should never send an RPC like update_my_position(new_pos). It should only send i_am_pressing_this_button().
+
+## Guideline 3: Use MultiplayerSynchronizer for Continuous State
+
+        Problem: The ball is constantly bouncing. Sending its position 60 times a second via RPCs would flood the network.
+
+        Solution: Use the MultiplayerSynchronizer node to automatically and efficiently sync properties like position.
+
+        How to Implement:
+
+        Add a MultiplayerSynchronizer node as a child of your Player.tscn.
+
+        In the Inspector for this node, under the "Replicated Properties" section, add the position property of the parent Player node.
+
+        The synchronizer will now watch the position of the server's version of the Player. It will automatically send updates to all clients when it changes.
+
+        The clients' synchronizers receive this data and smoothly interpolate their local "ghost" of the player to match the server's authoritative position, making movement look smooth even with network latency.
+
+## Guideline 4: Use RPCs for Discrete, One-Off Events
+
+        Problem: What happens when the ball hits a spike, collects a hoop, or uses a power-up? These are instantaneous events, not continuous states.
+
+        Solution: Use RPCs for these single, important game moments. The server will handle the logic and then call an RPC to tell all clients to play the corresponding visual and audio effects.
+
+        How to Implement:
+
+        Collision checks and game logic only run on the server.
+
+        When the server detects a player has died, it handles the logic (lives -= 1) and then calls an RPC to trigger the "Pop!" effect on all clients.
+
+        Generated gdscript
+        # In Player.gd (or wherever hazard collision logic lives)
+
+        # This function is called on the server when a collision with a hazard is detected.
+        func handle_death():
+            if not is_multiplayer_authority(): return # Only the server can process death.
+
+            # 1. Server handles the core game logic.
+            get_tree().get_first_node_in_group("game_state").player_died(self.owner_id)
+
+            # 2. Server tells all clients to play the visual effect at the death location.
+            play_pop_effect_rpc.rpc(self.global_position)
+
+            # 3. Server destroys its authoritative copy of the player.
+            self.queue_free()
+
+        # This function is designed to be called BY the server ON ALL clients.
+        @rpc("any_peer", "reliable")
+        func play_pop_effect_rpc(location: Vector2):
+            # Code to instance a particle effect/animation scene at the given location.
+            # This ensures all players see the "Pop!" at the same time and place.
+            var pop_effect = load("res://scenes/effects/pop_effect.tscn").instantiate()
+            get_tree().root.add_child(pop_effect)
+            pop_effect.global_position = location
