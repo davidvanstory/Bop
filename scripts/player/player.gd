@@ -29,9 +29,7 @@ var is_alive: bool = true
 var last_collision_time: float = 0.0
 var collision_cooldown: float = 0.1  # Prevent sound spam
 
-# Gravity zone tracking for debugging
-var current_gravity_direction: Vector2 = Vector2.ZERO
-var last_y_position: float = 0.0
+
 
 func _ready() -> void:
 	"""Initialize the player with proper settings."""
@@ -60,7 +58,7 @@ func _ready() -> void:
 	
 	# Give the ball a small initial push to start metronome oscillation
 	# Start with a downward velocity to enter the lower gravity zone
-	linear_velocity = Vector2(0, 100)
+	linear_velocity = Vector2(0, 400)
 	print("Player: Applied initial downward velocity to start metronome motion")
 
 func _physics_process(delta: float) -> void:
@@ -69,8 +67,7 @@ func _physics_process(delta: float) -> void:
 	if not is_multiplayer_authority():
 		return
 	
-	# Track gravity zone changes for debugging
-	_track_gravity_zones()
+
 	
 	# Get horizontal input using Input.get_axis for smooth movement
 	var input_dir: float = Input.get_axis("move_left", "move_right")
@@ -170,22 +167,4 @@ func apply_position_data(data: Dictionary) -> void:
 	linear_velocity = data.velocity
 	angular_velocity = data.angular_velocity
 
-func _track_gravity_zones() -> void:
-	"""Track gravity zone changes for debugging metronome behavior."""
-	var current_y = global_position.y
-	var midpoint_y = 540.0  # Midpoint between ceiling (50) and floor (1030)
-	
-	# Check if we crossed the midpoint
-	if (last_y_position < midpoint_y and current_y >= midpoint_y) or (last_y_position > midpoint_y and current_y <= midpoint_y):
-		if current_y < midpoint_y:
-			print("Player: Entered UPPER gravity zone (upward gravity) at y=", current_y)
-		else:
-			print("Player: Entered LOWER gravity zone (downward gravity) at y=", current_y)
-	
-	# Track velocity direction changes for debugging oscillation
-	if abs(linear_velocity.y) > 10:  # Only log when moving with significant velocity
-		var velocity_direction = "up" if linear_velocity.y < 0 else "down"
-		if velocity_direction != ("up" if current_gravity_direction.y < 0 else "down"):
-			print("Player: Velocity direction: ", velocity_direction, " | Position: y=", current_y, " | Velocity: ", linear_velocity.y)
-	
-	last_y_position = current_y 
+ 

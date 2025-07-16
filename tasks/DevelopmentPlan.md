@@ -28,13 +28,13 @@ The plan adheres to the rules in physics.md, SFX.md, style.md, and multiplayer.m
   - [x] Add StaticBody2D for walls/floor/ceiling with collision shapes.
   - [x] No camera following for non-scrolling MVP.
 
-- [ ] **Sub-task 1.4: Implement Metronome Gravity Zones**
-  - [ ] Create Upper Gravity Zone (Area2D) from y=0 to y=540 with upward gravity (-980).
-  - [ ] Create Lower Gravity Zone (Area2D) from y=540 to y=1080 with downward gravity (+980).
-  - [ ] Use space_override = SPACE_OVERRIDE_REPLACE in both zones.
-  - [ ] Modify player spawn position to midpoint (y=540) for immediate oscillation.
-  - [ ] Set player gravity_scale to 0 (let zones handle all gravity).
-  - [ ] Ensure perfect bounce (1.0) for perpetual motion.
+- [x] **Sub-task 1.4: Implement Metronome Gravity Zones**
+  - [x] Create Upper Gravity Zone (Area2D) from y=0 to y=540 with upward gravity (-980).
+  - [x] Create Lower Gravity Zone (Area2D) from y=540 to y=1080 with downward gravity (+980).
+  - [x] Use space_override = SPACE_OVERRIDE_REPLACE in both zones.
+  - [x] Modify player spawn position to midpoint (y=540) for immediate oscillation.
+  - [x] Set player gravity_scale to 0 (let zones handle all gravity).
+  - [x] Ensure perfect bounce (1.0) for perpetual motion.
 
 - [ ] **Sub-task 1.5: Testing**
   - [ ] Run the scene: Ball should oscillate automatically between floor and ceiling like a metronome.
