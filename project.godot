@@ -12,7 +12,7 @@ config_version=5
 
 config/name="Bop"
 config/description="A 2D rhythm-based platformer where the player controls the horizontal movement of a constantly bouncing ball."
-run/main_scene="res://scenes/levels/mvp_test.tscn"
+run/main_scene="res://scenes/levels/level_1.tscn"
 config/features=PackedStringArray("4.3")
 config/icon="res://BopAssets/assets/player/ball.png"
 
