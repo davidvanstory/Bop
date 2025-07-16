@@ -1,0 +1,5 @@
+[gd_scene load_steps=1 format=3 uid="uid://cq8d4v2n3lx9r"]
+
+[node name="BasePlatform" type="StaticBody2D"]
+collision_layer = 1
+collision_mask = 0 

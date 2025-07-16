@@ -1,0 +1,16 @@
+[gd_scene load_steps=4 format=3 uid="uid://b2lav7w8x1m4n"]
+
+[ext_resource type="PackedScene" uid="uid://cq8d4v2n3lyar" path="res://scenes/environment/BasePlatform.tscn" id="1_base_platform"]
+[ext_resource type="Texture2D" uid="uid://cw35d765qafl6" path="res://assets/sprites/environment/ground_stone.png" id="2_wood_texture"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_wood_platform"]
+size = Vector2(400, 104)
+
+[node name="WoodPlatform" instance=ExtResource("1_base_platform")]
+
+[node name="Sprite2D" type="Sprite2D" parent="." index="0"]
+texture = ExtResource("2_wood_texture")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." index="1"]
+position = Vector2(20.5, 3)
+shape = SubResource("RectangleShape2D_wood_platform")

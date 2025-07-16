@@ -47,9 +47,13 @@ _docs/
   latency.md
   level1Ground.md
   Mainmenu.md
+  MoreHazards.md
+  multiplayer.md
   params.md
   physics.md
+  Platforms.md
   SFX.md
+  spikeCommands.md
   style.md
 .cursor/
   rules/
@@ -67,7 +71,6 @@ _docs/
     coins.mp3-f6db493078653e3c3432ef7bfd892903.mp3str-folding-0d64863fe8d3bf25fbe0912c7454e90f.cfg
     editor_layout.cfg
     filesystem_cache8
-    filesystem_update4
     ground_tileset.tres-folding-e52dee9f563e26a12f4e5aad3cac946b.cfg
     Kenney Future Narrow.ttf-453e2fa23c1cd4a37e88d1e6aae31b2a.fontdata-folding-e8d1a76080fa29997781299cdf990c02.cfg
     Kenney Future Narrow.ttf-ef7e34836d9e5dc059ca737da9380cb7.fontdata-folding-fbd84f9eb9b2e81eef7a82dcac6d5cba.cfg
@@ -77,6 +80,7 @@ _docs/
     level_1.tscn-folding-446b1ed11cc7129b20b35ff4df2b3752.cfg
     mvp_test.tscn-editstate-fe3744c47e6b07da1a0149c06c8d251d.cfg
     mvp_test.tscn-folding-fe3744c47e6b07da1a0149c06c8d251d.cfg
+    player.tscn-folding-c2c62cb8c73458cd122faf659769dc80.cfg
     pop.mp3-67e17343cda83c66845025dcce55cb20.mp3str-folding-9bc5f4cf8ad755cc90b7ee014331c3a4.cfg
     pop.mp3-8a0c1ee8b23ba0bce4af1df1b73a2c47.mp3str-folding-e15f8994f0fa46149533a1fdf0bc16a2.cfg
     project_metadata.cfg
@@ -89,10 +93,12 @@ _docs/
   imported/
     ball.png-b42bc1a78430fc3412eda843a2d529ba.md5
     ball.png-b8e6aa06c746a4928b1493a1566800b7.md5
+    ball2.png-6f28e0ca618c24193f185628b0b67a48.md5
     Balloon Escape Factory.mp3-54140b5b2b11b7904ee81e622b8af5f7.md5
     Balloon Escape Factory.mp3-a84b0e9981ac63b9aa18472c4c340af6.md5
     bg_layer1.png-448a8143e3892073d6b96852c0d29f68.md5
     bg_layer1.png-d7aad465b3d677b057046413bf620986.md5
+    bottom_spike.png-896dd1629c51d374ed54f4c7572f3070.md5
     bounce.mp3-40b4ac2a57340ad0a4800cce652f4adb.md5
     bounce.mp3-c83954d43e882cf41da4bb95039bb03d.md5
     coins.mp3-7dc50d0b845a91d46fb5cdd74a20d161.md5
@@ -145,6 +151,8 @@ _docs/
     spike_top.png-fddb7c9aab302afc8a9417c3c88e618b.md5
     spikes_bottom.png-0a54744ef319b9879b095ea552cd3a17.md5
     spikes_bottom.png-dfa63a25199c2cb2532dcedfd88f6b3d.md5
+    spikes_large_bottom.png-8dfd298d2f1b9b23754f4d87d8e4af57.md5
+    spikes_large_top.png-8ae22419754be36e32ad1d3152f04785.md5
     spikes_top.png-60600659598e52a36081d7f594544828.md5
     spikes_top.png-964376e5763eee2d0812fdf4e21c3998.md5
     spring_in.png-7fc5f83a8c532c37407fef680d2036b9.md5
@@ -156,6 +164,7 @@ _docs/
     start.png-86faf5593457de63a1a876db42b6f1df.md5
     success.mp3-2f4cfc1e2ce208c30d0192cb1e366d1a.md5
     success.mp3-8c2123d5a82507e48393b4843ef40866.md5
+    top_spike.png-e726383dcdf8172a339f8dc7c5ed0b51.md5
   .gdignore
   global_script_class_cache.cfg
   scene_groups_cache.cfg
@@ -282,6 +291,8 @@ scenes/
 scripts/
   hazards/
     spike.gd
+  levels/
+    level_configurator.gd
   player/
     camera_controller.gd
     player.gd
@@ -300,6 +311,40 @@ project.godot
 
 <files>
 This section contains the contents of the repository's files.
+
+<file path="_docs/Platforms.md">
+Creating Reusable Platforms
+This follows the exact same "Great Approach" (scene inheritance) that we used for the spikes. It's the cleanest and most powerful way.
+
+Part 1: Create the BasePlatform.tscn Scene
+    This scene will contain the shared physics properties for all platforms.
+    Create a New Scene: Go to Scene -> New Scene.
+    Choose Root Node: Select Other Node and choose StaticBody2D. Rename it to BasePlatform.
+    Set Physics Layer: Select the BasePlatform node. In the Inspector, under Collision, set its Layer to world (Layer 1). This ensures the player will bounce off it correctly.
+    Save the Scene: Save it as BasePlatform.tscn inside a new folder: scenes/environment/.
+
+Part 2: Create the Reusable WoodPlatform.tscn
+    This is the actual, visible block you will place in your levels.
+    Create an Inherited Scene: Go to Scene -> New Inherited Scene... and select your newly created BasePlatform.tscn.
+    Add Visuals:
+    Add a Sprite2D node as a child of BasePlatform.
+    Drag the ground_wood.png texture from assets/sprites/environment/ into the Texture slot of the Sprite2D.
+    Add Collision:
+    Add a CollisionShape2D node as a child of BasePlatform.
+    Give it a New RectangleShape2D and resize it to tightly fit the wood sprite.
+    Save the Scene: Save this new scene as WoodPlatform.tscn inside scenes/environment/.
+
+
+I need to place a new wooden platform in scenes/levels/level_1.tscn.
+Create a new Node2D named Platforms to keep the scene organized.
+Create an instance of the scenes/environment/WoodPlatform.tscn scene as a child of Platforms.
+Set the global_position of this new platform instance to x: 7000, y: 540.
+</file>
+
+<file path=".godot/imported/ball2.png-6f28e0ca618c24193f185628b0b67a48.md5">
+source_md5="12861f5444f4a9bca3b81495e59abde2"
+dest_md5="7d3e31cbeee34f7376a6903acb5d636e"
+</file>
 
 <file path="_docs/GameOver.md">
 Build the Game Over Screen
@@ -568,6 +613,118 @@ Ready to proceed with **Sub-task 4.2: Add Hazards and Pop Effect** in the develo
 *All tasks from original instructions completed successfully! 🎉*
 </file>
 
+<file path="_docs/MoreHazards.md">
+Guidance to Keep in Mind:
+Goal: We want a single Spike.tscn that can be configured to be any of the four spike types.
+Mechanism: Use an @export enum in the script to create a dropdown in the Inspector.
+Action: The script's _ready() function will read the chosen enum value and set the correct texture and collision shape size.
+
+The Prompt to Give Cursor:
+"I need to refactor my Spike.tscn to handle all four of my spike textures (spike_bottom.png, spike_top.png, and their large versions) in a single, reusable scene.
+
+1. Modify scripts/hazards/spike.gd:
+    At the top of the script, create an enum called SpikeType with four values: BOTTOM, TOP, BOTTOM_LARGE, TOP_LARGE.
+    Create a new @export var type: SpikeType variable.
+    Get @onready references to the Sprite2D and CollisionShape2D nodes.
+    In the _ready() function, create a match statement that checks the value of the type variable.
+    Inside the match statement:
+    For each SpikeType, set the Sprite2D.texture to the correct preloaded png file from assets/sprites/hazards/.
+    For each SpikeType, also resize the CollisionShape2D. The standard spikes should have a collision size of (64, 64). Assume the large spikes should have a size of (128, 64).
+
+2. Modify scenes/levels/level_1.tscn:
+    Triple the level's TileMapLayer width and move the RightWall.
+    Create a Node2D named Hazards to hold all the spike instances.
+    Inside Hazards, create a long row of three instances of Spike.tscn. For each one, select it and set its Type in the Inspector to BOTTOM_LARGE. Position them starting at (2000, 950).
+    Create another row of two instances of Spike.tscn. Set their Type to BOTTOM in the Inspector. Position them starting at (2800, 950).
+    Create a row of two instances of Spike.tscn. Set their Type to TOP in the Inspector. Position them starting at (2400, 150)."
+</file>
+
+<file path="_docs/multiplayer.md">
+### Multiplayer Approach: From Connection to Gameplay
+
+The best practice is to build the multiplayer flow in this order:
+1.  **Establish a Connection:** Can two players even talk to each other?
+2.  **Spawn Players:** When a player joins, can they appear in the world on both screens?
+3.  **Synchronize Movement:** Do the players move together on both screens?
+4.  **Synchronize Game State:** Do shared lives and events work correctly?
+
+### How to Test Multiplayer (Crucial First Step!)
+
+You asked how to test this on one laptop. Godot has a fantastic built-in feature for this.
+
+1.  Go to the top menu in the Godot editor.
+2.  Click `Debug` -> `Run Multiple Instances`.
+3.  Set it to `2`.
+
+When you now run your project, **two separate game windows will open**. You can use one as the "Host" and the other as the "Client" to test your networking code locally. When you want to test with your friend, they will be the "Client" connecting to your "Host" computer over your home network or the internet.
+
+---
+
+### Revised & Detailed Game Plan with Cursor Prompts
+
+Here is a more detailed version of your plan, broken into smaller, testable steps with specific prompts.
+
+#### **Phase 5.3a: Creating the "Lobby" and Connection**
+
+**Goal:** Allow one player to host a game and another to join it.
+
+**Tips:** This logic belongs in your UI, specifically `main_menu.tscn`. You'll need to add a few UI elements to handle the IP address.
+
+**Cursor Prompts:**
+
+1.  **To Modify the Main Menu UI:**
+    > "Open `scenes/ui/main_menu.tscn`. Below the 'Start Game' button, add an `HBoxContainer`. Inside it, add a `Label` with the text 'IP Address:' and a `LineEdit` node named `IPAddressEdit`. Change the 'Start Game' button's text to 'Host'. Add a new `Button` next to it named `JoinButton` with the text 'Join'."
+
+2.  **To Add Networking Logic to the Menu Script:**
+    > "Modify `scripts/ui/main_menu.gd`.
+    > 1. Create a new function `_on_host_button_pressed`. Inside, create a server by calling `Multiplayer.create_server(7777)`. Then, connect the multiplayer signal `peer_connected` to a new function, `_on_peer_connected`. Finally, call the function to start the game.
+    > 2. Create a new function `_on_join_button_pressed`. Inside, get the text from the `IPAddressEdit` node. Call `Multiplayer.create_client(ip_address, 7777)`.
+    > 3. Create the `_on_peer_connected(id)` function. Inside, simply print 'Peer connected: ' + str(id).
+    > 4. In `_on_start_button_pressed` (which should now be called something like `start_game()`), after the server is created, call `get_tree().change_scene_to_file("res://scenes/levels/level_1.tscn")`. The join button doesn't need to change scene; the server will handle that."
+
+*(**Note:** After this, you should be able to run two instances. One clicks "Host," the other types `127.0.0.1` and clicks "Join." The host's game will start, and you'll see a "Peer connected" message in the host's output log. The client's game will not change scenes yet.)*
+
+#### **Phase 5.3b: Spawning and Synchronizing Players**
+
+**Goal:** Make players appear for everyone and move in sync.
+
+**Tips:** This involves creating a new `NetworkManager` autoload for clarity, using the `MultiplayerSpawner`, and modifying the player's script.
+
+**Cursor Prompts:**
+
+1.  **To Create a Network Manager:**
+    > "Create a new script `network_manager.gd` in `scripts/singletons/`. Make it an Autoload in Project Settings called `NetworkManager`. This script will handle spawning players.
+    > In `NetworkManager.gd`, create a dictionary to store player info. Create a function `_on_peer_connected(id)` that is connected to the `Multiplayer.peer_connected` signal. Also create a function to handle disconnection."
+
+2.  **To Add the Spawner to the Level:**
+    > "Open `scenes/levels/level_1.tscn`. Add a `MultiplayerSpawner` node named `PlayerSpawner`. In its 'Spawnable Scenes' property, add `res://scenes/player/player.tscn`."
+
+3.  **To Spawn Players:**
+    > "In `NetworkManager.gd`, when a peer connects (`_on_peer_connected`), call an RPC on all connected clients. This RPC, let's call it `spawn_player`, will take the player's ID as an argument. The `spawn_player` function will call `PlayerSpawner.spawn()` to create a new player instance. The `name` of the new player node should be set to its unique ID."
+
+4.  **To Synchronize Movement:**
+    > "Open `scenes/player/player.tscn`. Add a `MultiplayerSynchronizer` node. In its 'Replicated Properties', add the `global_position` and `linear_velocity` of the parent node. Set the server as the authority."
+
+5.  **To Implement Client-Side Prediction:**
+    > "Refactor `scripts/player/player.gd`.
+    > 1. In `_physics_process`, the `if is_multiplayer_authority():` block should remain. Inside it, after applying local movement, call a new RPC function, `submit_input.rpc_id(1, direction)`.
+    > 2. Create the function `submit_input(direction)` and annotate it with `@rpc("any_peer", "reliable")`. This function will run on the server. Inside it, apply the movement logic using the `direction` parameter."
+
+#### **Phase 5.3c: Synchronizing Game State & Collisions**
+
+**Goal:** Ensure players share lives and can collide with each other.
+
+**Cursor Prompts:**
+
+1.  **To Handle Shared Lives:**
+    > "Modify `GameState.gd`. The `_on_player_died` function should now only be called on the server. Change the signal emission to an RPC call: `handle_player_death.rpc()`. The `handle_player_death` RPC function, callable by the server on all clients, will contain the logic to decrement lives and check for game over."
+
+2.  **To Enable Player-Player Collision:**
+    > "Open `scenes/player/player.tscn`. Select the root `player` node. In the Inspector under `Collision`, find the `Mask` property. Make sure the box for layer 2 ('player') is checked. This will make players aware of other objects on the 'player' layer."
+
+By breaking it down this way, you create a robust system where you first establish the connection, then handle creating the players, then make them move correctly, and finally sync the game rules. This is the professional workflow for building a multiplayer game.
+</file>
+
 <file path="_docs/physics.md">
 The physics parameters you choose will define the entire "feel" of your game. Getting them right is the difference between a character that feels floaty and unresponsive versus one that feels tight, predictable, and fun.
 
@@ -816,6 +973,21 @@ func _ready():
 ```
 
 By following these rules, if you ever want to change the "pop" sound, you only have to change it in **one place**: the `sfx_library` inside `SoundManager.gd`. If you want to add a volume slider, you just need to connect it to the `set_sfx_volume` and `set_music_volume` functions in your `SoundManager`. Your architecture is now clean, manageable, and ready to scale.
+</file>
+
+<file path="_docs/spikeCommands.md">
+"Add 3 BOTTOM_LARGE spikes to level_1 at positions (3000, 950), (3128, 950), (3256, 950)"
+
+"Add 2 TOP spikes and 1 BOTTOM_LARGE spike to level_2 at positions (1500, 150), (1564, 150), (1800, 950)"
+
+"Create a spike gauntlet in level_1 with alternating TOP and BOTTOM spikes from x=4000 to x=5000, spaced 128 pixels apart"
+
+"create a wall of spikes" or "add spike corridor"
+
+Specify exact coordinates for precise placement
+Use descriptive patterns like "create a wall of spikes" or "add spike corridor"
+Mention level name to target the right scene
+Include spike spacing if you want evenly distributed spikes
 </file>
 
 <file path="_docs/style.md">
@@ -1710,6 +1882,11 @@ source_md5="f2e059dd52fa2ba1eef76d7aed06606c"
 dest_md5="50b65a22f846cd1052f95369ce678efc"
 </file>
 
+<file path=".godot/imported/bottom_spike.png-896dd1629c51d374ed54f4c7572f3070.md5">
+source_md5="aa212a2cf5155bff89eb4469c07c0d51"
+dest_md5="876499d714f44231828cb7230d5d8280"
+</file>
+
 <file path=".godot/imported/death.png-58af26607f80fb906bb8d8bb220a7a6a.md5">
 source_md5="04d15e61861a9245c6a58dcf7915aaf2"
 dest_md5="a832c82bedd416498938fa9e876e7f65"
@@ -1920,6 +2097,16 @@ source_md5="ce0474409a6380f77c0ca4f6d8fcbef1"
 dest_md5="20ac2050c1bf56ffcb41259b7a5aadd3"
 </file>
 
+<file path=".godot/imported/spikes_large_bottom.png-8dfd298d2f1b9b23754f4d87d8e4af57.md5">
+source_md5="24a1757932e57459ba3d91bd48d79049"
+dest_md5="6d9e9136266d5cdc45cda62afd6ed9e5"
+</file>
+
+<file path=".godot/imported/spikes_large_top.png-8ae22419754be36e32ad1d3152f04785.md5">
+source_md5="ce0474409a6380f77c0ca4f6d8fcbef1"
+dest_md5="20ac2050c1bf56ffcb41259b7a5aadd3"
+</file>
+
 <file path=".godot/imported/spikes_top.png-60600659598e52a36081d7f594544828.md5">
 source_md5="24a1757932e57459ba3d91bd48d79049"
 dest_md5="6d9e9136266d5cdc45cda62afd6ed9e5"
@@ -1963,6 +2150,11 @@ dest_md5="0892ddb7a302c0fb6cf3340d6e26df09"
 <file path=".godot/imported/start.png-86faf5593457de63a1a876db42b6f1df.md5">
 source_md5="7032291ff04eb1a9150a94fccba5eb6b"
 dest_md5="4ace03504f26253cc6b783a534a54cca"
+</file>
+
+<file path=".godot/imported/top_spike.png-e726383dcdf8172a339f8dc7c5ed0b51.md5">
+source_md5="4a1cc490238f5192676e6c74b755715d"
+dest_md5="1a775301c8e17aba8c435d3a1dcc6e50"
 </file>
 
 <file path=".godot/.gdignore">
@@ -3212,83 +3404,74 @@ grow_vertical = 2
 stretch_mode = 1
 </file>
 
-<file path="scripts/hazards/spike.gd">
+<file path="scripts/levels/level_configurator.gd">
 """
-Spike Hazard Script
-Handles collision detection with the player and triggers death sequence.
-Uses Area2D body_entered signal to detect when player touches the spike.
+Level Configurator Script
+Dynamically configures level components (walls, gravity zones) based on GameState level configuration.
+Attaches to the root Level node and adjusts positions and sizes at runtime.
 """
-class_name Spike
-extends Area2D
+extends Node2D
 
-# Export variables for configuration
-@export var damage_sound: AudioStream
-@export var is_enabled: bool = true
+# Node references that will be configured
+@onready var left_wall: StaticBody2D = $Environment/LeftWall
+@onready var right_wall: StaticBody2D = $Environment/RightWall
+@onready var upper_gravity_zone: Area2D = $GravityZones/UpperGravityZone
+@onready var lower_gravity_zone: Area2D = $GravityZones/LowerGravityZone
+@onready var upper_gravity_collision: CollisionShape2D = $GravityZones/UpperGravityZone/CollisionShape2D
+@onready var lower_gravity_collision: CollisionShape2D = $GravityZones/LowerGravityZone/CollisionShape2D
 
 func _ready() -> void:
-	"""Initialize the spike hazard."""
-	print("Spike: Initializing at position ", global_position)
+	"""Configure level components based on GameState level configuration."""
+	print("LevelConfigurator: Starting level configuration...")
 	
-	# Connect the body_entered signal to our collision handler
-	body_entered.connect(_on_body_entered)
+	# Get level configuration from GameState
+	var config = GameState.get_current_level_config()
+	print("LevelConfigurator: Using configuration for level ", GameState.current_level)
 	
-	# Make sure the Area2D is monitoring for bodies
-	monitoring = true
-	monitorable = true
+	# Configure walls
+	_configure_walls(config)
 	
-	print("Spike: Ready and monitoring for collisions")
+	# Configure gravity zones  
+	_configure_gravity_zones(config)
+	
+	print("LevelConfigurator: Level configuration complete")
 
-func _on_body_entered(body: Node2D) -> void:
-	"""Handle when a body enters the spike area."""
-	print("Spike: Body entered - ", body.name, " (type: ", body.get_class(), ")")
+func _configure_walls(config: Dictionary) -> void:
+	"""Configure wall positions based on level configuration."""
+	var left_x = config.left_wall_x
+	var right_x = config.right_wall_x
 	
-	# Check if it's the player and connect to its hit signal for immediate detection
-	if body.is_in_group("player") and is_enabled:
-		print("Spike: Player detected! Connecting to hit signal and triggering collision")
-		
-		# Connect to the player's hit signal if not already connected
-		if not body.hit.is_connected(_on_player_hit):
-			body.hit.connect(_on_player_hit)
-			print("Spike: Connected to player hit signal")
-		
-		# Trigger the hazard collision immediately
-		if body.has_method("_handle_hazard_collision"):
-			print("Spike: Calling player's hazard collision method")
-			body._handle_hazard_collision()
-		else:
-			print("Spike: Player missing _handle_hazard_collision method, triggering direct death")
-			_trigger_player_death()
-
-func _on_player_hit() -> void:
-	"""Handle when the player emits a hit signal."""
-	print("Spike: Received player hit signal!")
-	_trigger_player_death()
-
-func _trigger_player_death() -> void:
-	"""Trigger the player death sequence directly."""
-	print("Spike: Triggering player death sequence")
+	print("LevelConfigurator: Configuring walls - Left: ", left_x, ", Right: ", right_x)
 	
-	# Play pop sound through SoundManager
-	if has_node("/root/SoundManager"):
-		get_node("/root/SoundManager").play_sfx("pop")
-		print("Spike: Pop sound triggered")
+	# Update wall positions
+	left_wall.position.x = left_x
+	right_wall.position.x = right_x
 	
-	# Emit signal to GameState for life management
-	if has_node("/root/GameState"):
-		get_node("/root/GameState").emit_signal("player_died")
-		print("Spike: Player death signal emitted")
+	print("LevelConfigurator: Wall positions updated")
 
-func disable_spike() -> void:
-	"""Temporarily disable the spike."""
-	is_enabled = false
-	modulate = Color(0.5, 0.5, 0.5, 0.5)  # Make it semi-transparent
-	print("Spike: Disabled")
-
-func enable_spike() -> void:
-	"""Re-enable the spike."""
-	is_enabled = true
-	modulate = Color.WHITE
-	print("Spike: Enabled")
+func _configure_gravity_zones(config: Dictionary) -> void:
+	"""Configure gravity zone positions and sizes based on level configuration."""
+	var center_x = config.gravity_zone_center_x
+	var zone_width = config.gravity_zone_width
+	
+	print("LevelConfigurator: Configuring gravity zones - Center: ", center_x, ", Width: ", zone_width)
+	
+	# Update gravity zone positions (they should be centered)
+	upper_gravity_zone.position.x = center_x
+	lower_gravity_zone.position.x = center_x
+	
+	# Update gravity zone collision shape sizes
+	if upper_gravity_collision.shape is RectangleShape2D:
+		var upper_shape = upper_gravity_collision.shape as RectangleShape2D
+		upper_shape.size.x = zone_width
+		print("LevelConfigurator: Upper gravity zone width set to ", zone_width)
+	
+	if lower_gravity_collision.shape is RectangleShape2D:
+		var lower_shape = lower_gravity_collision.shape as RectangleShape2D
+		lower_shape.size.x = zone_width
+		print("LevelConfigurator: Lower gravity zone width set to ", zone_width)
+	
+	print("LevelConfigurator: Gravity zones configured")
 </file>
 
 <file path="scripts/singletons/SoundManager.gd">
@@ -3513,44 +3696,6 @@ func _unhandled_input(event: InputEvent) -> void:
 		_on_start_button_pressed()
 </file>
 
-<file path="scripts/tilemap_painter.gd">
-extends TileMapLayer
-
-## Script to paint floor and ceiling tiles on the TileMapLayer
-## Attaches directly to TileMapLayer node and paints tiles once on _ready()
-
-func _ready():
-	print("TileMapPainter: Starting tile painting...")
-	call_deferred("paint_tiles")
-
-func paint_tiles():
-	if not tile_set:
-		print("TileMapPainter: ERROR - No TileSet found!")
-		return
-		
-	var source_id = 0  # First source in the TileSet
-	var atlas_coords = Vector2i(0, 0)  # First tile in the atlas
-	var alternative_tile = 0  # Default tile alternative
-	
-	# Level dimensions for scrolling
-	var level_width = 60  # tiles wide (60 * 64 = 3840 pixels)
-	var ceiling_y = 0
-	var floor_y = 16
-	
-	print("TileMapPainter: Painting ceiling tiles...")
-	# Paint ceiling tiles (y = 0)
-	for x in range(level_width + 1):
-		set_cell(Vector2i(x, ceiling_y), source_id, atlas_coords, alternative_tile)
-	
-	print("TileMapPainter: Painting floor tiles...")
-	# Paint floor tiles (y = 16) 
-	for x in range(level_width + 1):
-		set_cell(Vector2i(x, floor_y), source_id, atlas_coords, alternative_tile)
-		
-	print("TileMapPainter: Tile painting complete!")
-	print("TileMapPainter: Painted ", (level_width + 1) * 2, " tiles total")
-</file>
-
 <file path="_docs/Mainmenu.md">
 Build the Main Menu
 Goal: Create a functional main menu that launches the game and sets the game mode.
@@ -3584,19 +3729,6 @@ Step 3: Set the Main Scene for the Project
     Close the settings.
 
 Testing: After this step, when you run your project, you should see your "Bop" title screen. Clicking the "Start Game" button should load and start level_1.tscn exactly as it did before.
-</file>
-
-<file path="_docs/params.md">
-bouncing height was controlled by initial spawn position. 
-metronome velocity is set by the gravity. higher gravity  = faster movement. 
-
-other params to play with for movement:
-gravity scale - seems to make the ball move slow when its oscillating
-bounce value - 1 is max. 
-damping 
-mass
-gravity - set to 1400 i think
-linear_velocity = Vector2(0, 100)  this is the initial push
 </file>
 
 <file path=".godot/editor/level_1.tscn-editstate-446b1ed11cc7129b20b35ff4df2b3752.cfg">
@@ -3780,273 +3912,150 @@ Anim={
 selected_nodes=Array[NodePath]([])
 </file>
 
+<file path=".godot/editor/player.tscn-folding-c2c62cb8c73458cd122faf659769dc80.cfg">
+[folding]
+
+node_unfolds=[NodePath("."), PackedStringArray("Collision")]
+resource_unfolds=["res://scenes/player/player.tscn::CircleShape2D_1", PackedStringArray("Resource")]
+nodes_folded=[]
+</file>
+
 <file path=".godot/editor/recent_dirs">
 res://scenes/ui
 res://scenes/levels
 </file>
 
-<file path=".godot/scene_groups_cache.cfg">
-[res://scenes/hazards/Spike.tscn]
-
-groups=[&"hazards"]
-</file>
-
-<file path="scenes/hazards/Spike.tscn">
-[gd_scene load_steps=4 format=3 uid="uid://b8h1v5p2k3nar"]
-
-[ext_resource type="Texture2D" uid="uid://cyokxx6vt27ny" path="res://assets/sprites/hazards/spike_bottom.png" id="1_spike_texture"]
-[ext_resource type="Script" path="res://scripts/hazards/spike.gd" id="2_spike_script"]
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_spike"]
-size = Vector2(64, 64)
-
-[node name="Spike" type="Area2D" groups=["hazards"]]
-collision_layer = 4
-collision_mask = 2
-script = ExtResource("2_spike_script")
-
-[node name="Sprite2D" type="Sprite2D" parent="."]
-texture = ExtResource("1_spike_texture")
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-shape = SubResource("RectangleShape2D_spike")
-</file>
-
-<file path="scenes/levels/level_1.tscn">
-[gd_scene load_steps=8 format=3 uid="uid://o4dpd5iks8mj"]
-
-[ext_resource type="PackedScene" uid="uid://c1fnn1l64pxpx" path="res://scenes/player/player.tscn" id="1_player"]
-[ext_resource type="TileSet" uid="uid://bvqowixejw8pm" path="res://resources/ground_tileset.tres" id="2_tileset"]
-[ext_resource type="Script" path="res://scripts/tilemap_painter.gd" id="3_painter"]
-[ext_resource type="PackedScene" uid="uid://b8h1v5p2k3nar" path="res://scenes/hazards/Spike.tscn" id="4_spike"]
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_walls"]
-size = Vector2(100, 1080)
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_upper_gravity"]
-size = Vector2(3840, 540)
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_lower_gravity"]
-size = Vector2(3840, 540)
-
-[node name="Level1" type="Node2D"]
-
-[node name="Environment" type="Node2D" parent="."]
-
-[node name="TileMapLayer" type="TileMapLayer" parent="Environment"]
-modulate = Color(1, 0.5, 0.5, 1)
-tile_set = ExtResource("2_tileset")
-script = ExtResource("3_painter")
-
-[node name="LeftWall" type="StaticBody2D" parent="Environment"]
-position = Vector2(50, 540)
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Environment/LeftWall"]
-shape = SubResource("RectangleShape2D_walls")
-
-[node name="RightWall" type="StaticBody2D" parent="Environment"]
-position = Vector2(3790, 540)
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Environment/RightWall"]
-shape = SubResource("RectangleShape2D_walls")
-
-[node name="Spike1" parent="Environment" instance=ExtResource("4_spike")]
-position = Vector2(1500, 950)
-
-[node name="GravityZones" type="Node2D" parent="."]
-
-[node name="UpperGravityZone" type="Area2D" parent="GravityZones"]
-position = Vector2(1920, 270)
-gravity_point_center = Vector2(0, -1)
-gravity_direction = Vector2(0, -1)
-gravity = 1400.0
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="GravityZones/UpperGravityZone"]
-shape = SubResource("RectangleShape2D_upper_gravity")
-
-[node name="LowerGravityZone" type="Area2D" parent="GravityZones"]
-position = Vector2(1920, 810)
-gravity = 1400.0
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="GravityZones/LowerGravityZone"]
-shape = SubResource("RectangleShape2D_lower_gravity")
-
-[node name="Player" parent="." instance=ExtResource("1_player")]
-position = Vector2(960, 540)
-gravity_scale = 0.0
-</file>
-
-<file path="scripts/player/camera_controller.gd">
+<file path="scripts/hazards/spike.gd">
 """
-Camera Controller for Bop Game
-Follows the player horizontally while maintaining a fixed vertical position
-to keep both ceiling and floor visible at all times.
+Spike Hazard Script
+Handles collision detection with the player and triggers death sequence.
+Uses Area2D body_entered signal to detect when player touches the spike.
+Modular design supports multiple spike types through enum configuration.
 """
-class_name CameraController
-extends Camera2D
+class_name Spike
+extends Area2D
 
-# Camera configuration
-@export var target_player: Node2D
-@export var fixed_y_position: float = 540.0  # Center of the level vertically
-@export var follow_smoothing: float = 5.0  # How smoothly to follow horizontally
-@export var horizontal_offset: float = 0.0  # Optional horizontal offset from player
+# Enum for different spike types
+enum SpikeType {
+	BOTTOM,
+	TOP,
+	BOTTOM_LARGE,
+	TOP_LARGE
+}
 
-# Camera bounds (optional - to prevent camera from going too far)
-@export var min_x_position: float = -INF
-@export var max_x_position: float = INF
-@export var use_auto_bounds: bool = true  # Automatically calculate bounds from level
-@export var bounds_margin: float = 480.0  # Margin from level edges (half screen width)
+# Export variables for configuration
+@export var type: SpikeType = SpikeType.BOTTOM
+@export var damage_sound: AudioStream
+@export var is_enabled: bool = true
+
+# Node references
+@onready var sprite: Sprite2D = $Sprite2D
+@onready var collision_shape: CollisionShape2D = $CollisionShape2D
 
 func _ready() -> void:
-	"""Initialize the camera controller."""
-	print("CameraController: Initializing...")
+	"""Initialize the spike hazard with appropriate texture and collision size."""
+	print("Spike: Initializing ", SpikeType.keys()[type], " spike at position ", global_position)
 	
-	# If no target is set, try to find the player automatically
-	if not target_player:
-		target_player = get_parent()
-		print("CameraController: Using parent as target player")
+	# Configure spike based on type
+	_configure_spike_type()
 	
-	# Set initial position
-	if target_player:
-		global_position.x = target_player.global_position.x + horizontal_offset
-		global_position.y = fixed_y_position
-		print("CameraController: Initial position set to (", global_position.x, ", ", global_position.y, ")")
+	# Connect the body_entered signal to our collision handler
+	body_entered.connect(_on_body_entered)
 	
-	# Make this camera current
-	make_current()
-	print("CameraController: Camera set as current")
+	# Make sure the Area2D is monitoring for bodies
+	monitoring = true
+	monitorable = true
 	
-	# Auto-calculate bounds if enabled
-	if use_auto_bounds:
-		_calculate_level_bounds()
-		print("CameraController: Auto-bounds calculated")
+	print("Spike: Ready and monitoring for collisions")
 
-func _process(delta: float) -> void:
-	"""Update camera position each frame."""
-	if not target_player:
-		return
+func _configure_spike_type() -> void:
+	"""Configure the spike's texture and collision size based on its type."""
+	var texture_path: String
+	var collision_size: Vector2
 	
-	# Stop following if the player is dead
-	if "is_alive" in target_player and not target_player.is_alive:
-		print("CameraController: Player is dead, stopping camera movement")
-		return
+	match type:
+		SpikeType.BOTTOM:
+			texture_path = "res://assets/sprites/hazards/bottom_spike.png"
+			collision_size = Vector2(64, 64)
+			print("Spike: Configuring as BOTTOM spike")
+		SpikeType.TOP:
+			texture_path = "res://assets/sprites/hazards/top_spike.png"
+			collision_size = Vector2(64, 64)
+			print("Spike: Configuring as TOP spike")
+		SpikeType.BOTTOM_LARGE:
+			texture_path = "res://assets/sprites/hazards/spikes_large_bottom.png"
+			collision_size = Vector2(128, 64)
+			print("Spike: Configuring as BOTTOM_LARGE spike")
+		SpikeType.TOP_LARGE:
+			texture_path = "res://assets/sprites/hazards/spikes_large_top.png"
+			collision_size = Vector2(128, 64)
+			print("Spike: Configuring as TOP_LARGE spike")
 	
-	# Calculate target horizontal position
-	var target_x = target_player.global_position.x + horizontal_offset
-	
-	# Apply bounds if set
-	if min_x_position != -INF:
-		target_x = max(target_x, min_x_position)
-	if max_x_position != INF:
-		target_x = min(target_x, max_x_position)
-	
-	# Smoothly follow horizontally, keep fixed vertical position
-	var current_pos = global_position
-	current_pos.x = lerp(current_pos.x, target_x, follow_smoothing * delta)
-	current_pos.y = fixed_y_position  # Always maintain fixed Y position
-	
-	global_position = current_pos
-	
-	# Debug logging (can be commented out in production)
-	# print("CameraController: Position (", global_position.x, ", ", global_position.y, ") following player at (", target_player.global_position.x, ", ", target_player.global_position.y, ")")
-
-func set_target_player(player: Node2D) -> void:
-	"""Set the player to follow."""
-	target_player = player
-	print("CameraController: Target player set to ", player.name)
-
-func set_fixed_y_position(y_pos: float) -> void:
-	"""Set the fixed vertical position for the camera."""
-	fixed_y_position = y_pos
-	global_position.y = fixed_y_position
-	print("CameraController: Fixed Y position set to ", y_pos)
-
-func set_horizontal_bounds(min_x: float, max_x: float) -> void:
-	"""Set horizontal movement bounds for the camera."""
-	min_x_position = min_x
-	max_x_position = max_x
-	use_auto_bounds = false  # Disable auto bounds when manually set
-	print("CameraController: Horizontal bounds manually set to (", min_x, ", ", max_x, ")")
-
-func _calculate_level_bounds() -> void:
-	"""Automatically calculate camera bounds based on level geometry."""
-	print("CameraController: Calculating level bounds...")
-	
-	# Find the main scene (level)
-	var level_scene = get_tree().current_scene
-	if not level_scene:
-		print("CameraController: No current scene found for bounds calculation")
-		return
-	
-	# Look for walls or level boundaries
-	var left_bound: float = INF
-	var right_bound: float = -INF
-	
-	# Search for StaticBody2D nodes that could be walls
-	var static_bodies = _find_static_bodies(level_scene)
-	
-	for body in static_bodies:
-		# Check if this looks like a wall (has "Wall" in name)
-		var body_name = body.name.to_lower()
-		var body_pos = body.global_position
-		
-		print("CameraController: Checking StaticBody2D '", body.name, "' at position (", body_pos.x, ", ", body_pos.y, ")")
-		
-		if "wall" in body_name or "boundary" in body_name:
-			# Determine if it's a left or right wall based on position and name
-			if "left" in body_name:
-				left_bound = min(left_bound, body_pos.x)
-				print("CameraController: Found left wall '", body.name, "' at x = ", body_pos.x)
-			elif "right" in body_name:
-				right_bound = max(right_bound, body_pos.x)
-				print("CameraController: Found right wall '", body.name, "' at x = ", body_pos.x)
-			else:
-				# Try to determine by position (assume level is around 1920 wide)
-				if body_pos.x < 500:  # Likely left wall
-					left_bound = min(left_bound, body_pos.x)
-					print("CameraController: Detected left wall '", body.name, "' at x = ", body_pos.x)
-				elif body_pos.x > 1400:  # Likely right wall
-					right_bound = max(right_bound, body_pos.x)
-					print("CameraController: Detected right wall '", body.name, "' at x = ", body_pos.x)
-		else:
-			# Skip non-wall StaticBody2D nodes (like floors, ceilings, platforms)
-			print("CameraController: Skipping non-wall StaticBody2D '", body.name, "'")
-	
-	# Apply bounds with margin if we found walls
-	if left_bound != INF and right_bound != -INF:
-		min_x_position = left_bound + bounds_margin
-		max_x_position = right_bound - bounds_margin
-		print("CameraController: Auto-bounds set to (", min_x_position, ", ", max_x_position, ") with margin ", bounds_margin)
+	# Load and set the texture
+	var texture = load(texture_path)
+	if texture:
+		sprite.texture = texture
+		print("Spike: Texture loaded successfully: ", texture_path)
 	else:
-		# Fallback to default reasonable bounds for a 1920-wide level
-		min_x_position = bounds_margin
-		max_x_position = 1920.0 - bounds_margin
-		print("CameraController: Using fallback bounds (", min_x_position, ", ", max_x_position, ")")
-
-func _find_static_bodies(node: Node) -> Array:
-	"""Recursively find all StaticBody2D nodes."""
-	var found_nodes: Array = []
+		print("Spike: ERROR - Failed to load texture: ", texture_path)
 	
-	if node is StaticBody2D:
-		found_nodes.append(node)
-	
-	for child in node.get_children():
-		found_nodes.append_array(_find_static_bodies(child))
-	
-	return found_nodes
+	# Update collision shape size
+	if collision_shape.shape is RectangleShape2D:
+		var rect_shape = collision_shape.shape as RectangleShape2D
+		rect_shape.size = collision_size
+		print("Spike: Collision size set to ", collision_size)
 
-func update_level_bounds() -> void:
-	"""Public method to recalculate bounds when level changes."""
-	if use_auto_bounds:
-		_calculate_level_bounds()
-		print("CameraController: Level bounds updated")
+func _on_body_entered(body: Node2D) -> void:
+	"""Handle when a body enters the spike area."""
+	print("Spike: Body entered - ", body.name, " (type: ", body.get_class(), ")")
+	
+	# Check if it's the player and connect to its hit signal for immediate detection
+	if body.is_in_group("player") and is_enabled:
+		print("Spike: Player detected! Connecting to hit signal and triggering collision")
+		
+		# Connect to the player's hit signal if not already connected
+		if not body.hit.is_connected(_on_player_hit):
+			body.hit.connect(_on_player_hit)
+			print("Spike: Connected to player hit signal")
+		
+		# Trigger the hazard collision immediately
+		if body.has_method("_handle_hazard_collision"):
+			print("Spike: Calling player's hazard collision method")
+			body._handle_hazard_collision()
+		else:
+			print("Spike: Player missing _handle_hazard_collision method, triggering direct death")
+			_trigger_player_death()
 
-func set_bounds_margin(margin: float) -> void:
-	"""Set the margin from level edges and recalculate bounds."""
-	bounds_margin = margin
-	if use_auto_bounds:
-		_calculate_level_bounds()
-	print("CameraController: Bounds margin set to ", margin)
+func _on_player_hit() -> void:
+	"""Handle when the player emits a hit signal."""
+	print("Spike: Received player hit signal!")
+	_trigger_player_death()
+
+func _trigger_player_death() -> void:
+	"""Trigger the player death sequence directly."""
+	print("Spike: Triggering player death sequence")
+	
+	# Play pop sound through SoundManager
+	if has_node("/root/SoundManager"):
+		get_node("/root/SoundManager").play_sfx("pop")
+		print("Spike: Pop sound triggered")
+	
+	# Emit signal to GameState for life management
+	if has_node("/root/GameState"):
+		get_node("/root/GameState").emit_signal("player_died")
+		print("Spike: Player death signal emitted")
+
+func disable_spike() -> void:
+	"""Temporarily disable the spike."""
+	is_enabled = false
+	modulate = Color(0.5, 0.5, 0.5, 0.5)  # Make it semi-transparent
+	print("Spike: Disabled")
+
+func enable_spike() -> void:
+	"""Re-enable the spike."""
+	is_enabled = true
+	modulate = Color.WHITE
+	print("Spike: Enabled")
 </file>
 
 <file path="scripts/ui/game_over.gd">
@@ -4169,6 +4178,65 @@ func _notification(what: int) -> void:
 		# Ensure the game over screen can receive input when window gains focus
 		grab_focus()
 		print("GameOver: Window focused - ready for input")
+</file>
+
+<file path="scripts/tilemap_painter.gd">
+extends TileMapLayer
+
+## Script to paint floor and ceiling tiles on the TileMapLayer
+## Attaches directly to TileMapLayer node and paints tiles once on _ready()
+## Uses GameState for dynamic level dimensions
+
+func _ready():
+	print("TileMapPainter: Starting tile painting...")
+	call_deferred("paint_tiles")
+
+func paint_tiles():
+	if not tile_set:
+		print("TileMapPainter: ERROR - No TileSet found!")
+		return
+	
+	# Get level dimensions from GameState
+	var level_width_tiles = GameState.get_level_width_tiles()
+	var level_width_pixels = GameState.get_level_width_pixels()
+	
+	print("TileMapPainter: Using dynamic level dimensions from GameState")
+	print("TileMapPainter: Level width - ", level_width_tiles, " tiles (", level_width_pixels, " pixels)")
+		
+	var source_id = 0  # First source in the TileSet
+	var atlas_coords = Vector2i(0, 0)  # First tile in the atlas
+	var alternative_tile = 0  # Default tile alternative
+	
+	# Fixed tile positions
+	var ceiling_y = 0
+	var floor_y = 16
+	
+	print("TileMapPainter: Painting ceiling tiles...")
+	# Paint ceiling tiles (y = 0)
+	for x in range(level_width_tiles + 1):
+		set_cell(Vector2i(x, ceiling_y), source_id, atlas_coords, alternative_tile)
+	
+	print("TileMapPainter: Painting floor tiles...")
+	# Paint floor tiles (y = 16) 
+	for x in range(level_width_tiles + 1):
+		set_cell(Vector2i(x, floor_y), source_id, atlas_coords, alternative_tile)
+		
+	print("TileMapPainter: Tile painting complete!")
+	print("TileMapPainter: Painted ", (level_width_tiles + 1) * 2, " tiles total")
+</file>
+
+<file path="_docs/params.md">
+bouncing height was controlled by initial spawn position. 
+metronome velocity is set by the gravity. higher gravity  = faster movement. 
+
+other params to play with for movement:
+gravity scale - seems to make the ball move slow when its oscillating
+bounce value - 1 is max. 
+damping 
+linear damping 
+mass
+gravity - set to 1400 i think
+linear_velocity = Vector2(0, 100)  this is the initial push
 </file>
 
 <file path=".cursor/rules/godot.mdc">
@@ -4410,22 +4478,6 @@ alwaysApply: true
     - Guideline: Your code should define behavior. Your Resources should define data. Your level scenes should be as "dumb" as possible. Action: Create a new script that extends Resource. Call it LevelData.gd. In it, define exported variables: @export var spike_positions : Array[Vector2], @export var powerup_data : Array[Dictionary], @export var level_goal_position : Vector2. For each level, create a new LevelData resource file (level_1.tres, level_2.tres, etc.). Click on it and fill in all the data in the Inspector. Your main Level.tscn script will have one @export var level_data : LevelData. You just drag your desired .tres file into it. The script then reads this data and programmatically places the spikes and power-ups. Now you can design dozens of levels without ever changing your core level scene code.
 </file>
 
-<file path=".godot/editor/script_editor_cache.cfg">
-[res://scripts/player/player.gd]
-
-state={
-"bookmarks": PackedInt32Array(),
-"breakpoints": PackedInt32Array(),
-"column": 0,
-"folded_lines": Array[int]([]),
-"h_scroll_position": 0,
-"row": 178,
-"scroll_position": 178.0,
-"selection": false,
-"syntax_highlighter": "GDScript"
-}
-</file>
-
 <file path=".godot/imported/Balloon Escape Factory.mp3-54140b5b2b11b7904ee81e622b8af5f7.md5">
 source_md5="769ae3b87f06767814d4e71ef332b99b"
 dest_md5="517e3dd92a8ed29119012085d2681038"
@@ -4496,11 +4548,337 @@ source_md5="8c61fffdab3e94a70388f851cafe7ac0"
 dest_md5="6f5f9bfedb0286beb73ceeb1ebb3b632"
 </file>
 
+<file path=".godot/scene_groups_cache.cfg">
+[res://scenes/hazards/Spike.tscn]
+
+groups=[&"hazards"]
+
+[res://scenes/player/player.tscn]
+
+groups=[&"player"]
+</file>
+
+<file path="scenes/hazards/Spike.tscn">
+[gd_scene load_steps=3 format=3 uid="uid://b8h1v5p2k3nar"]
+
+[ext_resource type="Script" path="res://scripts/hazards/spike.gd" id="2_spike_script"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_spike"]
+size = Vector2(64, 64)
+
+[node name="Spike" type="Area2D" groups=["hazards"]]
+collision_layer = 4
+collision_mask = 2
+script = ExtResource("2_spike_script")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_spike")
+</file>
+
+<file path="scenes/levels/level_1.tscn">
+[gd_scene load_steps=9 format=3 uid="uid://o4dpd5iks8mj"]
+
+[ext_resource type="PackedScene" uid="uid://c1fnn1l64pxpx" path="res://scenes/player/player.tscn" id="1_player"]
+[ext_resource type="TileSet" uid="uid://bvqowixejw8pm" path="res://resources/ground_tileset.tres" id="2_tileset"]
+[ext_resource type="Script" path="res://scripts/tilemap_painter.gd" id="3_painter"]
+[ext_resource type="PackedScene" uid="uid://b8h1v5p2k3nar" path="res://scenes/hazards/Spike.tscn" id="4_spike"]
+[ext_resource type="Script" path="res://scripts/levels/level_configurator.gd" id="5_configurator"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_walls"]
+size = Vector2(100, 1080)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_upper_gravity"]
+size = Vector2(11520, 540)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_lower_gravity"]
+size = Vector2(11520, 540)
+
+[node name="Level1" type="Node2D"]
+script = ExtResource("5_configurator")
+
+[node name="Environment" type="Node2D" parent="."]
+
+[node name="TileMapLayer" type="TileMapLayer" parent="Environment"]
+modulate = Color(1, 0.5, 0.5, 1)
+tile_set = ExtResource("2_tileset")
+script = ExtResource("3_painter")
+
+[node name="LeftWall" type="StaticBody2D" parent="Environment"]
+position = Vector2(50, 540)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Environment/LeftWall"]
+shape = SubResource("RectangleShape2D_walls")
+
+[node name="RightWall" type="StaticBody2D" parent="Environment"]
+position = Vector2(11370, 540)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Environment/RightWall"]
+shape = SubResource("RectangleShape2D_walls")
+
+[node name="Hazards" type="Node2D" parent="Environment"]
+
+[node name="BottomLargeSpike1" parent="Environment/Hazards" instance=ExtResource("4_spike")]
+position = Vector2(2000, 950)
+type = 2
+
+[node name="BottomLargeSpike2" parent="Environment/Hazards" instance=ExtResource("4_spike")]
+position = Vector2(2128, 950)
+type = 2
+
+[node name="BottomLargeSpike3" parent="Environment/Hazards" instance=ExtResource("4_spike")]
+position = Vector2(2256, 950)
+type = 2
+
+[node name="BottomSpike1" parent="Environment/Hazards" instance=ExtResource("4_spike")]
+position = Vector2(2800, 950)
+type = 0
+
+[node name="BottomSpike2" parent="Environment/Hazards" instance=ExtResource("4_spike")]
+position = Vector2(2864, 950)
+type = 0
+
+[node name="TopSpike1" parent="Environment/Hazards" instance=ExtResource("4_spike")]
+position = Vector2(2400, 150)
+type = 1
+
+[node name="TopSpike2" parent="Environment/Hazards" instance=ExtResource("4_spike")]
+position = Vector2(2464, 150)
+type = 1
+
+#[node name="GauntletBottom1" parent="Environment/Hazards" instance=ExtResource("4_spike")]
+#position = Vector2(4000, 950)
+#type = 0
+
+#[node name="GauntletTop1" parent="Environment/Hazards" instance=ExtResource("4_spike")]
+#position = Vector2(4128, 150)
+#type = 1
+
+#[node name="GauntletBottom2" parent="Environment/Hazards" instance=ExtResource("4_spike")]
+#position = Vector2(4256, 950)
+#type = 0
+
+#[node name="GauntletTop2" parent="Environment/Hazards" instance=ExtResource("4_spike")]
+#position = Vector2(4384, 150)
+#type = 1
+
+#[node name="GauntletBottom3" parent="Environment/Hazards" instance=ExtResource("4_spike")]
+#position = Vector2(4512, 950)
+#type = 0
+
+#[node name="GauntletTop3" parent="Environment/Hazards" instance=ExtResource("4_spike")]
+#position = Vector2(4640, 150)
+#type = 1
+
+
+[node name="GravityZones" type="Node2D" parent="."]
+
+[node name="UpperGravityZone" type="Area2D" parent="GravityZones"]
+position = Vector2(5760, 270)
+gravity_point_center = Vector2(0, -1)
+gravity_direction = Vector2(0, -1)
+gravity = 1400.0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="GravityZones/UpperGravityZone"]
+shape = SubResource("RectangleShape2D_upper_gravity")
+
+[node name="LowerGravityZone" type="Area2D" parent="GravityZones"]
+position = Vector2(5760, 810)
+gravity = 1400.0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="GravityZones/LowerGravityZone"]
+shape = SubResource("RectangleShape2D_lower_gravity")
+
+[node name="Player" parent="." instance=ExtResource("1_player")]
+position = Vector2(960, 540)
+gravity_scale = 0.0
+</file>
+
+<file path="scripts/player/camera_controller.gd">
+"""
+Camera Controller for Bop Game
+Follows the player horizontally while maintaining a fixed vertical position
+to keep both ceiling and floor visible at all times.
+Uses GameState level configuration for dynamic bounds.
+"""
+class_name CameraController
+extends Camera2D
+
+# Camera configuration
+@export var target_player: Node2D
+@export var fixed_y_position: float = 540.0  # Center of the level vertically
+@export var follow_smoothing: float = 5.0  # How smoothly to follow horizontally
+@export var horizontal_offset: float = 0.0  # Optional horizontal offset from player
+
+# Camera bounds (dynamically set from GameState)
+@export var min_x_position: float = -INF
+@export var max_x_position: float = INF
+@export var use_auto_bounds: bool = true  # Automatically calculate bounds from GameState
+
+# Will be set from GameState level configuration
+var bounds_margin: float = 480.0  # Default, overridden by GameState
+
+func _ready() -> void:
+	"""Initialize the camera controller."""
+	print("CameraController: Initializing...")
+	
+	# If no target is set, try to find the player automatically
+	if not target_player:
+		target_player = get_parent()
+		print("CameraController: Using parent as target player")
+	
+	# Set initial position
+	if target_player:
+		global_position.x = target_player.global_position.x + horizontal_offset
+		global_position.y = fixed_y_position
+		print("CameraController: Initial position set to (", global_position.x, ", ", global_position.y, ")")
+	
+	# Make this camera current
+	make_current()
+	print("CameraController: Camera set as current")
+	
+	# Auto-calculate bounds if enabled
+	if use_auto_bounds:
+		_calculate_level_bounds()
+		print("CameraController: Auto-bounds calculated")
+
+func _process(delta: float) -> void:
+	"""Update camera position each frame."""
+	if not target_player:
+		return
+	
+	# Stop following if the player is dead
+	if target_player.has_method("is_alive") and not target_player.is_alive():
+		return
+	
+	# Calculate target horizontal position
+	var target_x = target_player.global_position.x + horizontal_offset
+	
+	# Apply horizontal bounds if set
+	if min_x_position != -INF and max_x_position != INF:
+		target_x = clamp(target_x, min_x_position, max_x_position)
+	
+	# Smoothly move camera horizontally towards target
+	if follow_smoothing > 0:
+		global_position.x = lerp(global_position.x, target_x, follow_smoothing * delta)
+	else:
+		global_position.x = target_x
+	
+	# Keep camera at fixed vertical position
+	global_position.y = fixed_y_position
+
+func _calculate_level_bounds() -> void:
+	"""Calculate camera bounds from GameState level configuration."""
+	print("CameraController: Calculating level bounds from GameState...")
+	
+	# Get level configuration from GameState
+	var left_wall_x = GameState.get_left_wall_position()
+	var right_wall_x = GameState.get_right_wall_position()
+	bounds_margin = GameState.get_camera_margin()
+	
+	print("CameraController: Level walls - Left: ", left_wall_x, ", Right: ", right_wall_x)
+	print("CameraController: Using camera margin: ", bounds_margin)
+	
+	# Set bounds with margin
+	min_x_position = left_wall_x + bounds_margin
+	max_x_position = right_wall_x - bounds_margin
+	
+	print("CameraController: Camera bounds set to (", min_x_position, ", ", max_x_position, ")")
+
+func update_level_bounds() -> void:
+	"""Public method to recalculate bounds when level changes."""
+	if use_auto_bounds:
+		_calculate_level_bounds()
+		print("CameraController: Level bounds updated")
+
+func set_bounds_margin(margin: float) -> void:
+	"""Set the margin for camera bounds."""
+	bounds_margin = margin
+	if use_auto_bounds:
+		_calculate_level_bounds()
+
+func set_bounds(min_x: float, max_x: float) -> void:
+	"""Manually set camera bounds."""
+	min_x_position = min_x
+	max_x_position = max_x
+	print("CameraController: Manual bounds set to (", min_x_position, ", ", max_x_position, ")")
+
+func get_bounds() -> Vector2:
+	"""Get current camera bounds as Vector2(min_x, max_x)."""
+	return Vector2(min_x_position, max_x_position)
+</file>
+
+<file path=".godot/editor/script_editor_cache.cfg">
+[res://scripts/player/player.gd]
+
+state={
+"bookmarks": PackedInt32Array(),
+"breakpoints": PackedInt32Array(),
+"column": 0,
+"folded_lines": Array[int]([]),
+"h_scroll_position": 0,
+"row": 178,
+"scroll_position": 7.0,
+"selection": false,
+"syntax_highlighter": "GDScript"
+}
+
+[res://scripts/hazards/spike.gd]
+
+state={
+"bookmarks": PackedInt32Array(),
+"breakpoints": PackedInt32Array(),
+"column": 0,
+"folded_lines": Array[int]([]),
+"h_scroll_position": 0,
+"row": 0,
+"scroll_position": 0.0,
+"selection": false,
+"syntax_highlighter": "GDScript"
+}
+</file>
+
+<file path=".godot/global_script_class_cache.cfg">
+list=Array[Dictionary]([{
+"base": &"Camera2D",
+"class": &"CameraController",
+"icon": "",
+"language": &"GDScript",
+"path": "res://scripts/player/camera_controller.gd"
+}, {
+"base": &"Control",
+"class": &"GameOver",
+"icon": "",
+"language": &"GDScript",
+"path": "res://scripts/ui/game_over.gd"
+}, {
+"base": &"Control",
+"class": &"MainMenu",
+"icon": "",
+"language": &"GDScript",
+"path": "res://scripts/ui/main_menu.gd"
+}, {
+"base": &"RigidBody2D",
+"class": &"Player",
+"icon": "",
+"language": &"GDScript",
+"path": "res://scripts/player/player.gd"
+}, {
+"base": &"Area2D",
+"class": &"Spike",
+"icon": "",
+"language": &"GDScript",
+"path": "res://scripts/hazards/spike.gd"
+}])
+</file>
+
 <file path="scripts/singletons/GameState.gd">
 """
 GameState Singleton
 Manages global game state including lives, score, level progression, and player events.
 Acts as an Event Bus for game-wide communication.
+Handles level configuration including dimensions and layout parameters.
 """
 extends Node
 
@@ -4516,6 +4894,30 @@ var players_alive: Array[bool] = [true, true]  # For multiplayer support
 var is_game_over: bool = false
 var is_level_complete: bool = false
 
+# Level configuration data structure
+# Each level can have different dimensions and layout parameters
+var level_configs: Dictionary = {
+	1: {
+		"width_pixels": 11520,  # Total level width in pixels
+		"width_tiles": 180,     # Width in tiles (11520 / 64 = 180)
+		"left_wall_x": 50,      # Left wall position
+		"right_wall_x": 11370,  # Right wall position  
+		"gravity_zone_center_x": 5760,  # Center of gravity zones (width/2)
+		"gravity_zone_width": 11520,    # Gravity zone width
+		"camera_margin": 480    # Camera boundary margin
+	},
+	2: {
+		"width_pixels": 7680,   # Future level 2 dimensions
+		"width_tiles": 120,
+		"left_wall_x": 50,
+		"right_wall_x": 7630,
+		"gravity_zone_center_x": 3840,
+		"gravity_zone_width": 7680,
+		"camera_margin": 480
+	}
+	# Add more levels as needed
+}
+
 # Signals for event bus communication
 signal player_died
 signal life_lost(remaining_lives: int)
@@ -4528,6 +4930,7 @@ signal powerup_activated(type: String)
 func _ready() -> void:
 	"""Initialize GameState singleton."""
 	print("GameState: Singleton initialized")
+	print("GameState: Level configurations loaded for ", level_configs.size(), " levels")
 	
 	# Connect internal signals
 	player_died.connect(_on_player_died)
@@ -4535,6 +4938,46 @@ func _ready() -> void:
 	
 	# Set initial lives based on game mode
 	_set_initial_lives()
+
+# Level Configuration Methods
+func get_current_level_config() -> Dictionary:
+	"""Get the configuration for the current level."""
+	var config = level_configs.get(current_level, level_configs[1])  # Default to level 1 if not found
+	print("GameState: Retrieved config for level ", current_level, " - Width: ", config.width_pixels, "px")
+	return config
+
+func get_level_width_pixels() -> int:
+	"""Get the current level's width in pixels."""
+	return get_current_level_config().width_pixels
+
+func get_level_width_tiles() -> int:
+	"""Get the current level's width in tiles."""
+	return get_current_level_config().width_tiles
+
+func get_left_wall_position() -> float:
+	"""Get the current level's left wall X position."""
+	return get_current_level_config().left_wall_x
+
+func get_right_wall_position() -> float:
+	"""Get the current level's right wall X position."""
+	return get_current_level_config().right_wall_x
+
+func get_gravity_zone_center() -> float:
+	"""Get the current level's gravity zone center X position."""
+	return get_current_level_config().gravity_zone_center_x
+
+func get_gravity_zone_width() -> float:
+	"""Get the current level's gravity zone width."""
+	return get_current_level_config().gravity_zone_width
+
+func get_camera_margin() -> int:
+	"""Get the current level's camera boundary margin."""
+	return get_current_level_config().camera_margin
+
+func update_level_config(level: int, config: Dictionary) -> void:
+	"""Update or add a level configuration."""
+	level_configs[level] = config
+	print("GameState: Updated config for level ", level)
 
 func _set_initial_lives() -> void:
 	"""Set initial lives based on game mode."""
@@ -4655,40 +5098,6 @@ func get_game_data() -> Dictionary:
 	}
 </file>
 
-<file path=".godot/global_script_class_cache.cfg">
-list=Array[Dictionary]([{
-"base": &"Camera2D",
-"class": &"CameraController",
-"icon": "",
-"language": &"GDScript",
-"path": "res://scripts/player/camera_controller.gd"
-}, {
-"base": &"Control",
-"class": &"GameOver",
-"icon": "",
-"language": &"GDScript",
-"path": "res://scripts/ui/game_over.gd"
-}, {
-"base": &"Control",
-"class": &"MainMenu",
-"icon": "",
-"language": &"GDScript",
-"path": "res://scripts/ui/main_menu.gd"
-}, {
-"base": &"RigidBody2D",
-"class": &"Player",
-"icon": "",
-"language": &"GDScript",
-"path": "res://scripts/player/player.gd"
-}, {
-"base": &"Area2D",
-"class": &"Spike",
-"icon": "",
-"language": &"GDScript",
-"path": "res://scripts/hazards/spike.gd"
-}])
-</file>
-
 <file path="project.godot">
 ; Engine configuration file.
 ; It's best edited using the editor UI and not directly,
@@ -4765,65 +5174,6 @@ move_right={
 
 textures/canvas_textures/default_texture_filter=0
 environment/defaults/default_clear_color=Color(0.301961, 0.301961, 0.301961, 1)
-</file>
-
-<file path=".godot/editor/editor_layout.cfg">
-[docks]
-
-dock_3_selected_tab_idx=0
-dock_4_selected_tab_idx=0
-dock_5_selected_tab_idx=0
-dock_floating={}
-dock_bottom=[]
-dock_closed=[]
-dock_split_2=0
-dock_split_3=0
-dock_hsplit_1=0
-dock_hsplit_2=540
-dock_hsplit_3=-432
-dock_hsplit_4=0
-dock_filesystem_h_split_offset=480
-dock_filesystem_v_split_offset=0
-dock_filesystem_display_mode=0
-dock_filesystem_file_sort=0
-dock_filesystem_file_list_display_mode=1
-dock_filesystem_selected_paths=PackedStringArray("res://scenes/ui/main_menu.tscn")
-dock_filesystem_uncollapsed_paths=PackedStringArray("Favorites", "res://", "res://scenes/", "res://scenes/ui/", "res://scenes/levels/")
-dock_3="Scene,Import"
-dock_4="FileSystem"
-dock_5="Inspector,Node,History"
-
-[EditorNode]
-
-open_scenes=PackedStringArray("res://scenes/levels/mvp_test.tscn", "res://scenes/levels/level_1.tscn", "res://scenes/hazards/Spike.tscn")
-current_scene="res://scenes/hazards/Spike.tscn"
-center_split_offset=-854
-selected_default_debugger_tab_idx=1
-selected_main_editor_idx=2
-selected_bottom_panel_item=1
-
-[ScriptEditor]
-
-open_scripts=["res://scripts/player/player.gd"]
-selected_script="res://scripts/player/player.gd"
-open_help=[]
-script_split_offset=140
-list_split_offset=0
-zoom_factor=1.0
-
-[ShaderEditor]
-
-open_shaders=[]
-split_offset=0
-selected_shader=""
-text_shader_zoom_factor=1.0
-</file>
-
-<file path=".godot/editor/filesystem_update4">
-res://scenes/levels/mvp_test.tscn
-res://resources/ground_tileset.tres
-res://scenes/levels/level_1.tscn
-res://scenes/hazards/Spike.tscn
 </file>
 
 <file path="scenes/levels/mvp_test.tscn">
@@ -4918,22 +5268,78 @@ position = Vector2(960, 540)
 gravity_scale = 0.0
 </file>
 
+<file path=".godot/editor/editor_layout.cfg">
+[docks]
+
+dock_3_selected_tab_idx=0
+dock_4_selected_tab_idx=0
+dock_5_selected_tab_idx=0
+dock_floating={}
+dock_bottom=[]
+dock_closed=[]
+dock_split_2=0
+dock_split_3=0
+dock_hsplit_1=0
+dock_hsplit_2=540
+dock_hsplit_3=-432
+dock_hsplit_4=0
+dock_filesystem_h_split_offset=480
+dock_filesystem_v_split_offset=0
+dock_filesystem_display_mode=0
+dock_filesystem_file_sort=0
+dock_filesystem_file_list_display_mode=1
+dock_filesystem_selected_paths=PackedStringArray("res://scenes/player/player.tscn")
+dock_filesystem_uncollapsed_paths=PackedStringArray("Favorites", "res://", "res://scenes/", "res://scenes/player/", "res://scenes/levels/", "res://scenes/hazards/")
+dock_3="Scene,Import"
+dock_4="FileSystem"
+dock_5="Inspector,Node,History"
+
+[EditorNode]
+
+open_scenes=PackedStringArray("res://scenes/levels/mvp_test.tscn", "res://scenes/levels/level_1.tscn", "res://scenes/hazards/Spike.tscn", "res://scenes/player/player.tscn")
+current_scene="res://scenes/player/player.tscn"
+center_split_offset=-854
+selected_default_debugger_tab_idx=1
+selected_main_editor_idx=0
+selected_bottom_panel_item=0
+
+[ScriptEditor]
+
+open_scripts=["res://scripts/player/player.gd", "res://scripts/hazards/spike.gd"]
+selected_script="res://scripts/hazards/spike.gd"
+open_help=[]
+script_split_offset=486
+list_split_offset=0
+zoom_factor=1.0
+
+[ShaderEditor]
+
+open_shaders=[]
+split_offset=0
+selected_shader=""
+text_shader_zoom_factor=1.0
+</file>
+
 <file path=".godot/editor/filesystem_cache8">
 ea4bc82a6ad023ab7ee23ee620429895
-::res://::1752682565
-repomix-output.xml::TextFile::-1::1752675392::0::1::::<><>::
-::res://_docs/::1752683239
+::res://::1752690990
+repomix-output.xml::TextFile::-1::1752690990::0::1::::<><>::
+::res://_docs/::1752698538
+GameOver.md::TextFile::-1::1752684323::0::1::::<><>::
 GameplayDesign.md::TextFile::-1::1752675392::0::1::::<><>::
 Hazard.md::TextFile::-1::1752676842::0::1::::<><>::
 latency.md::TextFile::-1::1752675392::0::1::::<><>::
 level1Ground.md::TextFile::-1::1752675392::0::1::::<><>::
 Mainmenu.md::TextFile::-1::1752685113::0::1::::<><>::
 menusScenes.md::TextFile::-1::1752682953::0::1::::<><>::
-params.md::TextFile::-1::1752675392::0::1::::<><>::
+MoreHazards.md::TextFile::-1::1752697507::0::1::::<><>::
+multiplayer.md::TextFile::-1::1752691860::0::1::::<><>::
+params.md::TextFile::-1::1752695119::0::1::::<><>::
 physics.md::TextFile::-1::1752675392::0::1::::<><>::
 SFX.md::TextFile::-1::1752675392::0::1::::<><>::
+spikeCommands.md::TextFile::-1::1752698528::0::1::::<><>::
 style.md::TextFile::-1::1752675392::0::1::::<><>::
-::res://assets/::1752675392
+::res://assets/::1752693342
 ::res://assets/audio/::1752675588
 Balloon Escape Factory.mp3::AudioStreamMP3::8206070679105260282::1752675392::1752675588::1::::<><>::
 bounce.mp3::AudioStreamMP3::9107122368181559716::1752675392::1752675588::1::::<><>::
@@ -4943,7 +5349,7 @@ success.mp3::AudioStreamMP3::3151194912288285675::1752675392::1752675588::1::::<
 ::res://assets/fonts/::1752675588
 Kenney Future Narrow.ttf::FontFile::8513457004296160927::1752675392::1752675588::1::::<><>::
 Kenney Future.ttf::FontFile::1191888830290857463::1752675392::1752675588::1::::<><>::
-::res://assets/sprites/::1752675392
+::res://assets/sprites/::1752693349
 ::res://assets/sprites/background/::1752675588
 bg_layer1.png::CompressedTexture2D::9055781292271014096::1752675392::1752675588::1::::<><>::
 ::res://assets/sprites/collectibles_and_powerups/::1752677558
@@ -4964,18 +5370,19 @@ ground_wood_small.png::CompressedTexture2D::3549772765016810542::1752675392::175
 ground_wood_small_broken.png::CompressedTexture2D::6660159512624062090::1752675392::1752675588::1::::<><>::
 platformPack_tile004.png::CompressedTexture2D::5893765852238350109::1752675392::1752675588::1::::<><>::
 platformPack_tile034.png::CompressedTexture2D::1199564023964960820::1752675392::1752675588::1::::<><>::
-::res://assets/sprites/hazards/::1752675588
-spikes_bottom.png::CompressedTexture2D::4645057525981595265::1752675392::1752675588::1::::<><>::
-spikes_top.png::CompressedTexture2D::8203667586019862508::1752675392::1752675588::1::::<><>::
-spike_bottom.png::CompressedTexture2D::6486924403349916602::1752675392::1752675588::1::::<><>::
-spike_top.png::CompressedTexture2D::1952382968673477592::1752675392::1752675588::1::::<><>::
+::res://assets/sprites/hazards/::1752693667
+bottom_spike.png::CompressedTexture2D::1952382968673477592::1752675392::1752693667::1::::<><>::
+spikes_large_bottom.png::CompressedTexture2D::8203667586019862508::1752675392::1752693667::1::::<><>::
+spikes_large_top.png::CompressedTexture2D::4645057525981595265::1752675392::1752693667::1::::<><>::
 spring.png::CompressedTexture2D::57287654817836701::1752675392::1752675588::1::::<><>::
 spring_in.png::CompressedTexture2D::8022793080425135513::1752675392::1752675588::1::::<><>::
 spring_out.png::CompressedTexture2D::7851334279652825319::1752675392::1752675588::1::::<><>::
-::res://assets/sprites/player/::1752677558
+top_spike.png::CompressedTexture2D::6486924403349916602::1752675392::1752693667::1::::<><>::
+::res://assets/sprites/player/::1752701728
+ball2.png::CompressedTexture2D::2125709361648216457::1752701701::1752701728::1::::<><>::
 ball.png::CompressedTexture2D::8220970251950762316::1752675392::1752675588::1::::<><>::
 death.png::CompressedTexture2D::4715324376886946804::1752675392::1752677558::1::::<><>::
-::res://assets/sprites/ui/::1752684630
+::res://assets/sprites/ui/::1752685457
 lives_coin_bronze.png::CompressedTexture2D::5825732135293081176::1752675392::1752675588::1::::<><>::
 start.png::CompressedTexture2D::1808320205836561332::1752684630::1752685457::1::::<><>::
 ::res://BopAssets/::1752675392
@@ -5020,33 +5427,37 @@ bounce.mp3::AudioStreamMP3::3881155579214223749::1752675392::1752675588::1::::<>
 coins.mp3::AudioStreamMP3::4713675940845734844::1752675392::1752675588::1::::<><>::
 pop.mp3::AudioStreamMP3::4996625001048486516::1752675392::1752675588::1::::<><>::
 success.mp3::AudioStreamMP3::3071999385586472187::1752675392::1752675588::1::::<><>::
-::res://resources/::1752677848
-ground_tileset.tres::TileSet::3894306225433350542::1752677848::0::1::::<><>::uid://cw35d765qafl6::::res://assets/sprites/environment/ground_stone.png
+::res://resources/::1752690021
+ground_tileset.tres::TileSet::3894306225433350542::1752690021::0::1::::<><>::uid://cw35d765qafl6::::res://assets/sprites/environment/ground_stone.png
 ::res://scenes/::1752685272
-::res://scenes/hazards/::1752678623
-Spike.tscn::PackedScene::4718720911624324965::1752678623::0::1::::<><>::uid://cyokxx6vt27ny::::res://assets/sprites/hazards/spike_bottom.png<>res://scripts/hazards/spike.gd
-::res://scenes/levels/::1752678623
-level_1.tscn::PackedScene::1042719907978835413::1752678623::0::1::::<><>::uid://c1fnn1l64pxpx::::res://scenes/player/player.tscn<>uid://bvqowixejw8pm::::res://resources/ground_tileset.tres<>res://scripts/tilemap_painter.gd<>uid://b8h1v5p2k3nar::::res://scenes/hazards/Spike.tscn
-mvp_test.tscn::PackedScene::404610204984934029::1752678623::0::1::::<><>::uid://c1fnn1l64pxpx::::res://scenes/player/player.tscn<>uid://cw35d765qafl6::::res://assets/sprites/environment/ground_stone.png
+::res://scenes/hazards/::1752690396
+Spike.tscn::PackedScene::4718720911624324965::1752697872::0::1::::<><>::res://scripts/hazards/spike.gd
+::res://scenes/levels/::1752690396
+level_1.tscn::PackedScene::1042719907978835413::1752700819::0::1::::<><>::uid://c1fnn1l64pxpx::::res://scenes/player/player.tscn<>uid://bvqowixejw8pm::::res://resources/ground_tileset.tres<>res://scripts/tilemap_painter.gd<>uid://b8h1v5p2k3nar::::res://scenes/hazards/Spike.tscn<>res://scripts/levels/level_configurator.gd
+mvp_test.tscn::PackedScene::404610204984934029::1752690396::0::1::::<><>::uid://c1fnn1l64pxpx::::res://scenes/player/player.tscn<>uid://cw35d765qafl6::::res://assets/sprites/environment/ground_stone.png
 ::res://scenes/player/::1752675392
-player.tscn::PackedScene::6608887111019891545::1752675392::0::1::::<><>::uid://dpekgc4qppjd1::::res://assets/sprites/player/ball.png<>res://scripts/player/player.gd
-::res://scenes/ui/::1752685284
+player.tscn::PackedScene::6608887111019891545::1752701771::0::1::::<><>::uid://5jyef0kutc6l::::res://assets/sprites/player/ball2.png<>res://scripts/player/player.gd<>res://scripts/player/camera_controller.gd
+::res://scenes/ui/::1752685739
+game_over.tscn::PackedScene::-1::1752686789::0::1::::<><>::
 main_menu.tscn::PackedScene::4303772224247790571::1752685314::0::1::::<><>::uid://ce7y17n27iqt6::::res://assets/fonts/Kenney Future.ttf<>res://scripts/ui/main_menu.gd
-::res://scripts/::1752685304
-tilemap_painter.gd::GDScript::-1::1752675392::0::1::::<>TileMapLayer<>::
+::res://scripts/::1752699172
+tilemap_painter.gd::GDScript::-1::1752698996::0::1::::<>TileMapLayer<>::
 ::res://scripts/hazards/::1752678112
-spike.gd::GDScript::-1::1752679066::0::1::::Spike<>Area2D<>::
+spike.gd::GDScript::-1::1752697863::0::1::::Spike<>Area2D<>::
+::res://scripts/levels/::1752699218
+level_configurator.gd::GDScript::-1::1752699219::0::1::::<>Node2D<>::
 ::res://scripts/player/::1752680753
-camera_controller.gd::GDScript::-1::1752681024::0::1::::CameraController<>Camera2D<>::
-player.gd::GDScript::-1::1752680397::0::1::::Player<>RigidBody2D<>::
+camera_controller.gd::GDScript::-1::1752699264::0::1::::CameraController<>Camera2D<>::
+player.gd::GDScript::-1::1752695109::0::1::::Player<>RigidBody2D<>::
 ::res://scripts/singletons/::1752675392
-GameState.gd::GDScript::-1::1752679684::0::1::::<>Node<>::
+GameState.gd::GDScript::-1::1752698981::0::1::::<>Node<>::
 SoundManager.gd::GDScript::-1::1752675392::0::1::::<>Node<>::
 SoundManager.tscn::PackedScene::3065715824871745611::1752675392::0::1::::<><>::res://scripts/singletons/SoundManager.gd
-::res://scripts/ui/::1752685304
+::res://scripts/ui/::1752685793
+game_over.gd::GDScript::-1::1752689692::0::1::::GameOver<>Control<>::
 main_menu.gd::GDScript::-1::1752685305::0::1::::MainMenu<>Control<>::
 ::res://tasks/::1752675392
-DevelopmentPlan.md::TextFile::-1::1752677575::0::1::::<><>::
+DevelopmentPlan.md::TextFile::-1::1752693045::0::1::::<><>::
 </file>
 
 <file path=".godot/editor/project_metadata.cfg">
@@ -5056,8 +5467,8 @@ executable_path="/Applications/Godot.app/Contents/MacOS/Godot"
 
 [recent_files]
 
-scenes=["res://scenes/hazards/Spike.tscn", "res://scenes/levels/level_1.tscn", "res://scenes/levels/mvp_test.tscn"]
-scripts=["res://scripts/player/player.gd"]
+scenes=["res://scenes/player/player.tscn", "res://scenes/levels/level_1.tscn", "res://scenes/hazards/Spike.tscn", "res://scenes/levels/mvp_test.tscn"]
+scripts=["res://scripts/hazards/spike.gd", "res://scripts/player/player.gd"]
 
 [dialog_bounds]
 
@@ -5193,7 +5604,8 @@ The plan adheres to the rules in physics.md, SFX.md, style.md, and multiplayer.m
 
 - [ ] **Sub-task 5.3: Multiplayer Basics**
   - [ ] If selected in menu, use MultiplayerSpawner for second player.
-  - [ ] Sync positions with MultiplayerSynchronizer, handle shared lives.
+  - [ ] Sync positions with MultiplayerSynchronizer, 1 life each.
+  - [ ] Players should collide with eachother
   - [ ] Implement client-side prediction: In player.gd _physics_process, apply immediate movement for authority player and submit input via RPC.
   - [ ] Add server reconciliation: Compare predicted vs. authoritative position and correct if needed.
   - [ ] Use interpolation via MultiplayerSynchronizer for non-authority players.
@@ -5223,7 +5635,7 @@ This plan ensures incremental builds with testing at each phase. We'll implement
 <file path="scenes/player/player.tscn">
 [gd_scene load_steps=5 format=3 uid="uid://c1fnn1l64pxpx"]
 
-[ext_resource type="Texture2D" uid="uid://dpekgc4qppjd1" path="res://assets/sprites/player/ball.png" id="1_mhtu1"]
+[ext_resource type="Texture2D" uid="uid://dpekgc4qppjd1" path="res://assets/sprites/player/ball.png" id="1_ball_texture"]
 [ext_resource type="Script" path="res://scripts/player/player.gd" id="2_player"]
 [ext_resource type="Script" path="res://scripts/player/camera_controller.gd" id="3_camera"]
 
@@ -5235,9 +5647,9 @@ collision_layer = 2
 collision_mask = 31
 gravity_scale = 0
 script = ExtResource("2_player")
+player_texture = ExtResource("1_ball_texture")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
-texture = ExtResource("1_mhtu1")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("CircleShape2D_1")
@@ -5272,8 +5684,9 @@ extends RigidBody2D
 @export var max_horizontal_speed: float = 500.0
 
 # Physics material properties (set via script for better control)
-@export var bounce_value: float = 1
+@export var bounce_value: float = 0.99  # Slightly less than 1.0 to prevent energy accumulation bugs
 @export var friction_value: float = 0.0
+@export var linear_damping_value: float = 0.01  # Small damping to counteract energy accumulation
 
 # Signals
 signal hit
@@ -5303,6 +5716,9 @@ func _ready() -> void:
 	physics_material.friction = friction_value
 	physics_material_override = physics_material
 	print("Player: Physics material - Bounce: ", bounce_value, ", Friction: ", friction_value)
+	
+	# Apply linear damping to the RigidBody2D 
+	linear_damp = linear_damping_value
 	
 	# Set up sprite texture if provided
 	if player_texture and sprite:

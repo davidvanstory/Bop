@@ -1,6 +1,6 @@
 [gd_scene load_steps=5 format=3 uid="uid://c1fnn1l64pxpx"]
 
-[ext_resource type="Texture2D" uid="uid://dpekgc4qppjd1" path="res://assets/sprites/player/ball.png" id="1_mhtu1"]
+[ext_resource type="Texture2D" uid="uid://dpekgc4qppjd1" path="res://assets/sprites/player/ball.png" id="1_ball_texture"]
 [ext_resource type="Script" path="res://scripts/player/player.gd" id="2_player"]
 [ext_resource type="Script" path="res://scripts/player/camera_controller.gd" id="3_camera"]
 
@@ -10,11 +10,11 @@ radius = 32.0
 [node name="player" type="RigidBody2D" groups=["player"]]
 collision_layer = 2
 collision_mask = 31
-gravity_scale = 0
+gravity_scale = 0.0
 script = ExtResource("2_player")
+player_texture = ExtResource("1_ball_texture")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
-texture = ExtResource("1_mhtu1")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("CircleShape2D_1")
@@ -22,9 +22,5 @@ shape = SubResource("CircleShape2D_1")
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
 
 [node name="Camera2D" type="Camera2D" parent="."]
-enabled = true
 script = ExtResource("3_camera")
-fixed_y_position = 540.0
 follow_smoothing = 8.0
-use_auto_bounds = true
-bounds_margin = 480.0
