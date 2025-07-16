@@ -41,10 +41,12 @@ The content is organized as follows:
 
 <directory_structure>
 _docs/
+  GameOver.md
   GameplayDesign.md
   Hazard.md
   latency.md
   level1Ground.md
+  Mainmenu.md
   params.md
   physics.md
   SFX.md
@@ -79,6 +81,7 @@ _docs/
     pop.mp3-8a0c1ee8b23ba0bce4af1df1b73a2c47.mp3str-folding-e15f8994f0fa46149533a1fdf0bc16a2.cfg
     project_metadata.cfg
     recent_dirs
+    script_editor_cache.cfg
     Spike.tscn-editstate-b37a4370de225980df34a70d5c4a4d45.cfg
     Spike.tscn-folding-b37a4370de225980df34a70d5c4a4d45.cfg
     success.mp3-2f4cfc1e2ce208c30d0192cb1e366d1a.mp3str-folding-fb8faa49ddd5890251ea8d15ba9b3111.cfg
@@ -150,6 +153,7 @@ _docs/
     spring_out.png-6c0d3ee6db38931f4d254dbd7db9d984.md5
     spring.png-617f1f030d57217fdc379e07d6cd255d.md5
     spring.png-7c80b20e3ee39a78bddbc31742b8c47e.md5
+    start.png-86faf5593457de63a1a876db42b6f1df.md5
     success.mp3-2f4cfc1e2ce208c30d0192cb1e366d1a.md5
     success.mp3-8c2123d5a82507e48393b4843ef40866.md5
   .gdignore
@@ -272,6 +276,9 @@ scenes/
     mvp_test.tscn
   player/
     player.tscn
+  ui/
+    game_over.tscn
+    main_menu.tscn
 scripts/
   hazards/
     spike.gd
@@ -282,6 +289,9 @@ scripts/
     GameState.gd
     SoundManager.gd
     SoundManager.tscn
+  ui/
+    game_over.gd
+    main_menu.gd
   tilemap_painter.gd
 tasks/
   DevelopmentPlan.md
@@ -290,6 +300,35 @@ project.godot
 
 <files>
 This section contains the contents of the repository's files.
+
+<file path="_docs/GameOver.md">
+Build the Game Over Screen
+Now that you have a menu to return to, building the Game Over screen makes perfect sense.
+
+Step 1: Create the GameOver.tscn Scene
+    Cursor Prompt:
+    "Create a new scene named game_over.tscn and save it in the scenes/ui/ folder. The root node must be a Control node.
+    Add a ColorRect as a child for a black background, anchored to 'Full Rect'.
+    Add a VBoxContainer as a child and center it on the screen.
+    Add a Label to the VBoxContainer with the text "GAME OVER". Use a large font size.
+    Add a second, smaller Label below it with the text "Click to Return to Menu"."
+
+Step 2: Add the Transition Logic to GameState.gd
+    This adds the 5-second delay after the last life is lost.
+    Cursor Prompt:
+    "Modify the _on_player_died function in scripts/singletons/GameState.gd.
+    When the game_over signal is emitted, add a 5-second delay before changing scenes.
+    After game_over.emit(), create a Timer node in code.
+    Add this timer to the scene tree using add_child(timer).
+    Set its wait_time to 5.0 and one_shot to true.
+    Connect its timeout signal to a new function named _on_game_over_timeout.
+    Start the timer.
+    Inside _on_game_over_timeout, call get_tree().change_scene_to_file("res://scenes/ui/game_over.tscn")."
+
+Step 3: Add Return Logic to game_over.tscn
+    Cursor Prompt:
+    "Attach a new script to the root Control node of game_over.tscn. In this script, use the _unhandled_input function to detect any key press or mouse click. When input is detected, call get_tree().change_scene_to_file("res://scenes/ui/main_menu.tscn") and also call GameState.reset_game() to reset the lives and score for the next playthrough."
+</file>
 
 <file path="_docs/GameplayDesign.md">
 # Project Name
@@ -1450,10 +1489,6 @@ sections_unfolded=PackedStringArray()
 sections_unfolded=PackedStringArray()
 </file>
 
-<file path=".godot/editor/recent_dirs">
-res://scenes/levels
-</file>
-
 <file path=".godot/editor/Spike.tscn-editstate-b37a4370de225980df34a70d5c4a4d45.cfg">
 [editor_states]
 
@@ -1923,6 +1958,11 @@ dest_md5="0892ddb7a302c0fb6cf3340d6e26df09"
 <file path=".godot/imported/spring.png-7c80b20e3ee39a78bddbc31742b8c47e.md5">
 source_md5="bf0b2b257993ffe85086a35ca39872c8"
 dest_md5="0892ddb7a302c0fb6cf3340d6e26df09"
+</file>
+
+<file path=".godot/imported/start.png-86faf5593457de63a1a876db42b6f1df.md5">
+source_md5="7032291ff04eb1a9150a94fccba5eb6b"
+dest_md5="4ace03504f26253cc6b783a534a54cca"
 </file>
 
 <file path=".godot/.gdignore">
@@ -3042,26 +3082,134 @@ physics_layer_0/collision_mask = 0
 sources/0 = SubResource("TileSetAtlasSource_1")
 </file>
 
-<file path="scenes/hazards/Spike.tscn">
-[gd_scene load_steps=4 format=3 uid="uid://b8h1v5p2k3nar"]
+<file path="scenes/ui/game_over.tscn">
+[gd_scene load_steps=3 format=3 uid="uid://c4j5n8m1x3k9p"]
 
-[ext_resource type="Texture2D" uid="uid://cyokxx6vt27ny" path="res://assets/sprites/hazards/spike_bottom.png" id="1_spike_texture"]
-[ext_resource type="Script" path="res://scripts/hazards/spike.gd" id="2_spike_script"]
+[ext_resource type="FontFile" uid="uid://ce7y17n27iqt6" path="res://assets/fonts/Kenney Future.ttf" id="1_font"]
+[ext_resource type="Script" path="res://scripts/ui/game_over.gd" id="2_script"]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_spike"]
-size = Vector2(64, 64)
+[node name="GameOver" type="Control"]
+script = ExtResource("2_script")
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 
-[node name="Spike" type="Area2D" groups=["hazards"]]
-collision_layer = 4
-collision_mask = 2
-monitoring = true
-script = ExtResource("2_spike_script")
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 1)
 
-[node name="Sprite2D" type="Sprite2D" parent="."]
-texture = ExtResource("1_spike_texture")
+[node name="MenuContainer" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -300.0
+offset_top = -100.0
+offset_right = 300.0
+offset_bottom = 100.0
+grow_horizontal = 2
+grow_vertical = 2
+alignment = 1
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-shape = SubResource("RectangleShape2D_spike")
+[node name="GameOverLabel" type="Label" parent="MenuContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("1_font")
+theme_override_font_sizes/font_size = 120
+text = "GAME OVER"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="InstructionLabel" type="Label" parent="MenuContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("1_font")
+theme_override_font_sizes/font_size = 24
+text = "Click to Return to Menu"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="FullScreenButton" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+flat = true
+text = ""
+</file>
+
+<file path="scenes/ui/main_menu.tscn">
+[gd_scene load_steps=3 format=3 uid="uid://b2k1q8x7nlof8"]
+
+[ext_resource type="FontFile" uid="uid://ce7y17n27iqt6" path="res://assets/fonts/Kenney Future.ttf" id="1_font"]
+[ext_resource type="Script" path="res://scripts/ui/main_menu.gd" id="2_script"]
+
+[node name="MainMenu" type="Control"]
+script = ExtResource("2_script")
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 1)
+
+[node name="MenuContainer" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -300.0
+offset_top = -200.0
+offset_right = 300.0
+offset_bottom = 200.0
+grow_horizontal = 2
+grow_vertical = 2
+alignment = 1
+
+[node name="TitleLabel" type="Label" parent="MenuContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("1_font")
+theme_override_font_sizes/font_size = 150
+text = "Bop"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="StartButton" type="Button" parent="MenuContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("1_font")
+theme_override_font_sizes/font_size = 36
+text = "Start Game"
+
+[node name="FutureBackgroundTexture" type="TextureRect" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+stretch_mode = 1
 </file>
 
 <file path="scripts/hazards/spike.gd">
@@ -3141,174 +3289,6 @@ func enable_spike() -> void:
 	is_enabled = true
 	modulate = Color.WHITE
 	print("Spike: Enabled")
-</file>
-
-<file path="scripts/player/camera_controller.gd">
-"""
-Camera Controller for Bop Game
-Follows the player horizontally while maintaining a fixed vertical position
-to keep both ceiling and floor visible at all times.
-"""
-class_name CameraController
-extends Camera2D
-
-# Camera configuration
-@export var target_player: Node2D
-@export var fixed_y_position: float = 540.0  # Center of the level vertically
-@export var follow_smoothing: float = 5.0  # How smoothly to follow horizontally
-@export var horizontal_offset: float = 0.0  # Optional horizontal offset from player
-
-# Camera bounds (optional - to prevent camera from going too far)
-@export var min_x_position: float = -INF
-@export var max_x_position: float = INF
-@export var use_auto_bounds: bool = true  # Automatically calculate bounds from level
-@export var bounds_margin: float = 480.0  # Margin from level edges (half screen width)
-
-func _ready() -> void:
-	"""Initialize the camera controller."""
-	print("CameraController: Initializing...")
-	
-	# If no target is set, try to find the player automatically
-	if not target_player:
-		target_player = get_parent()
-		print("CameraController: Using parent as target player")
-	
-	# Set initial position
-	if target_player:
-		global_position.x = target_player.global_position.x + horizontal_offset
-		global_position.y = fixed_y_position
-		print("CameraController: Initial position set to (", global_position.x, ", ", global_position.y, ")")
-	
-	# Make this camera current
-	make_current()
-	print("CameraController: Camera set as current")
-	
-	# Auto-calculate bounds if enabled
-	if use_auto_bounds:
-		_calculate_level_bounds()
-		print("CameraController: Auto-bounds calculated")
-
-func _process(delta: float) -> void:
-	"""Update camera position each frame."""
-	if not target_player:
-		return
-	
-	# Calculate target horizontal position
-	var target_x = target_player.global_position.x + horizontal_offset
-	
-	# Apply bounds if set
-	if min_x_position != -INF:
-		target_x = max(target_x, min_x_position)
-	if max_x_position != INF:
-		target_x = min(target_x, max_x_position)
-	
-	# Smoothly follow horizontally, keep fixed vertical position
-	var current_pos = global_position
-	current_pos.x = lerp(current_pos.x, target_x, follow_smoothing * delta)
-	current_pos.y = fixed_y_position  # Always maintain fixed Y position
-	
-	global_position = current_pos
-	
-	# Debug logging (can be commented out in production)
-	# print("CameraController: Position (", global_position.x, ", ", global_position.y, ") following player at (", target_player.global_position.x, ", ", target_player.global_position.y, ")")
-
-func set_target_player(player: Node2D) -> void:
-	"""Set the player to follow."""
-	target_player = player
-	print("CameraController: Target player set to ", player.name)
-
-func set_fixed_y_position(y_pos: float) -> void:
-	"""Set the fixed vertical position for the camera."""
-	fixed_y_position = y_pos
-	global_position.y = fixed_y_position
-	print("CameraController: Fixed Y position set to ", y_pos)
-
-func set_horizontal_bounds(min_x: float, max_x: float) -> void:
-	"""Set horizontal movement bounds for the camera."""
-	min_x_position = min_x
-	max_x_position = max_x
-	use_auto_bounds = false  # Disable auto bounds when manually set
-	print("CameraController: Horizontal bounds manually set to (", min_x, ", ", max_x, ")")
-
-func _calculate_level_bounds() -> void:
-	"""Automatically calculate camera bounds based on level geometry."""
-	print("CameraController: Calculating level bounds...")
-	
-	# Find the main scene (level)
-	var level_scene = get_tree().current_scene
-	if not level_scene:
-		print("CameraController: No current scene found for bounds calculation")
-		return
-	
-	# Look for walls or level boundaries
-	var left_bound: float = INF
-	var right_bound: float = -INF
-	
-	# Search for StaticBody2D nodes that could be walls
-	var static_bodies = _find_static_bodies(level_scene)
-	
-	for body in static_bodies:
-		# Check if this looks like a wall (has "Wall" in name)
-		var body_name = body.name.to_lower()
-		var body_pos = body.global_position
-		
-		print("CameraController: Checking StaticBody2D '", body.name, "' at position (", body_pos.x, ", ", body_pos.y, ")")
-		
-		if "wall" in body_name or "boundary" in body_name:
-			# Determine if it's a left or right wall based on position and name
-			if "left" in body_name:
-				left_bound = min(left_bound, body_pos.x)
-				print("CameraController: Found left wall '", body.name, "' at x = ", body_pos.x)
-			elif "right" in body_name:
-				right_bound = max(right_bound, body_pos.x)
-				print("CameraController: Found right wall '", body.name, "' at x = ", body_pos.x)
-			else:
-				# Try to determine by position (assume level is around 1920 wide)
-				if body_pos.x < 500:  # Likely left wall
-					left_bound = min(left_bound, body_pos.x)
-					print("CameraController: Detected left wall '", body.name, "' at x = ", body_pos.x)
-				elif body_pos.x > 1400:  # Likely right wall
-					right_bound = max(right_bound, body_pos.x)
-					print("CameraController: Detected right wall '", body.name, "' at x = ", body_pos.x)
-		else:
-			# Skip non-wall StaticBody2D nodes (like floors, ceilings, platforms)
-			print("CameraController: Skipping non-wall StaticBody2D '", body.name, "'")
-	
-	# Apply bounds with margin if we found walls
-	if left_bound != INF and right_bound != -INF:
-		min_x_position = left_bound + bounds_margin
-		max_x_position = right_bound - bounds_margin
-		print("CameraController: Auto-bounds set to (", min_x_position, ", ", max_x_position, ") with margin ", bounds_margin)
-	else:
-		# Fallback to default reasonable bounds for a 1920-wide level
-		min_x_position = bounds_margin
-		max_x_position = 1920.0 - bounds_margin
-		print("CameraController: Using fallback bounds (", min_x_position, ", ", max_x_position, ")")
-
-func _find_static_bodies(node: Node) -> Array:
-	"""Recursively find all StaticBody2D nodes."""
-	var found_nodes: Array = []
-	
-	if node is StaticBody2D:
-		found_nodes.append(node)
-	
-	for child in node.get_children():
-		found_nodes.append_array(_find_static_bodies(child))
-	
-	return found_nodes
-
-func update_level_bounds() -> void:
-	"""Public method to recalculate bounds when level changes."""
-	if use_auto_bounds:
-		_calculate_level_bounds()
-		print("CameraController: Level bounds updated")
-
-func set_bounds_margin(margin: float) -> void:
-	"""Set the margin from level edges and recalculate bounds."""
-	bounds_margin = margin
-	if use_auto_bounds:
-		_calculate_level_bounds()
-	print("CameraController: Bounds margin set to ", margin)
 </file>
 
 <file path="scripts/singletons/SoundManager.gd">
@@ -3455,6 +3435,84 @@ script = ExtResource("1_8k3v4")
 [node name="SfxPlayer" type="AudioStreamPlayer" parent="."]
 </file>
 
+<file path="scripts/ui/main_menu.gd">
+"""
+Main Menu Script for Bop Game
+Handles the main menu UI interactions and scene transitions.
+Provides entry point to the game with Start Game functionality.
+"""
+
+class_name MainMenu
+extends Control
+
+# UI Component References
+@onready var start_button: Button = $MenuContainer/StartButton
+@onready var title_label: Label = $MenuContainer/TitleLabel  
+@onready var background_texture: TextureRect = $FutureBackgroundTexture
+
+# Export variables for customization (future flexibility)
+@export var background_image: Texture2D
+@export var button_hover_sound: AudioStream
+@export var button_click_sound: AudioStream
+
+func _ready() -> void:
+	print("MainMenu: Initializing main menu scene")
+	
+	# Connect button signals
+	_setup_button_connections()
+	
+	# Configure future background image if provided
+	_setup_background_texture()
+	
+	# Log initialization completion
+	print("MainMenu: Menu initialization completed successfully")
+
+func _setup_button_connections() -> void:
+	"""Set up all button signal connections"""
+	print("MainMenu: Connecting button signals")
+	
+	if start_button:
+		start_button.pressed.connect(_on_start_button_pressed)
+		print("MainMenu: Start button signal connected")
+	else:
+		print("MainMenu: ERROR - Start button not found!")
+
+func _setup_background_texture() -> void:
+	"""Configure background texture if provided (future feature)"""
+	if background_image and background_texture:
+		background_texture.texture = background_image
+		background_texture.visible = true
+		print("MainMenu: Background texture configured")
+	else:
+		print("MainMenu: Using default black background")
+
+func _on_start_button_pressed() -> void:
+	"""Handle start button press - transition to game level"""
+	print("MainMenu: Start Game button pressed")
+	
+	# Play button click sound if available
+	if button_click_sound:
+		# Use SoundManager if available
+		if SoundManager:
+			SoundManager.play_sfx("button_click")
+	
+	# Reset game state for new game session
+	if GameState:
+		GameState.reset_game()
+		print("MainMenu: Game state reset for new session")
+	
+	# Transition to level 1
+	print("MainMenu: Transitioning to level_1.tscn")
+	get_tree().change_scene_to_file("res://scenes/levels/level_1.tscn")
+
+# Handle input for accessibility (Enter key support)
+func _unhandled_input(event: InputEvent) -> void:
+	"""Handle keyboard input for menu navigation"""
+	if event.is_action_pressed("ui_accept"):
+		print("MainMenu: Enter key pressed - starting game")
+		_on_start_button_pressed()
+</file>
+
 <file path="scripts/tilemap_painter.gd">
 extends TileMapLayer
 
@@ -3491,6 +3549,41 @@ func paint_tiles():
 		
 	print("TileMapPainter: Tile painting complete!")
 	print("TileMapPainter: Painted ", (level_width + 1) * 2, " tiles total")
+</file>
+
+<file path="_docs/Mainmenu.md">
+Build the Main Menu
+Goal: Create a functional main menu that launches the game and sets the game mode.
+
+Step 1: Create the MainMenu.tscn Scene
+    This is the new entry point for your entire game.
+    Cursor Prompt:
+    "Create a new scene named main_menu.tscn and save it in a new scenes/ui/ folder. The root node must be a Control node.
+    Add a ColorRect as a child. Set its color to solid black and use the 'Layout' menu to set its anchors to 'Full Rect'.
+    Add a VBoxContainer as a child of the ColorRect. Use the 'Layout' menu to center it on the screen ('Layout' -> 'Center').
+    Inside the VBoxContainer, add a Label with the text 'Bop'. Use a custom font from the assets folder and set the font size to be very large, like 150.
+    Below the title Label, add a Button node. Set its text to 'Start Game'."
+    (Note: I've simplified this to just a "Start" button for now. We can easily add the 1-Player/2-Player selection later, but this gets the core flow working.)
+    Make the code flexible so that new background image can be placed as the textureNode with textureButtons later on. 
+
+Step 2: Create the main_menu.gd Script
+    This script will handle the button press to start the game.
+    Cursor Prompt:
+    "Attach a new script named main_menu.gd to the root Control node of main_menu.tscn.
+    In the script, get a reference to the 'Start Game' Button node using an @onready variable.
+    Connect the button's pressed signal to a new function, for example _on_start_button_pressed.
+    Inside the _on_start_button_pressed function, call get_tree().change_scene_to_file("res://scenes/levels/level_1.tscn") to start the game."
+
+Step 3: Set the Main Scene for the Project
+    This tells Godot to launch your Main Menu when you run the project.
+    Manual Instruction (This is best done by hand in the editor):
+    Go to Project -> Project Settings....
+    Navigate to the Application -> Run section.
+    Find the Main Scene property.
+    Click the folder icon and select your newly created res://scenes/ui/main_menu.tscn.
+    Close the settings.
+
+Testing: After this step, when you run your project, you should see your "Bop" title screen. Clicking the "Start Game" button should load and start level_1.tscn exactly as it did before.
 </file>
 
 <file path="_docs/params.md">
@@ -3687,26 +3780,36 @@ Anim={
 selected_nodes=Array[NodePath]([])
 </file>
 
-<file path=".godot/global_script_class_cache.cfg">
-list=Array[Dictionary]([{
-"base": &"RigidBody2D",
-"class": &"Player",
-"icon": "",
-"language": &"GDScript",
-"path": "res://scripts/player/player.gd"
-}, {
-"base": &"Area2D",
-"class": &"Spike",
-"icon": "",
-"language": &"GDScript",
-"path": "res://scripts/hazards/spike.gd"
-}])
+<file path=".godot/editor/recent_dirs">
+res://scenes/ui
+res://scenes/levels
 </file>
 
 <file path=".godot/scene_groups_cache.cfg">
 [res://scenes/hazards/Spike.tscn]
 
 groups=[&"hazards"]
+</file>
+
+<file path="scenes/hazards/Spike.tscn">
+[gd_scene load_steps=4 format=3 uid="uid://b8h1v5p2k3nar"]
+
+[ext_resource type="Texture2D" uid="uid://cyokxx6vt27ny" path="res://assets/sprites/hazards/spike_bottom.png" id="1_spike_texture"]
+[ext_resource type="Script" path="res://scripts/hazards/spike.gd" id="2_spike_script"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_spike"]
+size = Vector2(64, 64)
+
+[node name="Spike" type="Area2D" groups=["hazards"]]
+collision_layer = 4
+collision_mask = 2
+script = ExtResource("2_spike_script")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("1_spike_texture")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_spike")
 </file>
 
 <file path="scenes/levels/level_1.tscn">
@@ -3773,136 +3876,299 @@ position = Vector2(960, 540)
 gravity_scale = 0.0
 </file>
 
-<file path="scripts/singletons/GameState.gd">
+<file path="scripts/player/camera_controller.gd">
 """
-GameState Singleton
-Manages global game state including lives, score, level progression, and player events.
-Acts as an Event Bus for game-wide communication.
+Camera Controller for Bop Game
+Follows the player horizontally while maintaining a fixed vertical position
+to keep both ceiling and floor visible at all times.
 """
-extends Node
+class_name CameraController
+extends Camera2D
 
-# Game state variables
-var player_lives: int = 1
-var current_score: int = 0
-var current_level: int = 1
-var game_mode: String = "single"  # "single" or "multi"
-var hoops_collected: int = 0
+# Camera configuration
+@export var target_player: Node2D
+@export var fixed_y_position: float = 540.0  # Center of the level vertically
+@export var follow_smoothing: float = 5.0  # How smoothly to follow horizontally
+@export var horizontal_offset: float = 0.0  # Optional horizontal offset from player
 
-# Player state
-var players_alive: Array[bool] = [true, true]  # For multiplayer support
-var is_game_over: bool = false
-var is_level_complete: bool = false
-
-# Signals for event bus communication
-signal player_died
-signal life_lost(remaining_lives: int)
-signal game_over
-signal level_complete
-signal score_changed(new_score: int)
-signal hoop_collected(value: int)
-signal powerup_activated(type: String)
+# Camera bounds (optional - to prevent camera from going too far)
+@export var min_x_position: float = -INF
+@export var max_x_position: float = INF
+@export var use_auto_bounds: bool = true  # Automatically calculate bounds from level
+@export var bounds_margin: float = 480.0  # Margin from level edges (half screen width)
 
 func _ready() -> void:
-	"""Initialize GameState singleton."""
-	print("GameState: Singleton initialized")
+	"""Initialize the camera controller."""
+	print("CameraController: Initializing...")
 	
-	# Connect internal signals
-	player_died.connect(_on_player_died)
-	hoop_collected.connect(_on_hoop_collected)
+	# If no target is set, try to find the player automatically
+	if not target_player:
+		target_player = get_parent()
+		print("CameraController: Using parent as target player")
 	
-	# Set initial lives based on game mode
-	_set_initial_lives()
+	# Set initial position
+	if target_player:
+		global_position.x = target_player.global_position.x + horizontal_offset
+		global_position.y = fixed_y_position
+		print("CameraController: Initial position set to (", global_position.x, ", ", global_position.y, ")")
+	
+	# Make this camera current
+	make_current()
+	print("CameraController: Camera set as current")
+	
+	# Auto-calculate bounds if enabled
+	if use_auto_bounds:
+		_calculate_level_bounds()
+		print("CameraController: Auto-bounds calculated")
 
-func _set_initial_lives() -> void:
-	"""Set initial lives based on game mode."""
-	match game_mode:
-		"single":
-			player_lives = 1
-		"multi":
-			player_lives = 1  # Also using single life for multiplayer for now
-		_:
-			player_lives = 1
+func _process(delta: float) -> void:
+	"""Update camera position each frame."""
+	if not target_player:
+		return
 	
-	print("GameState: Lives set to ", player_lives, " for ", game_mode, " player mode")
-
-func set_game_mode(mode: String) -> void:
-	"""Set the game mode (single or multi player)."""
-	game_mode = mode
-	_set_initial_lives()
-	print("GameState: Game mode set to ", mode)
-
-func _on_player_died() -> void:
-	"""Handle player death."""
-	print("GameState: Player died, processing life loss")
+	# Stop following if the player is dead
+	if "is_alive" in target_player and not target_player.is_alive:
+		print("CameraController: Player is dead, stopping camera movement")
+		return
 	
-	if player_lives > 1:
-		player_lives -= 1
-		life_lost.emit(player_lives)
-		print("GameState: Life lost, remaining lives: ", player_lives)
+	# Calculate target horizontal position
+	var target_x = target_player.global_position.x + horizontal_offset
+	
+	# Apply bounds if set
+	if min_x_position != -INF:
+		target_x = max(target_x, min_x_position)
+	if max_x_position != INF:
+		target_x = min(target_x, max_x_position)
+	
+	# Smoothly follow horizontally, keep fixed vertical position
+	var current_pos = global_position
+	current_pos.x = lerp(current_pos.x, target_x, follow_smoothing * delta)
+	current_pos.y = fixed_y_position  # Always maintain fixed Y position
+	
+	global_position = current_pos
+	
+	# Debug logging (can be commented out in production)
+	# print("CameraController: Position (", global_position.x, ", ", global_position.y, ") following player at (", target_player.global_position.x, ", ", target_player.global_position.y, ")")
+
+func set_target_player(player: Node2D) -> void:
+	"""Set the player to follow."""
+	target_player = player
+	print("CameraController: Target player set to ", player.name)
+
+func set_fixed_y_position(y_pos: float) -> void:
+	"""Set the fixed vertical position for the camera."""
+	fixed_y_position = y_pos
+	global_position.y = fixed_y_position
+	print("CameraController: Fixed Y position set to ", y_pos)
+
+func set_horizontal_bounds(min_x: float, max_x: float) -> void:
+	"""Set horizontal movement bounds for the camera."""
+	min_x_position = min_x
+	max_x_position = max_x
+	use_auto_bounds = false  # Disable auto bounds when manually set
+	print("CameraController: Horizontal bounds manually set to (", min_x, ", ", max_x, ")")
+
+func _calculate_level_bounds() -> void:
+	"""Automatically calculate camera bounds based on level geometry."""
+	print("CameraController: Calculating level bounds...")
+	
+	# Find the main scene (level)
+	var level_scene = get_tree().current_scene
+	if not level_scene:
+		print("CameraController: No current scene found for bounds calculation")
+		return
+	
+	# Look for walls or level boundaries
+	var left_bound: float = INF
+	var right_bound: float = -INF
+	
+	# Search for StaticBody2D nodes that could be walls
+	var static_bodies = _find_static_bodies(level_scene)
+	
+	for body in static_bodies:
+		# Check if this looks like a wall (has "Wall" in name)
+		var body_name = body.name.to_lower()
+		var body_pos = body.global_position
 		
-		# Restart level or reset player position
-		_restart_level()
+		print("CameraController: Checking StaticBody2D '", body.name, "' at position (", body_pos.x, ", ", body_pos.y, ")")
+		
+		if "wall" in body_name or "boundary" in body_name:
+			# Determine if it's a left or right wall based on position and name
+			if "left" in body_name:
+				left_bound = min(left_bound, body_pos.x)
+				print("CameraController: Found left wall '", body.name, "' at x = ", body_pos.x)
+			elif "right" in body_name:
+				right_bound = max(right_bound, body_pos.x)
+				print("CameraController: Found right wall '", body.name, "' at x = ", body_pos.x)
+			else:
+				# Try to determine by position (assume level is around 1920 wide)
+				if body_pos.x < 500:  # Likely left wall
+					left_bound = min(left_bound, body_pos.x)
+					print("CameraController: Detected left wall '", body.name, "' at x = ", body_pos.x)
+				elif body_pos.x > 1400:  # Likely right wall
+					right_bound = max(right_bound, body_pos.x)
+					print("CameraController: Detected right wall '", body.name, "' at x = ", body_pos.x)
+		else:
+			# Skip non-wall StaticBody2D nodes (like floors, ceilings, platforms)
+			print("CameraController: Skipping non-wall StaticBody2D '", body.name, "'")
+	
+	# Apply bounds with margin if we found walls
+	if left_bound != INF and right_bound != -INF:
+		min_x_position = left_bound + bounds_margin
+		max_x_position = right_bound - bounds_margin
+		print("CameraController: Auto-bounds set to (", min_x_position, ", ", max_x_position, ") with margin ", bounds_margin)
 	else:
-		player_lives = 0
-		is_game_over = true
-		game_over.emit()
-		print("GameState: Game Over!")
+		# Fallback to default reasonable bounds for a 1920-wide level
+		min_x_position = bounds_margin
+		max_x_position = 1920.0 - bounds_margin
+		print("CameraController: Using fallback bounds (", min_x_position, ", ", max_x_position, ")")
 
-func _on_hoop_collected(value: int) -> void:
-	"""Handle hoop/collectible collection."""
-	hoops_collected += 1
-	current_score += value
-	score_changed.emit(current_score)
-	print("GameState: Hoop collected! Total: ", hoops_collected, " Score: ", current_score)
+func _find_static_bodies(node: Node) -> Array:
+	"""Recursively find all StaticBody2D nodes."""
+	var found_nodes: Array = []
+	
+	if node is StaticBody2D:
+		found_nodes.append(node)
+	
+	for child in node.get_children():
+		found_nodes.append_array(_find_static_bodies(child))
+	
+	return found_nodes
 
-func add_score(points: int) -> void:
-	"""Add points to the current score."""
-	current_score += points
-	score_changed.emit(current_score)
-	print("GameState: Score increased by ", points, " Total: ", current_score)
+func update_level_bounds() -> void:
+	"""Public method to recalculate bounds when level changes."""
+	if use_auto_bounds:
+		_calculate_level_bounds()
+		print("CameraController: Level bounds updated")
 
-func complete_level() -> void:
-	"""Mark the current level as complete."""
-	is_level_complete = true
-	level_complete.emit()
-	print("GameState: Level ", current_level, " complete!")
+func set_bounds_margin(margin: float) -> void:
+	"""Set the margin from level edges and recalculate bounds."""
+	bounds_margin = margin
+	if use_auto_bounds:
+		_calculate_level_bounds()
+	print("CameraController: Bounds margin set to ", margin)
+</file>
 
-func next_level() -> void:
-	"""Progress to the next level."""
-	current_level += 1
-	hoops_collected = 0
-	is_level_complete = false
-	print("GameState: Advanced to level ", current_level)
+<file path="scripts/ui/game_over.gd">
+"""
+Game Over Screen Script for Bop Game
+Handles input detection on the game over screen and returns to main menu.
+Resets game state for a fresh start when returning to menu.
+"""
 
-func reset_game() -> void:
-	"""Reset game state for new game."""
-	current_score = 0
-	current_level = 1
-	hoops_collected = 0
-	is_game_over = false
-	is_level_complete = false
-	players_alive = [true, true]
-	_set_initial_lives()
-	print("GameState: Game reset")
+class_name GameOver
+extends Control
 
-func _restart_level() -> void:
-	"""Restart the current level."""
-	print("GameState: Restarting level...")
-	# This will be implemented to reload the current scene
-	# For now, just reset player state
-	is_level_complete = false
+# UI Component References
+@onready var game_over_label: Label = $MenuContainer/GameOverLabel
+@onready var instruction_label: Label = $MenuContainer/InstructionLabel
+@onready var background: ColorRect = $Background
+@onready var fullscreen_button: Button = $FullScreenButton
 
-func get_game_data() -> Dictionary:
-	"""Get current game state data."""
-	return {
-		"lives": player_lives,
-		"score": current_score,
-		"level": current_level,
-		"hoops": hoops_collected,
-		"mode": game_mode,
-		"game_over": is_game_over,
-		"level_complete": is_level_complete
-	}
+func _ready() -> void:
+	"""Initialize the game over screen."""
+	print("GameOver: Game over screen initialized")
+	
+	# Configure Control node to receive input
+	mouse_filter = Control.MOUSE_FILTER_PASS
+	
+	# Configure background to receive mouse input as well
+	if background:
+		background.mouse_filter = Control.MOUSE_FILTER_PASS
+		# Connect background gui_input as a backup method
+		background.gui_input.connect(_on_background_input)
+	
+	# Connect fullscreen button as reliable fallback
+	if fullscreen_button:
+		fullscreen_button.pressed.connect(_on_fullscreen_button_pressed)
+		print("GameOver: Fullscreen button connected")
+	
+	# Grab focus to ensure we can receive input
+	grab_focus()
+	
+	# Set focusable to ensure we can receive keyboard input
+	focus_mode = Control.FOCUS_ALL
+	
+	# Play game over sound effect if available
+	if has_node("/root/SoundManager"):
+		# Note: Could add a game over sound effect here if desired
+		pass
+	
+	# Log current game state before reset
+	if has_node("/root/GameState"):
+		var game_state = get_node("/root/GameState")
+		var game_data = game_state.get_game_data()
+		print("GameOver: Final game state - Score: ", game_data.score, " Level: ", game_data.level, " Hoops: ", game_data.hoops)
+	
+	print("GameOver: Ready to receive input - click anywhere or press any key to return to menu")
+
+func _input(event: InputEvent) -> void:
+	"""Handle any input to return to main menu."""
+	# Only log meaningful events (not mouse movement spam)
+	var should_log = false
+	
+	# Check for any key press or mouse click
+	if event is InputEventKey and event.pressed:
+		print("GameOver: Key pressed (", event.keycode, ") - returning to main menu")
+		_return_to_menu()
+		should_log = true
+	elif event is InputEventMouseButton and event.pressed:
+		print("GameOver: Mouse button pressed (", event.button_index, ") - returning to main menu")
+		_return_to_menu()
+		should_log = true
+	elif event.is_action_pressed("ui_accept"):
+		print("GameOver: UI accept pressed - returning to main menu")
+		_return_to_menu()
+		should_log = true
+	elif event.is_action_pressed("ui_cancel"):
+		print("GameOver: UI cancel pressed - returning to main menu")
+		_return_to_menu()
+		should_log = true
+	
+	# Optional: Log only if it's a meaningful event and debugging is needed
+	# if should_log:
+	#     print("GameOver: Meaningful input event: ", event)
+
+func _on_background_input(event: InputEvent) -> void:
+	"""Backup input handler for background ColorRect."""
+	print("GameOver: Background input received: ", event)
+	
+	# Handle mouse clicks on the background
+	if event is InputEventMouseButton and event.pressed:
+		print("GameOver: Background mouse click detected - returning to menu")
+		_return_to_menu()
+
+func _on_fullscreen_button_pressed() -> void:
+	"""Handle fullscreen button press - most reliable input method."""
+	print("GameOver: Fullscreen button pressed - returning to menu")
+	_return_to_menu()
+
+func _return_to_menu() -> void:
+	"""Return to main menu and reset game state."""
+	print("GameOver: Returning to main menu...")
+	
+	# Reset game state for next playthrough
+	if has_node("/root/GameState"):
+		var game_state = get_node("/root/GameState")
+		game_state.reset_game()
+		print("GameOver: Game state reset for new session")
+	
+	# Play button click sound if available
+	if has_node("/root/SoundManager"):
+		var sound_manager = get_node("/root/SoundManager")
+		sound_manager.play_sfx("success")  # Use success sound for menu return
+	
+	# Transition back to main menu
+	print("GameOver: Transitioning to main_menu.tscn")
+	get_tree().change_scene_to_file("res://scenes/ui/main_menu.tscn")
+
+# Optional: Handle focus for accessibility
+func _notification(what: int) -> void:
+	"""Handle window notifications."""
+	if what == NOTIFICATION_WM_WINDOW_FOCUS_IN:
+		# Ensure the game over screen can receive input when window gains focus
+		grab_focus()
+		print("GameOver: Window focused - ready for input")
 </file>
 
 <file path=".cursor/rules/godot.mdc">
@@ -4144,6 +4410,22 @@ alwaysApply: true
     - Guideline: Your code should define behavior. Your Resources should define data. Your level scenes should be as "dumb" as possible. Action: Create a new script that extends Resource. Call it LevelData.gd. In it, define exported variables: @export var spike_positions : Array[Vector2], @export var powerup_data : Array[Dictionary], @export var level_goal_position : Vector2. For each level, create a new LevelData resource file (level_1.tres, level_2.tres, etc.). Click on it and fill in all the data in the Inspector. Your main Level.tscn script will have one @export var level_data : LevelData. You just drag your desired .tres file into it. The script then reads this data and programmatically places the spikes and power-ups. Now you can design dozens of levels without ever changing your core level scene code.
 </file>
 
+<file path=".godot/editor/script_editor_cache.cfg">
+[res://scripts/player/player.gd]
+
+state={
+"bookmarks": PackedInt32Array(),
+"breakpoints": PackedInt32Array(),
+"column": 0,
+"folded_lines": Array[int]([]),
+"h_scroll_position": 0,
+"row": 178,
+"scroll_position": 178.0,
+"selection": false,
+"syntax_highlighter": "GDScript"
+}
+</file>
+
 <file path=".godot/imported/Balloon Escape Factory.mp3-54140b5b2b11b7904ee81e622b8af5f7.md5">
 source_md5="769ae3b87f06767814d4e71ef332b99b"
 dest_md5="517e3dd92a8ed29119012085d2681038"
@@ -4214,6 +4496,199 @@ source_md5="8c61fffdab3e94a70388f851cafe7ac0"
 dest_md5="6f5f9bfedb0286beb73ceeb1ebb3b632"
 </file>
 
+<file path="scripts/singletons/GameState.gd">
+"""
+GameState Singleton
+Manages global game state including lives, score, level progression, and player events.
+Acts as an Event Bus for game-wide communication.
+"""
+extends Node
+
+# Game state variables
+var player_lives: int = 1
+var current_score: int = 0
+var current_level: int = 1
+var game_mode: String = "single"  # "single" or "multi"
+var hoops_collected: int = 0
+
+# Player state
+var players_alive: Array[bool] = [true, true]  # For multiplayer support
+var is_game_over: bool = false
+var is_level_complete: bool = false
+
+# Signals for event bus communication
+signal player_died
+signal life_lost(remaining_lives: int)
+signal game_over
+signal level_complete
+signal score_changed(new_score: int)
+signal hoop_collected(value: int)
+signal powerup_activated(type: String)
+
+func _ready() -> void:
+	"""Initialize GameState singleton."""
+	print("GameState: Singleton initialized")
+	
+	# Connect internal signals
+	player_died.connect(_on_player_died)
+	hoop_collected.connect(_on_hoop_collected)
+	
+	# Set initial lives based on game mode
+	_set_initial_lives()
+
+func _set_initial_lives() -> void:
+	"""Set initial lives based on game mode."""
+	match game_mode:
+		"single":
+			player_lives = 1
+		"multi":
+			player_lives = 1  # Also using single life for multiplayer for now
+		_:
+			player_lives = 1
+	
+	print("GameState: Lives set to ", player_lives, " for ", game_mode, " player mode")
+
+func set_game_mode(mode: String) -> void:
+	"""Set the game mode (single or multi player)."""
+	game_mode = mode
+	_set_initial_lives()
+	print("GameState: Game mode set to ", mode)
+
+func _on_player_died() -> void:
+	"""Handle player death."""
+	print("GameState: Player died, processing life loss")
+	
+	if player_lives > 1:
+		player_lives -= 1
+		life_lost.emit(player_lives)
+		print("GameState: Life lost, remaining lives: ", player_lives)
+		
+		# Restart level or reset player position
+		_restart_level()
+	else:
+		player_lives = 0
+		is_game_over = true
+		game_over.emit()
+		print("GameState: Game Over!")
+		
+		# Add 5-second delay before showing game over screen
+		_start_game_over_timer()
+
+func _on_hoop_collected(value: int) -> void:
+	"""Handle hoop/collectible collection."""
+	hoops_collected += 1
+	current_score += value
+	score_changed.emit(current_score)
+	print("GameState: Hoop collected! Total: ", hoops_collected, " Score: ", current_score)
+
+func add_score(points: int) -> void:
+	"""Add points to the current score."""
+	current_score += points
+	score_changed.emit(current_score)
+	print("GameState: Score increased by ", points, " Total: ", current_score)
+
+func complete_level() -> void:
+	"""Mark the current level as complete."""
+	is_level_complete = true
+	level_complete.emit()
+	print("GameState: Level ", current_level, " complete!")
+
+func next_level() -> void:
+	"""Progress to the next level."""
+	current_level += 1
+	hoops_collected = 0
+	is_level_complete = false
+	print("GameState: Advanced to level ", current_level)
+
+func reset_game() -> void:
+	"""Reset game state for new game."""
+	current_score = 0
+	current_level = 1
+	hoops_collected = 0
+	is_game_over = false
+	is_level_complete = false
+	players_alive = [true, true]
+	_set_initial_lives()
+	print("GameState: Game reset")
+
+func _restart_level() -> void:
+	"""Restart the current level."""
+	print("GameState: Restarting level...")
+	# This will be implemented to reload the current scene
+	# For now, just reset player state
+	is_level_complete = false
+
+func _start_game_over_timer() -> void:
+	"""Start a 5-second timer before transitioning to game over screen."""
+	print("GameState: Starting 5-second game over timer")
+	
+	# Create timer node
+	var timer = Timer.new()
+	add_child(timer)
+	
+	# Configure timer
+	timer.wait_time = 5.0
+	timer.one_shot = true
+	
+	# Connect timeout signal
+	timer.timeout.connect(_on_game_over_timeout)
+	
+	# Start the timer
+	timer.start()
+	print("GameState: Game over timer started - 5 seconds until transition")
+
+func _on_game_over_timeout() -> void:
+	"""Handle game over timer timeout - transition to game over screen."""
+	print("GameState: Game over timer expired - transitioning to game over screen")
+	get_tree().change_scene_to_file("res://scenes/ui/game_over.tscn")
+
+func get_game_data() -> Dictionary:
+	"""Get current game state data."""
+	return {
+		"lives": player_lives,
+		"score": current_score,
+		"level": current_level,
+		"hoops": hoops_collected,
+		"mode": game_mode,
+		"game_over": is_game_over,
+		"level_complete": is_level_complete
+	}
+</file>
+
+<file path=".godot/global_script_class_cache.cfg">
+list=Array[Dictionary]([{
+"base": &"Camera2D",
+"class": &"CameraController",
+"icon": "",
+"language": &"GDScript",
+"path": "res://scripts/player/camera_controller.gd"
+}, {
+"base": &"Control",
+"class": &"GameOver",
+"icon": "",
+"language": &"GDScript",
+"path": "res://scripts/ui/game_over.gd"
+}, {
+"base": &"Control",
+"class": &"MainMenu",
+"icon": "",
+"language": &"GDScript",
+"path": "res://scripts/ui/main_menu.gd"
+}, {
+"base": &"RigidBody2D",
+"class": &"Player",
+"icon": "",
+"language": &"GDScript",
+"path": "res://scripts/player/player.gd"
+}, {
+"base": &"Area2D",
+"class": &"Spike",
+"icon": "",
+"language": &"GDScript",
+"path": "res://scripts/hazards/spike.gd"
+}])
+</file>
+
 <file path="project.godot">
 ; Engine configuration file.
 ; It's best edited using the editor UI and not directly,
@@ -4229,7 +4704,7 @@ config_version=5
 
 config/name="Bop"
 config/description="A 2D rhythm-based platformer where the player controls the horizontal movement of a constantly bouncing ball."
-run/main_scene="res://scenes/levels/level_1.tscn"
+run/main_scene="res://scenes/ui/main_menu.tscn"
 config/features=PackedStringArray("4.3")
 config/icon="res://BopAssets/assets/player/ball.png"
 
@@ -4305,15 +4780,15 @@ dock_split_2=0
 dock_split_3=0
 dock_hsplit_1=0
 dock_hsplit_2=540
-dock_hsplit_3=-540
+dock_hsplit_3=-432
 dock_hsplit_4=0
 dock_filesystem_h_split_offset=480
 dock_filesystem_v_split_offset=0
 dock_filesystem_display_mode=0
 dock_filesystem_file_sort=0
 dock_filesystem_file_list_display_mode=1
-dock_filesystem_selected_paths=PackedStringArray("res://scenes/hazards/Spike.tscn")
-dock_filesystem_uncollapsed_paths=PackedStringArray("Favorites", "res://", "res://scenes/", "res://scenes/levels/")
+dock_filesystem_selected_paths=PackedStringArray("res://scenes/ui/main_menu.tscn")
+dock_filesystem_uncollapsed_paths=PackedStringArray("Favorites", "res://", "res://scenes/", "res://scenes/ui/", "res://scenes/levels/")
 dock_3="Scene,Import"
 dock_4="FileSystem"
 dock_5="Inspector,Node,History"
@@ -4323,14 +4798,14 @@ dock_5="Inspector,Node,History"
 open_scenes=PackedStringArray("res://scenes/levels/mvp_test.tscn", "res://scenes/levels/level_1.tscn", "res://scenes/hazards/Spike.tscn")
 current_scene="res://scenes/hazards/Spike.tscn"
 center_split_offset=-854
-selected_default_debugger_tab_idx=0
-selected_main_editor_idx=0
-selected_bottom_panel_item=0
+selected_default_debugger_tab_idx=1
+selected_main_editor_idx=2
+selected_bottom_panel_item=1
 
 [ScriptEditor]
 
-open_scripts=[]
-selected_script=""
+open_scripts=["res://scripts/player/player.gd"]
+selected_script="res://scripts/player/player.gd"
 open_help=[]
 script_split_offset=140
 list_split_offset=0
@@ -4344,147 +4819,11 @@ selected_shader=""
 text_shader_zoom_factor=1.0
 </file>
 
-<file path=".godot/editor/filesystem_cache8">
-ea4bc82a6ad023ab7ee23ee620429895
-::res://::1752677762
-repomix-output.xml::TextFile::-1::1752675392::0::1::::<><>::
-test_hazard.gd::GDScript::-1::1752677643::0::1::::<>SceneTree<>::
-::res://_docs/::1752676066
-GameplayDesign.md::TextFile::-1::1752675392::0::1::::<><>::
-Hazard.md::TextFile::-1::1752676842::0::1::::<><>::
-latency.md::TextFile::-1::1752675392::0::1::::<><>::
-level1Ground.md::TextFile::-1::1752675392::0::1::::<><>::
-params.md::TextFile::-1::1752675392::0::1::::<><>::
-physics.md::TextFile::-1::1752675392::0::1::::<><>::
-SFX.md::TextFile::-1::1752675392::0::1::::<><>::
-style.md::TextFile::-1::1752675392::0::1::::<><>::
-::res://assets/::1752675392
-::res://assets/audio/::1752675588
-Balloon Escape Factory.mp3::AudioStreamMP3::8206070679105260282::1752675392::1752675588::1::::<><>::
-bounce.mp3::AudioStreamMP3::9107122368181559716::1752675392::1752675588::1::::<><>::
-coins.mp3::AudioStreamMP3::7901847376389709318::1752675392::1752675588::1::::<><>::
-pop.mp3::AudioStreamMP3::2058950163202925655::1752675392::1752675588::1::::<><>::
-success.mp3::AudioStreamMP3::3151194912288285675::1752675392::1752675588::1::::<><>::
-::res://assets/fonts/::1752675588
-Kenney Future Narrow.ttf::FontFile::8513457004296160927::1752675392::1752675588::1::::<><>::
-Kenney Future.ttf::FontFile::1191888830290857463::1752675392::1752675588::1::::<><>::
-::res://assets/sprites/::1752675392
-::res://assets/sprites/background/::1752675588
-bg_layer1.png::CompressedTexture2D::9055781292271014096::1752675392::1752675588::1::::<><>::
-::res://assets/sprites/collectibles_and_powerups/::1752677558
-endLevel.png::CompressedTexture2D::7271042764840761317::1752675392::1752677558::1::::<><>::
-gold_1.png::CompressedTexture2D::7770782626171002347::1752675392::1752675588::1::::<><>::
-gold_2.png::CompressedTexture2D::4961529463577090600::1752675392::1752675588::1::::<><>::
-gold_3.png::CompressedTexture2D::197269280592586432::1752675392::1752675588::1::::<><>::
-jetpack.png::CompressedTexture2D::2475813519409685781::1752675392::1752675588::1::::<><>::
-jetpack_item.png::CompressedTexture2D::5246885340615533327::1752675392::1752675588::1::::<><>::
-::res://assets/sprites/environment/::1752675588
-ground_stone.png::CompressedTexture2D::6376627101721888681::1752675392::1752675588::1::::<><>::
-ground_stone_broken.png::CompressedTexture2D::1217873350915114682::1752675392::1752675588::1::::<><>::
-ground_stone_small.png::CompressedTexture2D::1898771885991249189::1752675392::1752675588::1::::<><>::
-ground_stone_small_broken.png::CompressedTexture2D::1934413432216654678::1752675392::1752675588::1::::<><>::
-ground_wood.png::CompressedTexture2D::165595163471498862::1752675392::1752675588::1::::<><>::
-ground_wood_broken.png::CompressedTexture2D::1881575544315897996::1752675392::1752675588::1::::<><>::
-ground_wood_small.png::CompressedTexture2D::3549772765016810542::1752675392::1752675588::1::::<><>::
-ground_wood_small_broken.png::CompressedTexture2D::6660159512624062090::1752675392::1752675588::1::::<><>::
-platformPack_tile004.png::CompressedTexture2D::5893765852238350109::1752675392::1752675588::1::::<><>::
-platformPack_tile034.png::CompressedTexture2D::1199564023964960820::1752675392::1752675588::1::::<><>::
-::res://assets/sprites/hazards/::1752675588
-spikes_bottom.png::CompressedTexture2D::4645057525981595265::1752675392::1752675588::1::::<><>::
-spikes_top.png::CompressedTexture2D::8203667586019862508::1752675392::1752675588::1::::<><>::
-spike_bottom.png::CompressedTexture2D::6486924403349916602::1752675392::1752675588::1::::<><>::
-spike_top.png::CompressedTexture2D::1952382968673477592::1752675392::1752675588::1::::<><>::
-spring.png::CompressedTexture2D::57287654817836701::1752675392::1752675588::1::::<><>::
-spring_in.png::CompressedTexture2D::8022793080425135513::1752675392::1752675588::1::::<><>::
-spring_out.png::CompressedTexture2D::7851334279652825319::1752675392::1752675588::1::::<><>::
-::res://assets/sprites/player/::1752677558
-ball.png::CompressedTexture2D::8220970251950762316::1752675392::1752675588::1::::<><>::
-death.png::CompressedTexture2D::4715324376886946804::1752675392::1752677558::1::::<><>::
-::res://assets/sprites/ui/::1752675588
-lives_coin_bronze.png::CompressedTexture2D::5825732135293081176::1752675392::1752675588::1::::<><>::
-::res://BopAssets/::1752675392
-::res://BopAssets/assets/::1752675392
-::res://BopAssets/assets/background/::1752675588
-bg_layer1.png::CompressedTexture2D::6945879680719127106::1752675392::1752675588::1::::<><>::
-::res://BopAssets/assets/collectibles_and_powerups/::1752675960
-gold_1.png::CompressedTexture2D::1825224882516228972::1752675392::1752675588::1::::<><>::
-gold_2.png::CompressedTexture2D::1190387119302935012::1752675392::1752675588::1::::<><>::
-gold_3.png::CompressedTexture2D::2512755368299904449::1752675392::1752675588::1::::<><>::
-jetpack.png::CompressedTexture2D::2931813711614556912::1752675392::1752675588::1::::<><>::
-jetpack_item.png::CompressedTexture2D::7878243431060436377::1752675392::1752675588::1::::<><>::
-::res://BopAssets/assets/environment/::1752675588
-ground_stone.png::CompressedTexture2D::547254746964749841::1752675392::1752675588::1::::<><>::
-ground_stone_broken.png::CompressedTexture2D::7182484478301215561::1752675392::1752675588::1::::<><>::
-ground_stone_small.png::CompressedTexture2D::5920530557858546565::1752675392::1752675588::1::::<><>::
-ground_stone_small_broken.png::CompressedTexture2D::6862542807011331575::1752675392::1752675588::1::::<><>::
-ground_wood.png::CompressedTexture2D::2762796157845493017::1752675392::1752675588::1::::<><>::
-ground_wood_broken.png::CompressedTexture2D::1920911236381604898::1752675392::1752675588::1::::<><>::
-ground_wood_small.png::CompressedTexture2D::5259545193054983935::1752675392::1752675588::1::::<><>::
-ground_wood_small_broken.png::CompressedTexture2D::2167022817881405705::1752675392::1752675588::1::::<><>::
-platformPack_tile004.png::CompressedTexture2D::4959656382865155942::1752675392::1752675588::1::::<><>::
-platformPack_tile034.png::CompressedTexture2D::2691896846324894211::1752675392::1752675588::1::::<><>::
-::res://BopAssets/assets/hazards/::1752675588
-spikes_bottom.png::CompressedTexture2D::663950830898210423::1752675392::1752675588::1::::<><>::
-spikes_top.png::CompressedTexture2D::8358873055094092465::1752675392::1752675588::1::::<><>::
-spike_bottom.png::CompressedTexture2D::3883150255362487646::1752675392::1752675588::1::::<><>::
-spike_top.png::CompressedTexture2D::2459527082247234580::1752675392::1752675588::1::::<><>::
-spring.png::CompressedTexture2D::4173908731025172797::1752675392::1752675588::1::::<><>::
-spring_in.png::CompressedTexture2D::6480400973107942546::1752675392::1752675588::1::::<><>::
-spring_out.png::CompressedTexture2D::2318680103272890803::1752675392::1752675588::1::::<><>::
-::res://BopAssets/assets/player/::1752675907
-ball.png::CompressedTexture2D::7132219559505673927::1752675392::1752675588::1::::<><>::
-::res://BopAssets/assets/ui/::1752675588
-lives_coin_bronze.png::CompressedTexture2D::3399006749739018670::1752675392::1752675588::1::::<><>::
-::res://BopAssets/font/::1752675588
-Kenney Future Narrow.ttf::FontFile::7000552542377076331::1752675392::1752675588::1::::<><>::
-Kenney Future.ttf::FontFile::5090768802296251228::1752675392::1752675588::1::::<><>::
-::res://BopAssets/SFX/::1752675588
-Balloon Escape Factory.mp3::AudioStreamMP3::8415698812563648905::1752675392::1752675588::1::::<><>::
-bounce.mp3::AudioStreamMP3::3881155579214223749::1752675392::1752675588::1::::<><>::
-coins.mp3::AudioStreamMP3::4713675940845734844::1752675392::1752675588::1::::<><>::
-pop.mp3::AudioStreamMP3::4996625001048486516::1752675392::1752675588::1::::<><>::
-success.mp3::AudioStreamMP3::3071999385586472187::1752675392::1752675588::1::::<><>::
-::res://resources/::1752675592
-ground_tileset.tres::TileSet::3894306225433350542::1752675592::0::1::::<><>::uid://cw35d765qafl6::::res://assets/sprites/environment/ground_stone.png
-::res://scenes/::1752677460
-::res://scenes/hazards/::1752677469
-Spike.tscn::PackedScene::4718720911624324965::1752677471::0::1::::<><>::uid://bhkxwxp0ypvfv::::res://assets/sprites/hazards/spike_bottom.png
-::res://scenes/levels/::1752675592
-level_1.tscn::PackedScene::1042719907978835413::1752677502::0::1::::<><>::uid://c1fnn1l64pxpx::::res://scenes/player/player.tscn<>uid://bvqowixejw8pm::::res://resources/ground_tileset.tres<>res://scripts/tilemap_painter.gd<>uid://b8h1v5p2k3nar::::res://scenes/hazards/Spike.tscn
-mvp_test.tscn::PackedScene::404610204984934029::1752675592::0::1::::<><>::uid://c1fnn1l64pxpx::::res://scenes/player/player.tscn<>uid://cw35d765qafl6::::res://assets/sprites/environment/ground_stone.png
-::res://scenes/player/::1752675392
-player.tscn::PackedScene::6608887111019891545::1752675392::0::1::::<><>::uid://dpekgc4qppjd1::::res://assets/sprites/player/ball.png<>res://scripts/player/player.gd
-::res://scripts/::1752675392
-tilemap_painter.gd::GDScript::-1::1752675392::0::1::::<>TileMapLayer<>::
-::res://scripts/player/::1752675392
-player.gd::GDScript::-1::1752675392::0::1::::Player<>RigidBody2D<>::
-::res://scripts/singletons/::1752675392
-GameState.gd::GDScript::-1::1752675392::0::1::::<>Node<>::
-SoundManager.gd::GDScript::-1::1752675392::0::1::::<>Node<>::
-SoundManager.tscn::PackedScene::3065715824871745611::1752675392::0::1::::<><>::res://scripts/singletons/SoundManager.gd
-::res://tasks/::1752675392
-DevelopmentPlan.md::TextFile::-1::1752677575::0::1::::<><>::
-</file>
-
 <file path=".godot/editor/filesystem_update4">
 res://scenes/levels/mvp_test.tscn
 res://resources/ground_tileset.tres
 res://scenes/levels/level_1.tscn
 res://scenes/hazards/Spike.tscn
-</file>
-
-<file path=".godot/editor/project_metadata.cfg">
-[editor_metadata]
-
-executable_path="/Applications/Godot.app/Contents/MacOS/Godot"
-
-[recent_files]
-
-scenes=["res://scenes/hazards/Spike.tscn", "res://scenes/levels/level_1.tscn", "res://scenes/levels/mvp_test.tscn"]
-
-[dialog_bounds]
-
-project_settings=Rect2(4152, 3162, 2400, 1400)
 </file>
 
 <file path="scenes/levels/mvp_test.tscn">
@@ -4577,6 +4916,152 @@ shape = SubResource("RectangleShape2D_lower_gravity")
 [node name="Player" parent="." instance=ExtResource("1_player")]
 position = Vector2(960, 540)
 gravity_scale = 0.0
+</file>
+
+<file path=".godot/editor/filesystem_cache8">
+ea4bc82a6ad023ab7ee23ee620429895
+::res://::1752682565
+repomix-output.xml::TextFile::-1::1752675392::0::1::::<><>::
+::res://_docs/::1752683239
+GameplayDesign.md::TextFile::-1::1752675392::0::1::::<><>::
+Hazard.md::TextFile::-1::1752676842::0::1::::<><>::
+latency.md::TextFile::-1::1752675392::0::1::::<><>::
+level1Ground.md::TextFile::-1::1752675392::0::1::::<><>::
+Mainmenu.md::TextFile::-1::1752685113::0::1::::<><>::
+menusScenes.md::TextFile::-1::1752682953::0::1::::<><>::
+params.md::TextFile::-1::1752675392::0::1::::<><>::
+physics.md::TextFile::-1::1752675392::0::1::::<><>::
+SFX.md::TextFile::-1::1752675392::0::1::::<><>::
+style.md::TextFile::-1::1752675392::0::1::::<><>::
+::res://assets/::1752675392
+::res://assets/audio/::1752675588
+Balloon Escape Factory.mp3::AudioStreamMP3::8206070679105260282::1752675392::1752675588::1::::<><>::
+bounce.mp3::AudioStreamMP3::9107122368181559716::1752675392::1752675588::1::::<><>::
+coins.mp3::AudioStreamMP3::7901847376389709318::1752675392::1752675588::1::::<><>::
+pop.mp3::AudioStreamMP3::2058950163202925655::1752675392::1752675588::1::::<><>::
+success.mp3::AudioStreamMP3::3151194912288285675::1752675392::1752675588::1::::<><>::
+::res://assets/fonts/::1752675588
+Kenney Future Narrow.ttf::FontFile::8513457004296160927::1752675392::1752675588::1::::<><>::
+Kenney Future.ttf::FontFile::1191888830290857463::1752675392::1752675588::1::::<><>::
+::res://assets/sprites/::1752675392
+::res://assets/sprites/background/::1752675588
+bg_layer1.png::CompressedTexture2D::9055781292271014096::1752675392::1752675588::1::::<><>::
+::res://assets/sprites/collectibles_and_powerups/::1752677558
+endLevel.png::CompressedTexture2D::7271042764840761317::1752675392::1752677558::1::::<><>::
+gold_1.png::CompressedTexture2D::7770782626171002347::1752675392::1752675588::1::::<><>::
+gold_2.png::CompressedTexture2D::4961529463577090600::1752675392::1752675588::1::::<><>::
+gold_3.png::CompressedTexture2D::197269280592586432::1752675392::1752675588::1::::<><>::
+jetpack.png::CompressedTexture2D::2475813519409685781::1752675392::1752675588::1::::<><>::
+jetpack_item.png::CompressedTexture2D::5246885340615533327::1752675392::1752675588::1::::<><>::
+::res://assets/sprites/environment/::1752675588
+ground_stone.png::CompressedTexture2D::6376627101721888681::1752675392::1752675588::1::::<><>::
+ground_stone_broken.png::CompressedTexture2D::1217873350915114682::1752675392::1752675588::1::::<><>::
+ground_stone_small.png::CompressedTexture2D::1898771885991249189::1752675392::1752675588::1::::<><>::
+ground_stone_small_broken.png::CompressedTexture2D::1934413432216654678::1752675392::1752675588::1::::<><>::
+ground_wood.png::CompressedTexture2D::165595163471498862::1752675392::1752675588::1::::<><>::
+ground_wood_broken.png::CompressedTexture2D::1881575544315897996::1752675392::1752675588::1::::<><>::
+ground_wood_small.png::CompressedTexture2D::3549772765016810542::1752675392::1752675588::1::::<><>::
+ground_wood_small_broken.png::CompressedTexture2D::6660159512624062090::1752675392::1752675588::1::::<><>::
+platformPack_tile004.png::CompressedTexture2D::5893765852238350109::1752675392::1752675588::1::::<><>::
+platformPack_tile034.png::CompressedTexture2D::1199564023964960820::1752675392::1752675588::1::::<><>::
+::res://assets/sprites/hazards/::1752675588
+spikes_bottom.png::CompressedTexture2D::4645057525981595265::1752675392::1752675588::1::::<><>::
+spikes_top.png::CompressedTexture2D::8203667586019862508::1752675392::1752675588::1::::<><>::
+spike_bottom.png::CompressedTexture2D::6486924403349916602::1752675392::1752675588::1::::<><>::
+spike_top.png::CompressedTexture2D::1952382968673477592::1752675392::1752675588::1::::<><>::
+spring.png::CompressedTexture2D::57287654817836701::1752675392::1752675588::1::::<><>::
+spring_in.png::CompressedTexture2D::8022793080425135513::1752675392::1752675588::1::::<><>::
+spring_out.png::CompressedTexture2D::7851334279652825319::1752675392::1752675588::1::::<><>::
+::res://assets/sprites/player/::1752677558
+ball.png::CompressedTexture2D::8220970251950762316::1752675392::1752675588::1::::<><>::
+death.png::CompressedTexture2D::4715324376886946804::1752675392::1752677558::1::::<><>::
+::res://assets/sprites/ui/::1752684630
+lives_coin_bronze.png::CompressedTexture2D::5825732135293081176::1752675392::1752675588::1::::<><>::
+start.png::CompressedTexture2D::1808320205836561332::1752684630::1752685457::1::::<><>::
+::res://BopAssets/::1752675392
+::res://BopAssets/assets/::1752675392
+::res://BopAssets/assets/background/::1752675588
+bg_layer1.png::CompressedTexture2D::6945879680719127106::1752675392::1752675588::1::::<><>::
+::res://BopAssets/assets/collectibles_and_powerups/::1752675960
+gold_1.png::CompressedTexture2D::1825224882516228972::1752675392::1752675588::1::::<><>::
+gold_2.png::CompressedTexture2D::1190387119302935012::1752675392::1752675588::1::::<><>::
+gold_3.png::CompressedTexture2D::2512755368299904449::1752675392::1752675588::1::::<><>::
+jetpack.png::CompressedTexture2D::2931813711614556912::1752675392::1752675588::1::::<><>::
+jetpack_item.png::CompressedTexture2D::7878243431060436377::1752675392::1752675588::1::::<><>::
+::res://BopAssets/assets/environment/::1752675588
+ground_stone.png::CompressedTexture2D::547254746964749841::1752675392::1752675588::1::::<><>::
+ground_stone_broken.png::CompressedTexture2D::7182484478301215561::1752675392::1752675588::1::::<><>::
+ground_stone_small.png::CompressedTexture2D::5920530557858546565::1752675392::1752675588::1::::<><>::
+ground_stone_small_broken.png::CompressedTexture2D::6862542807011331575::1752675392::1752675588::1::::<><>::
+ground_wood.png::CompressedTexture2D::2762796157845493017::1752675392::1752675588::1::::<><>::
+ground_wood_broken.png::CompressedTexture2D::1920911236381604898::1752675392::1752675588::1::::<><>::
+ground_wood_small.png::CompressedTexture2D::5259545193054983935::1752675392::1752675588::1::::<><>::
+ground_wood_small_broken.png::CompressedTexture2D::2167022817881405705::1752675392::1752675588::1::::<><>::
+platformPack_tile004.png::CompressedTexture2D::4959656382865155942::1752675392::1752675588::1::::<><>::
+platformPack_tile034.png::CompressedTexture2D::2691896846324894211::1752675392::1752675588::1::::<><>::
+::res://BopAssets/assets/hazards/::1752675588
+spikes_bottom.png::CompressedTexture2D::663950830898210423::1752675392::1752675588::1::::<><>::
+spikes_top.png::CompressedTexture2D::8358873055094092465::1752675392::1752675588::1::::<><>::
+spike_bottom.png::CompressedTexture2D::3883150255362487646::1752675392::1752675588::1::::<><>::
+spike_top.png::CompressedTexture2D::2459527082247234580::1752675392::1752675588::1::::<><>::
+spring.png::CompressedTexture2D::4173908731025172797::1752675392::1752675588::1::::<><>::
+spring_in.png::CompressedTexture2D::6480400973107942546::1752675392::1752675588::1::::<><>::
+spring_out.png::CompressedTexture2D::2318680103272890803::1752675392::1752675588::1::::<><>::
+::res://BopAssets/assets/player/::1752675907
+ball.png::CompressedTexture2D::7132219559505673927::1752675392::1752675588::1::::<><>::
+::res://BopAssets/assets/ui/::1752675588
+lives_coin_bronze.png::CompressedTexture2D::3399006749739018670::1752675392::1752675588::1::::<><>::
+::res://BopAssets/font/::1752675588
+Kenney Future Narrow.ttf::FontFile::7000552542377076331::1752675392::1752675588::1::::<><>::
+Kenney Future.ttf::FontFile::5090768802296251228::1752675392::1752675588::1::::<><>::
+::res://BopAssets/SFX/::1752675588
+Balloon Escape Factory.mp3::AudioStreamMP3::8415698812563648905::1752675392::1752675588::1::::<><>::
+bounce.mp3::AudioStreamMP3::3881155579214223749::1752675392::1752675588::1::::<><>::
+coins.mp3::AudioStreamMP3::4713675940845734844::1752675392::1752675588::1::::<><>::
+pop.mp3::AudioStreamMP3::4996625001048486516::1752675392::1752675588::1::::<><>::
+success.mp3::AudioStreamMP3::3071999385586472187::1752675392::1752675588::1::::<><>::
+::res://resources/::1752677848
+ground_tileset.tres::TileSet::3894306225433350542::1752677848::0::1::::<><>::uid://cw35d765qafl6::::res://assets/sprites/environment/ground_stone.png
+::res://scenes/::1752685272
+::res://scenes/hazards/::1752678623
+Spike.tscn::PackedScene::4718720911624324965::1752678623::0::1::::<><>::uid://cyokxx6vt27ny::::res://assets/sprites/hazards/spike_bottom.png<>res://scripts/hazards/spike.gd
+::res://scenes/levels/::1752678623
+level_1.tscn::PackedScene::1042719907978835413::1752678623::0::1::::<><>::uid://c1fnn1l64pxpx::::res://scenes/player/player.tscn<>uid://bvqowixejw8pm::::res://resources/ground_tileset.tres<>res://scripts/tilemap_painter.gd<>uid://b8h1v5p2k3nar::::res://scenes/hazards/Spike.tscn
+mvp_test.tscn::PackedScene::404610204984934029::1752678623::0::1::::<><>::uid://c1fnn1l64pxpx::::res://scenes/player/player.tscn<>uid://cw35d765qafl6::::res://assets/sprites/environment/ground_stone.png
+::res://scenes/player/::1752675392
+player.tscn::PackedScene::6608887111019891545::1752675392::0::1::::<><>::uid://dpekgc4qppjd1::::res://assets/sprites/player/ball.png<>res://scripts/player/player.gd
+::res://scenes/ui/::1752685284
+main_menu.tscn::PackedScene::4303772224247790571::1752685314::0::1::::<><>::uid://ce7y17n27iqt6::::res://assets/fonts/Kenney Future.ttf<>res://scripts/ui/main_menu.gd
+::res://scripts/::1752685304
+tilemap_painter.gd::GDScript::-1::1752675392::0::1::::<>TileMapLayer<>::
+::res://scripts/hazards/::1752678112
+spike.gd::GDScript::-1::1752679066::0::1::::Spike<>Area2D<>::
+::res://scripts/player/::1752680753
+camera_controller.gd::GDScript::-1::1752681024::0::1::::CameraController<>Camera2D<>::
+player.gd::GDScript::-1::1752680397::0::1::::Player<>RigidBody2D<>::
+::res://scripts/singletons/::1752675392
+GameState.gd::GDScript::-1::1752679684::0::1::::<>Node<>::
+SoundManager.gd::GDScript::-1::1752675392::0::1::::<>Node<>::
+SoundManager.tscn::PackedScene::3065715824871745611::1752675392::0::1::::<><>::res://scripts/singletons/SoundManager.gd
+::res://scripts/ui/::1752685304
+main_menu.gd::GDScript::-1::1752685305::0::1::::MainMenu<>Control<>::
+::res://tasks/::1752675392
+DevelopmentPlan.md::TextFile::-1::1752677575::0::1::::<><>::
+</file>
+
+<file path=".godot/editor/project_metadata.cfg">
+[editor_metadata]
+
+executable_path="/Applications/Godot.app/Contents/MacOS/Godot"
+
+[recent_files]
+
+scenes=["res://scenes/hazards/Spike.tscn", "res://scenes/levels/level_1.tscn", "res://scenes/levels/mvp_test.tscn"]
+scripts=["res://scripts/player/player.gd"]
+
+[dialog_bounds]
+
+project_settings=Rect2(4152, 3162, 2400, 1400)
 </file>
 
 <file path="tasks/DevelopmentPlan.md">
@@ -4735,6 +5220,39 @@ This plan ensures incremental builds with testing at each phase. We'll implement
 - scripts/singletons/SoundManager.gd - Sound effects management including pop sound
 </file>
 
+<file path="scenes/player/player.tscn">
+[gd_scene load_steps=5 format=3 uid="uid://c1fnn1l64pxpx"]
+
+[ext_resource type="Texture2D" uid="uid://dpekgc4qppjd1" path="res://assets/sprites/player/ball.png" id="1_mhtu1"]
+[ext_resource type="Script" path="res://scripts/player/player.gd" id="2_player"]
+[ext_resource type="Script" path="res://scripts/player/camera_controller.gd" id="3_camera"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_1"]
+radius = 32.0
+
+[node name="player" type="RigidBody2D" groups=["player"]]
+collision_layer = 2
+collision_mask = 31
+gravity_scale = 0
+script = ExtResource("2_player")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("1_mhtu1")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_1")
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+
+[node name="Camera2D" type="Camera2D" parent="."]
+enabled = true
+script = ExtResource("3_camera")
+fixed_y_position = 540.0
+follow_smoothing = 8.0
+use_auto_bounds = true
+bounds_margin = 480.0
+</file>
+
 <file path="scripts/player/player.gd">
 """
 Player Controller for Bop Game
@@ -4808,7 +5326,9 @@ func _physics_process(delta: float) -> void:
 	if not is_multiplayer_authority():
 		return
 	
-
+	# CRITICAL: Stop all input processing if player is dead
+	if not is_alive:
+		return
 	
 	# Get horizontal input using Input.get_axis for smooth movement
 	var input_dir: float = Input.get_axis("move_left", "move_right")
@@ -4903,8 +5423,24 @@ func hide_ball() -> void:
 	print("Player: Hiding ball")
 	if sprite:
 		sprite.visible = false
-	# Also stop physics processing
+	
+	# Immediately stop all movement and input processing
+	linear_velocity = Vector2.ZERO
+	angular_velocity = 0.0
+	
+	# Stop physics processing
 	set_physics_process(false)
+	
+	# Defer the freeze operation to avoid "flushing queries" error
+	# This must be deferred because we're in a collision callback
+	call_deferred("_freeze_player_body")
+	
+	print("Player: Ball hidden, physics stopped, freeze deferred")
+
+func _freeze_player_body() -> void:
+	"""Freeze the player body after physics frame completes."""
+	freeze = true
+	print("Player: Body frozen successfully")
 	
 func show_death_sprite(position: Vector2) -> void:
 	"""Show death sprite at the specified position for 2 seconds."""
@@ -4955,39 +5491,6 @@ func apply_position_data(data: Dictionary) -> void:
 	global_position = data.position
 	linear_velocity = data.velocity
 	angular_velocity = data.angular_velocity
-</file>
-
-<file path="scenes/player/player.tscn">
-[gd_scene load_steps=5 format=3 uid="uid://c1fnn1l64pxpx"]
-
-[ext_resource type="Texture2D" uid="uid://dpekgc4qppjd1" path="res://assets/sprites/player/ball.png" id="1_mhtu1"]
-[ext_resource type="Script" path="res://scripts/player/player.gd" id="2_player"]
-[ext_resource type="Script" path="res://scripts/player/camera_controller.gd" id="3_camera"]
-
-[sub_resource type="CircleShape2D" id="CircleShape2D_1"]
-radius = 32.0
-
-[node name="player" type="RigidBody2D" groups=["player"]]
-collision_layer = 2
-collision_mask = 31
-gravity_scale = 0
-script = ExtResource("2_player")
-
-[node name="Sprite2D" type="Sprite2D" parent="."]
-texture = ExtResource("1_mhtu1")
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-shape = SubResource("CircleShape2D_1")
-
-[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
-
-[node name="Camera2D" type="Camera2D" parent="."]
-enabled = true
-script = ExtResource("3_camera")
-fixed_y_position = 540.0
-follow_smoothing = 8.0
-use_auto_bounds = true
-bounds_margin = 480.0
 </file>
 
 </files>

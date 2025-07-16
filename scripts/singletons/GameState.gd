@@ -2,6 +2,7 @@
 GameState Singleton
 Manages global game state including lives, score, level progression, and player events.
 Acts as an Event Bus for game-wide communication.
+Handles level configuration including dimensions and layout parameters.
 """
 extends Node
 
@@ -17,6 +18,30 @@ var players_alive: Array[bool] = [true, true]  # For multiplayer support
 var is_game_over: bool = false
 var is_level_complete: bool = false
 
+# Level configuration data structure
+# Each level can have different dimensions and layout parameters
+var level_configs: Dictionary = {
+	1: {
+		"width_pixels": 11520,  # Total level width in pixels
+		"width_tiles": 180,     # Width in tiles (11520 / 64 = 180)
+		"left_wall_x": 50,      # Left wall position
+		"right_wall_x": 11370,  # Right wall position  
+		"gravity_zone_center_x": 5760,  # Center of gravity zones (width/2)
+		"gravity_zone_width": 11520,    # Gravity zone width
+		"camera_margin": 480    # Camera boundary margin
+	},
+	2: {
+		"width_pixels": 7680,   # Future level 2 dimensions
+		"width_tiles": 120,
+		"left_wall_x": 50,
+		"right_wall_x": 7630,
+		"gravity_zone_center_x": 3840,
+		"gravity_zone_width": 7680,
+		"camera_margin": 480
+	}
+	# Add more levels as needed
+}
+
 # Signals for event bus communication
 signal player_died
 signal life_lost(remaining_lives: int)
@@ -29,6 +54,7 @@ signal powerup_activated(type: String)
 func _ready() -> void:
 	"""Initialize GameState singleton."""
 	print("GameState: Singleton initialized")
+	print("GameState: Level configurations loaded for ", level_configs.size(), " levels")
 	
 	# Connect internal signals
 	player_died.connect(_on_player_died)
@@ -36,6 +62,46 @@ func _ready() -> void:
 	
 	# Set initial lives based on game mode
 	_set_initial_lives()
+
+# Level Configuration Methods
+func get_current_level_config() -> Dictionary:
+	"""Get the configuration for the current level."""
+	var config = level_configs.get(current_level, level_configs[1])  # Default to level 1 if not found
+	print("GameState: Retrieved config for level ", current_level, " - Width: ", config.width_pixels, "px")
+	return config
+
+func get_level_width_pixels() -> int:
+	"""Get the current level's width in pixels."""
+	return get_current_level_config().width_pixels
+
+func get_level_width_tiles() -> int:
+	"""Get the current level's width in tiles."""
+	return get_current_level_config().width_tiles
+
+func get_left_wall_position() -> float:
+	"""Get the current level's left wall X position."""
+	return get_current_level_config().left_wall_x
+
+func get_right_wall_position() -> float:
+	"""Get the current level's right wall X position."""
+	return get_current_level_config().right_wall_x
+
+func get_gravity_zone_center() -> float:
+	"""Get the current level's gravity zone center X position."""
+	return get_current_level_config().gravity_zone_center_x
+
+func get_gravity_zone_width() -> float:
+	"""Get the current level's gravity zone width."""
+	return get_current_level_config().gravity_zone_width
+
+func get_camera_margin() -> int:
+	"""Get the current level's camera boundary margin."""
+	return get_current_level_config().camera_margin
+
+func update_level_config(level: int, config: Dictionary) -> void:
+	"""Update or add a level configuration."""
+	level_configs[level] = config
+	print("GameState: Updated config for level ", level)
 
 func _set_initial_lives() -> void:
 	"""Set initial lives based on game mode."""

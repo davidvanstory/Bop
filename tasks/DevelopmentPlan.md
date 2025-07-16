@@ -126,7 +126,8 @@ The plan adheres to the rules in physics.md, SFX.md, style.md, and multiplayer.m
 
 - [ ] **Sub-task 5.3: Multiplayer Basics**
   - [ ] If selected in menu, use MultiplayerSpawner for second player.
-  - [ ] Sync positions with MultiplayerSynchronizer, handle shared lives.
+  - [ ] Sync positions with MultiplayerSynchronizer, 1 life each.
+  - [ ] Players should collide with eachother
   - [ ] Implement client-side prediction: In player.gd _physics_process, apply immediate movement for authority player and submit input via RPC.
   - [ ] Add server reconciliation: Compare predicted vs. authoritative position and correct if needed.
   - [ ] Use interpolation via MultiplayerSynchronizer for non-authority players.

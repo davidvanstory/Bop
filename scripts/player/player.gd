@@ -16,8 +16,9 @@ extends RigidBody2D
 @export var max_horizontal_speed: float = 500.0
 
 # Physics material properties (set via script for better control)
-@export var bounce_value: float = 1
+@export var bounce_value: float = 0.99  # Slightly less than 1.0 to prevent energy accumulation bugs
 @export var friction_value: float = 0.0
+@export var linear_damping_value: float = 0.01  # Small damping to counteract energy accumulation
 
 # Signals
 signal hit
@@ -47,6 +48,9 @@ func _ready() -> void:
 	physics_material.friction = friction_value
 	physics_material_override = physics_material
 	print("Player: Physics material - Bounce: ", bounce_value, ", Friction: ", friction_value)
+	
+	# Apply linear damping to the RigidBody2D 
+	linear_damp = linear_damping_value
 	
 	# Set up sprite texture if provided
 	if player_texture and sprite:
