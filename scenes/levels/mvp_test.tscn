@@ -1,8 +1,7 @@
-[gd_scene load_steps=9 format=3]
+[gd_scene load_steps=8 format=3 uid="uid://f084u3jvf7o0"]
 
-[ext_resource type="PackedScene" path="res://scenes/player/player.tscn" id="1_player"]
-[ext_resource type="Texture2D" path="res://assets/sprites/environment/ground_stone.png" id="2_ground"]
-[ext_resource type="Script" path="res://scripts/player/player.gd" id="3_1lk60"]
+[ext_resource type="PackedScene" uid="uid://c1fnn1l64pxpx" path="res://scenes/player/player.tscn" id="1_player"]
+[ext_resource type="Texture2D" uid="uid://cw35d765qafl6" path="res://assets/sprites/environment/ground_stone.png" id="2_ground"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_floor"]
 size = Vector2(1920, 100)
@@ -25,7 +24,6 @@ size = Vector2(1920, 540)
 
 [node name="Floor" type="StaticBody2D" parent="Environment"]
 position = Vector2(960, 1030)
-collision_layer = 1
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Environment/Floor"]
 shape = SubResource("RectangleShape2D_floor")
@@ -37,7 +35,6 @@ texture = ExtResource("2_ground")
 
 [node name="Ceiling" type="StaticBody2D" parent="Environment"]
 position = Vector2(960, 50)
-collision_layer = 1
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Environment/Ceiling"]
 shape = SubResource("RectangleShape2D_ceiling")
@@ -49,7 +46,6 @@ texture = ExtResource("2_ground")
 
 [node name="LeftWall" type="StaticBody2D" parent="Environment"]
 position = Vector2(50, 540)
-collision_layer = 1
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Environment/LeftWall"]
 shape = SubResource("RectangleShape2D_walls")
@@ -61,7 +57,6 @@ texture = ExtResource("2_ground")
 
 [node name="RightWall" type="StaticBody2D" parent="Environment"]
 position = Vector2(1870, 540)
-collision_layer = 1
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Environment/RightWall"]
 shape = SubResource("RectangleShape2D_walls")
@@ -75,7 +70,7 @@ texture = ExtResource("2_ground")
 
 [node name="UpperGravityZone" type="Area2D" parent="GravityZones"]
 position = Vector2(960, 270)
-space_override = 1
+gravity_point_center = Vector2(0, -1)
 gravity_direction = Vector2(0, -1)
 gravity = 1400.0
 
@@ -84,12 +79,11 @@ shape = SubResource("RectangleShape2D_upper_gravity")
 
 [node name="LowerGravityZone" type="Area2D" parent="GravityZones"]
 position = Vector2(960, 810)
-space_override = 1
-gravity_direction = Vector2(0, 1)
 gravity = 1400.0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="GravityZones/LowerGravityZone"]
 shape = SubResource("RectangleShape2D_lower_gravity")
 
-[node name="Player" type="RigidBody2D" parent="." instance=ExtResource("1_player")]
+[node name="Player" parent="." instance=ExtResource("1_player")]
 position = Vector2(960, 540)
+gravity_scale = 0.0

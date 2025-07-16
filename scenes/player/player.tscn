@@ -19,3 +19,6 @@ texture = ExtResource("1_mhtu1")
 shape = SubResource("CircleShape2D_1")
 
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+
+[node name="Camera2D" type="Camera2D" parent="."]
+enabled = true
