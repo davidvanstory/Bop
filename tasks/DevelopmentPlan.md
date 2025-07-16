@@ -90,9 +90,10 @@ The plan adheres to the rules in physics.md, SFX.md, style.md, and multiplayer.m
   - [x] Create TileSet resource with ground_stone.png and physics collision.
   - [x] Paint floor tiles (y=16) and ceiling tiles (y=0) across scrolling width (61 tiles wide).
   - [x] Apply red modulation Color(1, 0.5, 0.5, 1) to TileMapLayer per style guide.
-  - [ ] Place static spikes (StaticBody2D with spike_bottom.png from assets/sprites/hazards/, hazards layer).
+  
 
 - [ ] **Sub-task 4.2: Add Hazards and Pop Effect**
+  - [ ] Place static spikes (StaticBody2D with spike_bottom.png from assets/sprites/hazards/, hazards layer).
   - [ ] Create Spike.tscn in scenes/hazards/ with collision detection.
   - [ ] On collision with player (use groups 'hazards'), trigger pop: Play 'pop' sound, show 'Pop!' label, deduct life via GameState, restart level.
 
