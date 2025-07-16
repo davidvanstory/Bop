@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3]
+[gd_scene load_steps=9 format=3]
 
 [ext_resource type="PackedScene" path="res://scenes/player/player.tscn" id="1_player"]
 [ext_resource type="Texture2D" path="res://assets/sprites/environment/ground_stone.png" id="2_ground"]
@@ -12,6 +12,12 @@ size = Vector2(1920, 100)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_walls"]
 size = Vector2(100, 1080)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_upper_gravity"]
+size = Vector2(1920, 540)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_lower_gravity"]
+size = Vector2(1920, 540)
 
 [node name="MVPTestLevel" type="Node2D"]
 
@@ -65,5 +71,25 @@ modulate = Color(1, 0.5, 0.5, 1)
 scale = Vector2(1.5, 17)
 texture = ExtResource("2_ground")
 
+[node name="GravityZones" type="Node2D" parent="."]
+
+[node name="UpperGravityZone" type="Area2D" parent="GravityZones"]
+position = Vector2(960, 270)
+space_override = 1
+gravity_direction = Vector2(0, -1)
+gravity = 980.0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="GravityZones/UpperGravityZone"]
+shape = SubResource("RectangleShape2D_upper_gravity")
+
+[node name="LowerGravityZone" type="Area2D" parent="GravityZones"]
+position = Vector2(960, 810)
+space_override = 1
+gravity_direction = Vector2(0, 1)
+gravity = 980.0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="GravityZones/LowerGravityZone"]
+shape = SubResource("RectangleShape2D_lower_gravity")
+
 [node name="Player" type="RigidBody2D" parent="." instance=ExtResource("1_player")]
-position = Vector2(960, 200)
+position = Vector2(960, 540)

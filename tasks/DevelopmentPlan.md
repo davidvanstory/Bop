@@ -28,10 +28,18 @@ The plan adheres to the rules in physics.md, SFX.md, style.md, and multiplayer.m
   - [x] Add StaticBody2D for walls/floor/ceiling with collision shapes.
   - [x] No camera following for non-scrolling MVP.
 
-- [ ] **Sub-task 1.4: Testing**
-  - [ ] Run the scene: Ball should bounce automatically between floor and ceiling.
+- [ ] **Sub-task 1.4: Implement Metronome Gravity Zones**
+  - [ ] Create Upper Gravity Zone (Area2D) from y=0 to y=540 with upward gravity (-980).
+  - [ ] Create Lower Gravity Zone (Area2D) from y=540 to y=1080 with downward gravity (+980).
+  - [ ] Use space_override = SPACE_OVERRIDE_REPLACE in both zones.
+  - [ ] Modify player spawn position to midpoint (y=540) for immediate oscillation.
+  - [ ] Set player gravity_scale to 0 (let zones handle all gravity).
+  - [ ] Ensure perfect bounce (1.0) for perpetual motion.
+
+- [ ] **Sub-task 1.5: Testing**
+  - [ ] Run the scene: Ball should oscillate automatically between floor and ceiling like a metronome.
   - [ ] Test horizontal movement: Smooth acceleration/deceleration with left/right keys.
-  - [ ] Verify: No falling through floor, consistent bounce rhythm. Multiplayer hook doesn't affect single-player.
+  - [ ] Verify: Gravity reverses at midpoint, consistent metronome rhythm. Multiplayer hook doesn't affect single-player.
 
 ## [ ] Phase 2: Add Sound Effects to MVP
 **Goal:** Integrate sound for bouncing and basic events, using SoundManager.
