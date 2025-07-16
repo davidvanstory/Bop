@@ -12,7 +12,7 @@ extends RigidBody2D
 @export var pop_sound: AudioStream
 
 # Movement parameters
-@export var horizontal_force: float = 8000.0
+@export var horizontal_force: float = 60000.0
 @export var max_horizontal_speed: float = 500.0
 
 # Physics material properties (set via script for better control)
