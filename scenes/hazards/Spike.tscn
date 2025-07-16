@@ -1,0 +1,19 @@
+[gd_scene load_steps=4 format=3 uid="uid://b8h1v5p2k3nar"]
+
+[ext_resource type="Texture2D" uid="uid://cyokxx6vt27ny" path="res://assets/sprites/hazards/spike_bottom.png" id="1_spike_texture"]
+[ext_resource type="Script" path="res://scripts/hazards/spike.gd" id="2_spike_script"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_spike"]
+size = Vector2(64, 64)
+
+[node name="Spike" type="Area2D" groups=["hazards"]]
+collision_layer = 4
+collision_mask = 2
+monitoring = true
+script = ExtResource("2_spike_script")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("1_spike_texture")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_spike")

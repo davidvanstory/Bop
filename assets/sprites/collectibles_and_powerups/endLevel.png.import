@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://dbufan5uqp4sv"
-path="res://.godot/imported/endLevel.png-54f767be1f23d637f823f297b6346b6f.ctex"
+path="res://.godot/imported/endLevel.png-7f121645873897a105c3399e80a4cb35.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://BopAssets/assets/collectibles_and_powerups/endLevel.png"
-dest_files=["res://.godot/imported/endLevel.png-54f767be1f23d637f823f297b6346b6f.ctex"]
+source_file="res://assets/sprites/collectibles_and_powerups/endLevel.png"
+dest_files=["res://.godot/imported/endLevel.png-7f121645873897a105c3399e80a4cb35.ctex"]
 
 [params]
 

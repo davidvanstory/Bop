@@ -92,10 +92,10 @@ The plan adheres to the rules in physics.md, SFX.md, style.md, and multiplayer.m
   - [x] Apply red modulation Color(1, 0.5, 0.5, 1) to TileMapLayer per style guide.
   
 
-- [ ] **Sub-task 4.2: Add Hazards and Pop Effect**
-  - [ ] Place static spikes (StaticBody2D with spike_bottom.png from assets/sprites/hazards/, hazards layer).
-  - [ ] Create Spike.tscn in scenes/hazards/ with collision detection.
-  - [ ] On collision with player (use groups 'hazards'), trigger pop: Play 'pop' sound, show 'Pop!' label, deduct life via GameState, restart level.
+- [x] **Sub-task 4.2: Add Hazards and Pop Effect**
+  - [x] Place static spikes (StaticBody2D with spike_bottom.png from assets/sprites/hazards/, hazards layer).
+  - [x] Create Spike.tscn in scenes/hazards/ with collision detection.
+  - [x] On collision with player (use groups 'hazards'), trigger pop: Play 'pop' sound, show 'Pop!' label, deduct life via GameState, restart level.
 
 - [ ] **Sub-task 4.3: Add Power-Ups and Collectibles**
   - [ ] Create PowerUp.tscn (Area2D) with jetpack.png from assets/sprites/collectibles_and_powerups/, signal on body_entered to apply effect (change gravity_scale).
@@ -142,11 +142,12 @@ The plan adheres to the rules in physics.md, SFX.md, style.md, and multiplayer.m
 This plan ensures incremental builds with testing at each phase. We'll implement step-by-step using Godot tools.
 
 ## Relevant Files
-- scenes/levels/level_1.tscn - New scrolling level with TileMapLayer for floor/ceiling and Camera2D
+- scenes/levels/level_1.tscn - New scrolling level with TileMapLayer for floor/ceiling and Camera2D, now includes spike hazard
 - scenes/player/player.tscn - Player scene with Camera2D for scrolling camera
 - scenes/levels/mvp_test.tscn - Original MVP test scene with StaticBody2D
+- scenes/hazards/Spike.tscn - Spike hazard scene with Area2D, collision detection, and hazards group
 - resources/ground_tileset.tres - TileSet resource with ground_stone.png and physics collision
 - scripts/tilemap_painter.gd - Script to programmatically paint floor/ceiling tiles on TileMapLayer
-- scripts/player/player.gd - Player script with physics and input handling
-- scripts/singletons/GameState.gd - Game state management
-- scripts/singletons/SoundManager.gd - Sound effects management 
+- scripts/player/player.gd - Player script with physics, input handling, and hazard collision detection
+- scripts/singletons/GameState.gd - Game state management with player death handling
+- scripts/singletons/SoundManager.gd - Sound effects management including pop sound

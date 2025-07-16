@@ -1,8 +1,9 @@
-[gd_scene load_steps=7 format=3 uid="uid://o4dpd5iks8mj"]
+[gd_scene load_steps=8 format=3 uid="uid://o4dpd5iks8mj"]
 
 [ext_resource type="PackedScene" uid="uid://c1fnn1l64pxpx" path="res://scenes/player/player.tscn" id="1_player"]
 [ext_resource type="TileSet" uid="uid://bvqowixejw8pm" path="res://resources/ground_tileset.tres" id="2_tileset"]
 [ext_resource type="Script" path="res://scripts/tilemap_painter.gd" id="3_painter"]
+[ext_resource type="PackedScene" uid="uid://b8h1v5p2k3nar" path="res://scenes/hazards/Spike.tscn" id="4_spike"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_walls"]
 size = Vector2(100, 1080)
@@ -33,6 +34,9 @@ position = Vector2(3790, 540)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Environment/RightWall"]
 shape = SubResource("RectangleShape2D_walls")
+
+[node name="Spike1" parent="Environment" instance=ExtResource("4_spike")]
+position = Vector2(1500, 950)
 
 [node name="GravityZones" type="Node2D" parent="."]
 

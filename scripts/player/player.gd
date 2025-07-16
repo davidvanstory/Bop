@@ -19,6 +19,9 @@ extends RigidBody2D
 @export var bounce_value: float = 1
 @export var friction_value: float = 0.0
 
+# Signals
+signal hit
+
 # References to child nodes
 @onready var sprite: Sprite2D = $Sprite2D
 @onready var collision_shape: CollisionShape2D = $CollisionShape2D
@@ -122,6 +125,9 @@ func _handle_hazard_collision() -> void:
 		
 	print("Player: Hit hazard! Triggering death sequence")
 	is_alive = false
+	
+	# Emit hit signal for hazards to connect to
+	hit.emit()
 	
 	# Play pop sound
 	if has_node("/root/SoundManager"):
