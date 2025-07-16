@@ -1,0 +1,73 @@
+[gd_scene load_steps=7 format=3]
+
+[ext_resource type="PackedScene" path="res://scenes/player/player.tscn" id="1_player"]
+[ext_resource type="Texture2D" path="res://assets/sprites/environment/ground_stone.png" id="2_ground"]
+[ext_resource type="Script" path="res://scripts/player/player.gd" id="3_1lk60"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_floor"]
+size = Vector2(1920, 100)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ceiling"]
+size = Vector2(1920, 100)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_walls"]
+size = Vector2(100, 1080)
+
+[node name="MVPTestLevel" type="Node2D"]
+
+[node name="Environment" type="Node2D" parent="."]
+
+[node name="Floor" type="StaticBody2D" parent="Environment"]
+position = Vector2(960, 1030)
+collision_layer = 1
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Environment/Floor"]
+shape = SubResource("RectangleShape2D_floor")
+
+[node name="Sprite2D" type="Sprite2D" parent="Environment/Floor"]
+modulate = Color(1, 0.5, 0.5, 1)
+scale = Vector2(30, 1.5)
+texture = ExtResource("2_ground")
+
+[node name="Ceiling" type="StaticBody2D" parent="Environment"]
+position = Vector2(960, 50)
+collision_layer = 1
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Environment/Ceiling"]
+shape = SubResource("RectangleShape2D_ceiling")
+
+[node name="Sprite2D" type="Sprite2D" parent="Environment/Ceiling"]
+modulate = Color(1, 0.5, 0.5, 1)
+scale = Vector2(30, 1.5)
+texture = ExtResource("2_ground")
+
+[node name="LeftWall" type="StaticBody2D" parent="Environment"]
+position = Vector2(50, 540)
+collision_layer = 1
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Environment/LeftWall"]
+shape = SubResource("RectangleShape2D_walls")
+
+[node name="Sprite2D" type="Sprite2D" parent="Environment/LeftWall"]
+modulate = Color(1, 0.5, 0.5, 1)
+scale = Vector2(1.5, 17)
+texture = ExtResource("2_ground")
+
+[node name="RightWall" type="StaticBody2D" parent="Environment"]
+position = Vector2(1870, 540)
+collision_layer = 1
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Environment/RightWall"]
+shape = SubResource("RectangleShape2D_walls")
+
+[node name="Sprite2D" type="Sprite2D" parent="Environment/RightWall"]
+modulate = Color(1, 0.5, 0.5, 1)
+scale = Vector2(1.5, 17)
+texture = ExtResource("2_ground")
+
+[node name="Player" type="RigidBody2D" parent="." instance=ExtResource("1_player")]
+position = Vector2(960, 800)
+collision_layer = 2
+collision_mask = 29
+linear_damp = 0.5
+script = ExtResource("3_1lk60")
