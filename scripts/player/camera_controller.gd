@@ -47,6 +47,11 @@ func _process(delta: float) -> void:
 	if not target_player:
 		return
 	
+	# Stop following if the player is dead
+	if "is_alive" in target_player and not target_player.is_alive:
+		print("CameraController: Player is dead, stopping camera movement")
+		return
+	
 	# Calculate target horizontal position
 	var target_x = target_player.global_position.x + horizontal_offset
 	

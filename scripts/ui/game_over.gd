@@ -52,21 +52,30 @@ func _ready() -> void:
 
 func _input(event: InputEvent) -> void:
 	"""Handle any input to return to main menu."""
-	print("GameOver: Input event received: ", event)
+	# Only log meaningful events (not mouse movement spam)
+	var should_log = false
 	
 	# Check for any key press or mouse click
 	if event is InputEventKey and event.pressed:
 		print("GameOver: Key pressed (", event.keycode, ") - returning to main menu")
 		_return_to_menu()
+		should_log = true
 	elif event is InputEventMouseButton and event.pressed:
 		print("GameOver: Mouse button pressed (", event.button_index, ") - returning to main menu")
 		_return_to_menu()
+		should_log = true
 	elif event.is_action_pressed("ui_accept"):
 		print("GameOver: UI accept pressed - returning to main menu")
 		_return_to_menu()
+		should_log = true
 	elif event.is_action_pressed("ui_cancel"):
 		print("GameOver: UI cancel pressed - returning to main menu")
 		_return_to_menu()
+		should_log = true
+	
+	# Optional: Log only if it's a meaningful event and debugging is needed
+	# if should_log:
+	#     print("GameOver: Meaningful input event: ", event)
 
 func _on_background_input(event: InputEvent) -> void:
 	"""Backup input handler for background ColorRect."""

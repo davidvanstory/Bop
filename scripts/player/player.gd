@@ -70,7 +70,9 @@ func _physics_process(delta: float) -> void:
 	if not is_multiplayer_authority():
 		return
 	
-
+	# CRITICAL: Stop all input processing if player is dead
+	if not is_alive:
+		return
 	
 	# Get horizontal input using Input.get_axis for smooth movement
 	var input_dir: float = Input.get_axis("move_left", "move_right")
@@ -165,8 +167,24 @@ func hide_ball() -> void:
 	print("Player: Hiding ball")
 	if sprite:
 		sprite.visible = false
-	# Also stop physics processing
+	
+	# Immediately stop all movement and input processing
+	linear_velocity = Vector2.ZERO
+	angular_velocity = 0.0
+	
+	# Stop physics processing
 	set_physics_process(false)
+	
+	# Defer the freeze operation to avoid "flushing queries" error
+	# This must be deferred because we're in a collision callback
+	call_deferred("_freeze_player_body")
+	
+	print("Player: Ball hidden, physics stopped, freeze deferred")
+
+func _freeze_player_body() -> void:
+	"""Freeze the player body after physics frame completes."""
+	freeze = true
+	print("Player: Body frozen successfully")
 	
 func show_death_sprite(position: Vector2) -> void:
 	"""Show death sprite at the specified position for 2 seconds."""
