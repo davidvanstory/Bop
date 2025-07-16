@@ -126,6 +126,15 @@ func _handle_hazard_collision() -> void:
 	print("Player: Hit hazard! Triggering death sequence")
 	is_alive = false
 	
+	# Store current position for death sprite
+	var death_position = global_position
+	
+	# Hide the ball immediately
+	hide_ball()
+	
+	# Show death sprite at the ball's last position
+	show_death_sprite(death_position)
+	
 	# Emit hit signal for hazards to connect to
 	hit.emit()
 	
@@ -136,8 +145,6 @@ func _handle_hazard_collision() -> void:
 	# Emit signal to GameState for life management
 	if has_node("/root/GameState"):
 		get_node("/root/GameState").emit_signal("player_died")
-	
-	# Could add visual effects here (death animation, particle effects)
 
 func _on_body_entered(body: Node) -> void:
 	"""Handle Area2D body entered signals (for collectibles, power-ups)."""
@@ -152,6 +159,44 @@ func _on_body_entered(body: Node) -> void:
 	if body.is_in_group("powerups"):
 		print("Player: Power-up collected: ", body.name)
 		# Let the power-up handle itself and apply effects
+
+func hide_ball() -> void:
+	"""Hide the player ball when dead."""
+	print("Player: Hiding ball")
+	if sprite:
+		sprite.visible = false
+	# Also stop physics processing
+	set_physics_process(false)
+	
+func show_death_sprite(position: Vector2) -> void:
+	"""Show death sprite at the specified position for 2 seconds."""
+	print("Player: Showing death sprite at position: ", position)
+	
+	# Create a new Sprite2D node for the death animation
+	var death_sprite = Sprite2D.new()
+	death_sprite.texture = load("res://assets/sprites/player/death.png")
+	death_sprite.global_position = position
+	
+	# Add it to the scene tree (parent it to the main scene)
+	get_tree().current_scene.add_child(death_sprite)
+	
+	# Create a timer to remove the death sprite after 2 seconds
+	var timer = Timer.new()
+	timer.wait_time = 2.0
+	timer.one_shot = true
+	get_tree().current_scene.add_child(timer)
+	
+	# Connect timer timeout to remove death sprite
+	timer.timeout.connect(func(): 
+		print("Player: Removing death sprite")
+		if death_sprite and is_instance_valid(death_sprite):
+			death_sprite.queue_free()
+		if timer and is_instance_valid(timer):
+			timer.queue_free()
+	)
+	
+	timer.start()
+	print("Player: Death sprite timer started for 2 seconds")
 
 # Multiplayer support methods
 func set_player_id(id: int) -> void:

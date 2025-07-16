@@ -6,7 +6,7 @@ Acts as an Event Bus for game-wide communication.
 extends Node
 
 # Game state variables
-var player_lives: int = 3
+var player_lives: int = 1
 var current_score: int = 0
 var current_level: int = 1
 var game_mode: String = "single"  # "single" or "multi"
@@ -41,11 +41,11 @@ func _set_initial_lives() -> void:
 	"""Set initial lives based on game mode."""
 	match game_mode:
 		"single":
-			player_lives = 3
+			player_lives = 1
 		"multi":
-			player_lives = 5
+			player_lives = 1  # Also using single life for multiplayer for now
 		_:
-			player_lives = 3
+			player_lives = 1
 	
 	print("GameState: Lives set to ", player_lives, " for ", game_mode, " player mode")
 
