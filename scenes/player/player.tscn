@@ -1,7 +1,8 @@
-[gd_scene load_steps=4 format=3 uid="uid://c1fnn1l64pxpx"]
+[gd_scene load_steps=5 format=3 uid="uid://c1fnn1l64pxpx"]
 
 [ext_resource type="Texture2D" uid="uid://dpekgc4qppjd1" path="res://assets/sprites/player/ball.png" id="1_mhtu1"]
 [ext_resource type="Script" path="res://scripts/player/player.gd" id="2_player"]
+[ext_resource type="Script" path="res://scripts/player/camera_controller.gd" id="3_camera"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_1"]
 radius = 32.0
@@ -22,3 +23,8 @@ shape = SubResource("CircleShape2D_1")
 
 [node name="Camera2D" type="Camera2D" parent="."]
 enabled = true
+script = ExtResource("3_camera")
+fixed_y_position = 540.0
+follow_smoothing = 8.0
+use_auto_bounds = true
+bounds_margin = 480.0
