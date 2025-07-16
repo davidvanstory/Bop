@@ -10,6 +10,7 @@ Step 1: Create the MainMenu.tscn Scene
     Inside the VBoxContainer, add a Label with the text 'Bop'. Use a custom font from the assets folder and set the font size to be very large, like 150.
     Below the title Label, add a Button node. Set its text to 'Start Game'."
     (Note: I've simplified this to just a "Start" button for now. We can easily add the 1-Player/2-Player selection later, but this gets the core flow working.)
+    Make the code flexible so that new background image can be placed as the textureNode with textureButtons later on. 
 
 Step 2: Create the main_menu.gd Script
     This script will handle the button press to start the game.

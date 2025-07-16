@@ -71,6 +71,9 @@ func _on_player_died() -> void:
 		is_game_over = true
 		game_over.emit()
 		print("GameState: Game Over!")
+		
+		# Add 5-second delay before showing game over screen
+		_start_game_over_timer()
 
 func _on_hoop_collected(value: int) -> void:
 	"""Handle hoop/collectible collection."""
@@ -115,6 +118,30 @@ func _restart_level() -> void:
 	# This will be implemented to reload the current scene
 	# For now, just reset player state
 	is_level_complete = false
+
+func _start_game_over_timer() -> void:
+	"""Start a 5-second timer before transitioning to game over screen."""
+	print("GameState: Starting 5-second game over timer")
+	
+	# Create timer node
+	var timer = Timer.new()
+	add_child(timer)
+	
+	# Configure timer
+	timer.wait_time = 5.0
+	timer.one_shot = true
+	
+	# Connect timeout signal
+	timer.timeout.connect(_on_game_over_timeout)
+	
+	# Start the timer
+	timer.start()
+	print("GameState: Game over timer started - 5 seconds until transition")
+
+func _on_game_over_timeout() -> void:
+	"""Handle game over timer timeout - transition to game over screen."""
+	print("GameState: Game over timer expired - transitioning to game over screen")
+	get_tree().change_scene_to_file("res://scenes/ui/game_over.tscn")
 
 func get_game_data() -> Dictionary:
 	"""Get current game state data."""
