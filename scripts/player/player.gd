@@ -12,11 +12,11 @@ extends RigidBody2D
 @export var pop_sound: AudioStream
 
 # Movement parameters
-@export var horizontal_force: float = 2000.0
+@export var horizontal_force: float = 8000.0
 @export var max_horizontal_speed: float = 500.0
 
 # Physics material properties (set via script for better control)
-@export var bounce_value: float = 1.0
+@export var bounce_value: float = 1
 @export var friction_value: float = 0.0
 
 # References to child nodes
@@ -33,7 +33,7 @@ func _ready() -> void:
 	"""Initialize the player with proper settings."""
 	
 	print("Player: Initializing...")
-	
+
 	# Create and assign physics material
 	var physics_material = PhysicsMaterial.new()
 	physics_material.bounce = bounce_value
@@ -60,10 +60,6 @@ func _physics_process(delta: float) -> void:
 	# Get horizontal input using Input.get_axis for smooth movement
 	var input_dir: float = Input.get_axis("move_left", "move_right")
 	
-	# Debug input detection
-	if input_dir != 0.0:
-		print("Player: Input detected - direction: ", input_dir, " velocity: ", linear_velocity)
-	
 	# Apply horizontal force if input detected
 	if input_dir != 0.0:
 		# Check if we're below max speed before applying more force
@@ -74,6 +70,9 @@ func _physics_process(delta: float) -> void:
 		# Clamp velocity to prevent exceeding max speed
 		if abs(linear_velocity.x) > max_horizontal_speed:
 			linear_velocity.x = sign(linear_velocity.x) * max_horizontal_speed
+	else:
+		# EXPERIMENT: Stop horizontal movement immediately when no input
+		linear_velocity.x = 0.0
 
 func _integrate_forces(state: PhysicsDirectBodyState2D) -> void:
 	"""Handle collision detection and sound effects."""
@@ -84,7 +83,6 @@ func _integrate_forces(state: PhysicsDirectBodyState2D) -> void:
 		
 		# Detect floor/ceiling bounces (vertical collisions)
 		if abs(contact.y) > 0.7:  # Mostly vertical collision
-			print("Player: Vertical collision detected with ", collider)
 			_handle_bounce_collision()
 		
 		# Handle hazard collisions
