@@ -159,6 +159,20 @@ func complete_level() -> void:
 	is_level_complete = true
 	level_complete.emit()
 	print("GameState: Level ", current_level, " complete!")
+	
+	# Start a 3-second timer before transitioning to level complete screen
+	var timer = Timer.new()
+	add_child(timer)
+	timer.wait_time = 3.0
+	timer.one_shot = true
+	timer.timeout.connect(_on_level_complete_timeout)
+	timer.start()
+	print("GameState: Starting 3-second level complete timer")
+
+func _on_level_complete_timeout() -> void:
+	"""Handle level complete timer timeout - transition to level complete screen."""
+	print("GameState: Level complete timer expired - transitioning to level complete screen")
+	get_tree().change_scene_to_file("res://scenes/ui/level_complete.tscn")
 
 func next_level() -> void:
 	"""Progress to the next level."""
@@ -177,6 +191,10 @@ func reset_game() -> void:
 	players_alive = [true, true]
 	_set_initial_lives()
 	print("GameState: Game reset")
+
+func reset_game_state() -> void:
+	"""Alias for reset_game to match existing UI code."""
+	reset_game()
 
 func _restart_level() -> void:
 	"""Restart the current level."""

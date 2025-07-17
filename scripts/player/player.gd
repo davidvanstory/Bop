@@ -189,6 +189,16 @@ func _freeze_player_body() -> void:
 	"""Freeze the player body after physics frame completes."""
 	freeze = true
 	print("Player: Body frozen successfully")
+
+func halt_movement() -> void:
+	"""Halt all player movement - used when level is completed."""
+	print("Player: Halting all movement")
+	is_alive = false
+	linear_velocity = Vector2.ZERO
+	angular_velocity = 0.0
+	set_physics_process(false)
+	set_process_input(false)
+	call_deferred("_freeze_player_body")
 	
 func show_death_sprite(position: Vector2) -> void:
 	"""Show death sprite at the specified position for 2 seconds."""

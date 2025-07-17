@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://o4dpd5iks8mj"]
+[gd_scene load_steps=11 format=3 uid="uid://o4dpd5iks8mj"]
 
 [ext_resource type="PackedScene" uid="uid://c1fnn1l64pxpx" path="res://scenes/player/player.tscn" id="1_player"]
 [ext_resource type="TileSet" uid="uid://bvqowixejw8pm" path="res://resources/ground_tileset.tres" id="2_tileset"]
@@ -11,6 +11,7 @@
 [ext_resource type="PackedScene" uid="uid://b2lav7w8x1m4n" path="res://scenes/environment/WoodPlatform.tscn" id="9_wood_platform"]
 [ext_resource type="PackedScene" uid="uid://d4v8x7n2m9k3l" path="res://scenes/environment/WoodBlock.tscn" id="10_wood_block"]
 [ext_resource type="PackedScene" uid="uid://b5k8m1n4p7q2r" path="res://scenes/environment/WoodPlatformSmall.tscn" id="11_wood_platform_small"]
+[ext_resource type="PackedScene" uid="uid://bx4end_level" path="res://scenes/collectibles/end_level.tscn" id="12_end_level"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_walls"]
 size = Vector2(100, 1080)
@@ -66,13 +67,52 @@ position = Vector2(2400, 150)
 [node name="TopSpike2" parent="Environment/Hazards" instance=ExtResource("5_spike_top_standard")]
 position = Vector2(2464, 150)
 
+# Alternating spikes underneath platforms 7300-8300 (pointing down)
+# Platform 7300 spikes - alternating pattern with ~75px gaps for ball to just fit through
+[node name="TopSpikeUnder7300_1" parent="Environment/Hazards" instance=ExtResource("5_spike_top_standard")]
+position = Vector2(7200, 624)
+
+[node name="TopSpikeUnder7300_2" parent="Environment/Hazards" instance=ExtResource("5_spike_top_standard")]
+position = Vector2(7350, 624)
+
+[node name="TopSpikeUnder7300_3" parent="Environment/Hazards" instance=ExtResource("5_spike_top_standard")]
+position = Vector2(7500, 624)
+
+# Platform 7700 spikes - offset pattern for variation  
+[node name="TopSpikeUnder7700_1" parent="Environment/Hazards" instance=ExtResource("5_spike_top_standard")]
+position = Vector2(7625, 624)
+
+[node name="TopSpikeUnder7700_2" parent="Environment/Hazards" instance=ExtResource("5_spike_top_standard")]
+position = Vector2(7775, 624)
+
+# Platform 8100 spikes - similar to first platform pattern
+[node name="TopSpikeUnder8100_1" parent="Environment/Hazards" instance=ExtResource("5_spike_top_standard")]
+position = Vector2(8000, 624)
+
+[node name="TopSpikeUnder8100_2" parent="Environment/Hazards" instance=ExtResource("5_spike_top_standard")]
+position = Vector2(8150, 624)
+
+[node name="TopSpikeUnder8100_3" parent="Environment/Hazards" instance=ExtResource("5_spike_top_standard")]
+position = Vector2(8300, 624)
+
+[node name="TopSpikeOnPlatform10000" parent="Environment/Hazards" instance=ExtResource("4_spike_bottom_standard")]
+position = Vector2(10000, 456)
+
 [node name="Platforms" type="Node2D" parent="Environment"]
 
 [node name="WoodPlatform" parent="Environment/Platforms" instance=ExtResource("9_wood_platform")]
-position = Vector2(7000, 540)
+position = Vector2(7300, 540)
 
-[node name="WoodPlatformSmall" parent="Environment/Platforms" instance=ExtResource("11_wood_platform_small")]
-position = Vector2(1000, 540)
+
+# Platforms between 7300-8300 with alternating spikes underneath
+[node name="WoodPlatform7300" parent="Environment/Platforms" instance=ExtResource("9_wood_platform")]
+position = Vector2(7300, 540)
+
+[node name="WoodPlatform7700" parent="Environment/Platforms" instance=ExtResource("9_wood_platform")]
+position = Vector2(7700, 540)
+
+[node name="WoodPlatform8100" parent="Environment/Platforms" instance=ExtResource("9_wood_platform")]
+position = Vector2(8100, 540)
 
 # Stack of wooden blocks between X 9000-9500 from floor to halfway up scene
 # Floor is at y=1024, halfway is at y=540, wood blocks are 70x70 pixels
@@ -224,6 +264,14 @@ position = Vector2(9455, 639)
 
 [node name="WoodBlockStack7_7" parent="Environment/Platforms" instance=ExtResource("10_wood_block")]
 position = Vector2(9455, 569)
+
+[node name="WoodPlatform10000" parent="Environment/Platforms" instance=ExtResource("9_wood_platform")]
+position = Vector2(10000, 540)
+
+[node name="Collectibles" type="Node2D" parent="Environment"]
+
+[node name="EndLevel" parent="Environment/Collectibles" instance=ExtResource("12_end_level")]
+position = Vector2(11000, 500)
 
 [node name="GravityZones" type="Node2D" parent="."]
 

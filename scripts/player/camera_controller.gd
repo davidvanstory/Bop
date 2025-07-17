@@ -108,4 +108,10 @@ func set_bounds(min_x: float, max_x: float) -> void:
 
 func get_bounds() -> Vector2:
 	"""Get current camera bounds as Vector2(min_x, max_x)."""
-	return Vector2(min_x_position, max_x_position) 
+	return Vector2(min_x_position, max_x_position)
+
+func halt_camera() -> void:
+	"""Halt camera movement - used when level is completed."""
+	print("CameraController: Halting camera movement")
+	set_physics_process(false)
+	set_process(false) 
