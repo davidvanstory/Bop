@@ -81,12 +81,8 @@ func _physics_process(delta: float) -> void:
 	# Get horizontal input using Input.get_axis for smooth movement
 	var input_dir: float = Input.get_axis("move_left", "move_right")
 	
-	# Apply movement locally for immediate response
+	# Apply movement directly - each player controls their own character
 	_apply_movement(input_dir, delta)
-	
-	# In multiplayer, send input to server for authoritative processing
-	if GameState.game_mode == "multi" and multiplayer.has_multiplayer_peer() and not multiplayer.is_server():
-		rpc_id(1, "_server_process_input", input_dir, delta)
 
 func _apply_movement(input_dir: float, delta: float) -> void:
 	"""Apply movement based on input direction."""
@@ -104,11 +100,6 @@ func _apply_movement(input_dir: float, delta: float) -> void:
 		# EXPERIMENT: Stop horizontal movement immediately when no input
 		linear_velocity.x = 0.0
 
-@rpc("any_peer", "call_local", "reliable")
-func _server_process_input(input_dir: float, delta: float) -> void:
-	"""Process player input on server (authoritative) for multiplayer."""
-	if multiplayer.is_server():
-		_apply_movement(input_dir, delta)
 
 func _integrate_forces(state: PhysicsDirectBodyState2D) -> void:
 	"""Handle collision detection and sound effects."""

@@ -88,8 +88,9 @@ func _handle_multiplayer_spawning() -> void:
 		for peer_id in multiplayer.get_peers():
 			_spawn_player_for_peer(peer_id)
 	else:
-		# Client waits for server to spawn them
-		print("NetworkManager: Client waiting for server to spawn players")
+		# Client notifies server that level is ready
+		print("NetworkManager: Client notifying server that level is ready")
+		rpc_id(1, "_client_level_ready", multiplayer.get_unique_id())
 
 func _spawn_player_for_peer(peer_id: int) -> void:
 	"""Spawn a player for a specific peer ID."""
@@ -118,6 +119,14 @@ func _spawn_player_for_peer(peer_id: int) -> void:
 func _spawn_player_on_clients(peer_id: int, spawn_position: Vector2) -> void:
 	"""RPC called on all clients to spawn a player."""
 	print("NetworkManager: Spawning player ", peer_id, " at ", spawn_position)
+	
+	# Wait for level to be ready if needed
+	if not current_level:
+		print("NetworkManager: Waiting for level to be set...")
+		await get_tree().process_frame
+		if not current_level:
+			print("NetworkManager: ERROR - No current level set!")
+			return
 	
 	var player_scene = load("res://scenes/player/player.tscn")
 	var player = player_scene.instantiate()
@@ -185,6 +194,8 @@ func _on_peer_disconnected(id: int) -> void:
 func _on_connected_to_server() -> void:
 	"""Client successfully connected to server."""
 	print("NetworkManager: Connected to server as peer ", multiplayer.get_unique_id())
+	
+	# Client will wait for server to spawn players after scene loads
 
 func _on_server_disconnected() -> void:
 	"""Server disconnected - return to menu."""
@@ -222,3 +233,32 @@ func reset_players() -> void:
 	for peer_id in players:
 		players[peer_id].is_alive = true
 	print("NetworkManager: All players reset")
+
+@rpc("any_peer", "call_remote", "reliable")
+func _client_level_ready(client_id: int) -> void:
+	"""Called when a client has loaded the level and is ready for spawning."""
+	if multiplayer.is_server():
+		print("NetworkManager: Client ", client_id, " reports level is ready")
+		
+		# Spawn all existing players on the new client
+		for peer_id in players.keys():
+			rpc_id(client_id, "_spawn_player_on_clients", peer_id, players[peer_id].spawn_position)
+		
+		# Then spawn the new client for everyone
+		_spawn_player_for_peer(client_id)
+
+@rpc("any_peer", "call_remote", "reliable")
+func request_game_start() -> void:
+	"""Called by client to request game start from server."""
+	if multiplayer.is_server():
+		print("NetworkManager: Client requested game start")
+		# Don't reload the scene - the host is already in the game!
+		# Just tell the client to load the level
+		var sender_id = multiplayer.get_remote_sender_id()
+		rpc_id(sender_id, "start_multiplayer_game")
+
+@rpc("authority", "call_local", "reliable")
+func start_multiplayer_game() -> void:
+	"""Start the multiplayer game - called on all peers."""
+	print("NetworkManager: Starting multiplayer game")
+	get_tree().change_scene_to_file("res://scenes/levels/level_1.tscn")

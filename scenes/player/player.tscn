@@ -35,5 +35,3 @@ shape = SubResource("CircleShape2D_1")
 script = ExtResource("3_camera")
 follow_smoothing = 8.0
 
-[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
-replication_config = SubResource("SceneReplicationConfig_1")

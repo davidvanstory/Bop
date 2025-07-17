@@ -106,8 +106,8 @@ func _on_host_pressed() -> void:
 			GameState.set_game_mode("multi")
 			GameState.reset_game()
 		
-		# Host starts the game immediately
-		_start_multiplayer_game()
+		# Host starts the game immediately using NetworkManager
+		NetworkManager.start_multiplayer_game()
 	else:
 		print("MainMenu: ERROR - Failed to create server: ", error)
 
@@ -137,9 +137,9 @@ func _on_peer_connected(id: int) -> void:
 	"""Handle peer connection (called on server when client connects)"""
 	print("MainMenu: Peer connected with ID: ", id)
 	
-	# Server should notify all clients to start the game
+	# Server waits for client to be ready instead of starting immediately
 	if multiplayer.is_server():
-		rpc("_start_multiplayer_game")
+		print("MainMenu: Server waiting for client to be ready...")
 
 func _on_peer_disconnected(id: int) -> void:
 	"""Handle peer disconnection"""
@@ -154,17 +154,17 @@ func _on_connected_to_server() -> void:
 	if GameState:
 		GameState.set_game_mode("multi")
 		GameState.reset_game()
+	
+	# Request game start through NetworkManager
+	print("MainMenu: Client requesting game start")
+	NetworkManager.rpc_id(1, "request_game_start")
 
 func _on_connection_failed() -> void:
 	"""Handle failed connection to server"""
 	print("MainMenu: ERROR - Connection to server failed")
 	# Could add UI feedback here
 
-@rpc("authority", "call_local")
-func _start_multiplayer_game() -> void:
-	"""Start the multiplayer game - called on all peers"""
-	print("MainMenu: Starting multiplayer game")
-	get_tree().change_scene_to_file("res://scenes/levels/level_1.tscn")
+# Removed - now handled by NetworkManager
 
 # Handle input for accessibility (Enter key support)
 func _unhandled_input(event: InputEvent) -> void:
@@ -172,3 +172,5 @@ func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("ui_accept"):
 		print("MainMenu: Enter key pressed - starting single player game")
 		_on_single_player_pressed()
+
+# Removed - now handled by NetworkManager
