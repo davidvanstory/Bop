@@ -125,21 +125,42 @@ func _on_player_died() -> void:
 	"""Handle player death."""
 	print("GameState: Player died, processing life loss")
 	
-	if player_lives > 1:
-		player_lives -= 1
-		life_lost.emit(player_lives)
-		print("GameState: Life lost, remaining lives: ", player_lives)
+	# In multiplayer, check if all players are dead before game over
+	if game_mode == "multi":
+		# Get the peer ID of the dead player from the signal sender
+		var dead_player_id = multiplayer.get_remote_sender_id()
+		if dead_player_id == 0:  # Local player
+			dead_player_id = multiplayer.get_unique_id()
 		
-		# Restart level or reset player position
-		_restart_level()
+		# Mark player as dead in NetworkManager
+		if NetworkManager:
+			NetworkManager.mark_player_dead(dead_player_id)
+			
+			# Check if all players are dead
+			if NetworkManager.are_all_players_dead():
+				print("GameState: All players dead - Game Over!")
+				is_game_over = true
+				game_over.emit()
+				_start_game_over_timer()
+			else:
+				print("GameState: Player ", dead_player_id, " died, but other players still alive")
 	else:
-		player_lives = 0
-		is_game_over = true
-		game_over.emit()
-		print("GameState: Game Over!")
-		
-		# Add 5-second delay before showing game over screen
-		_start_game_over_timer()
+		# Single player mode - original behavior
+		if player_lives > 1:
+			player_lives -= 1
+			life_lost.emit(player_lives)
+			print("GameState: Life lost, remaining lives: ", player_lives)
+			
+			# Restart level or reset player position
+			_restart_level()
+		else:
+			player_lives = 0
+			is_game_over = true
+			game_over.emit()
+			print("GameState: Game Over!")
+			
+			# Add 5-second delay before showing game over screen
+			_start_game_over_timer()
 
 func _on_hoop_collected(value: int) -> void:
 	"""Handle hoop/collectible collection."""

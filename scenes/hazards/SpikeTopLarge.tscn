@@ -1,4 +1,4 @@
-[gd_scene load_steps=4 format=3 uid="uid://ev4n5o6p7q8r9"]
+[gd_scene load_steps=4 format=3 uid="uid://1psknahnkd1i"]
 
 [ext_resource type="PackedScene" uid="uid://b8h1v5p2k3nar" path="res://scenes/hazards/BaseSpike.tscn" id="1_base_spike"]
 [ext_resource type="Texture2D" uid="uid://b7gdoietst8oj" path="res://assets/sprites/hazards/spikes_large_top.png" id="2_large_top_spike_texture"]
@@ -12,4 +12,4 @@ size = Vector2(128, 64)
 texture = ExtResource("2_large_top_spike_texture")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." index="1"]
-shape = SubResource("RectangleShape2D_large_top_spike") 
+shape = SubResource("RectangleShape2D_large_top_spike")

@@ -294,3 +294,11 @@ shape = SubResource("RectangleShape2D_lower_gravity")
 [node name="Player" parent="." instance=ExtResource("1_player")]
 position = Vector2(960, 540)
 gravity_scale = 0.0
+
+[node name="PlayerSpawner" type="MultiplayerSpawner" parent="."]
+spawn_path = NodePath("..")
+_spawnable_scenes = PackedStringArray("res://scenes/player/player.tscn")
+
+[node name="SharedCamera" type="Camera2D" parent="."]
+position = Vector2(960, 540)
+script = ExtResource("3_camera")

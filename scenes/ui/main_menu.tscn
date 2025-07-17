@@ -44,11 +44,41 @@ text = "Bop"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="StartButton" type="Button" parent="MenuContainer"]
+[node name="SinglePlayerButton" type="Button" parent="MenuContainer"]
 layout_mode = 2
 theme_override_fonts/font = ExtResource("1_font")
 theme_override_font_sizes/font_size = 36
-text = "Start Game"
+text = "1 Player"
+
+[node name="HostButton" type="Button" parent="MenuContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("1_font")
+theme_override_font_sizes/font_size = 36
+text = "Host 2 Player"
+
+[node name="IPContainer" type="HBoxContainer" parent="MenuContainer"]
+layout_mode = 2
+alignment = 1
+
+[node name="IPLabel" type="Label" parent="MenuContainer/IPContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("1_font")
+theme_override_font_sizes/font_size = 24
+text = "IP Address:"
+
+[node name="IPAddressEdit" type="LineEdit" parent="MenuContainer/IPContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_fonts/font = ExtResource("1_font")
+theme_override_font_sizes/font_size = 24
+text = "127.0.0.1"
+placeholder_text = "Enter host IP"
+
+[node name="JoinButton" type="Button" parent="MenuContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("1_font")
+theme_override_font_sizes/font_size = 36
+text = "Join 2 Player"
 
 [node name="FutureBackgroundTexture" type="TextureRect" parent="."]
 visible = false

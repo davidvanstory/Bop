@@ -1,6 +1,6 @@
-[gd_scene load_steps=4 format=3 uid="uid://d4v8x7n2m9k3l"]
+[gd_scene load_steps=4 format=3 uid="uid://ied5qs22pct"]
 
-[ext_resource type="PackedScene" uid="uid://cq8d4v2n3lx9r" path="res://scenes/environment/BasePlatform.tscn" id="1_base_platform"]
+[ext_resource type="PackedScene" uid="uid://cq8d4v2n3lyar" path="res://scenes/environment/BasePlatform.tscn" id="1_base_platform"]
 [ext_resource type="Texture2D" uid="uid://rdcv5yjkplnw" path="res://assets/sprites/environment/woodblock.png" id="2_wood_texture"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_wood_block"]
@@ -12,4 +12,4 @@ size = Vector2(70, 70)
 texture = ExtResource("2_wood_texture")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." index="1"]
-shape = SubResource("RectangleShape2D_wood_block") 
+shape = SubResource("RectangleShape2D_wood_block")

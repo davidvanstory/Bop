@@ -1,7 +1,7 @@
 """
 Camera Controller for Bop Game
-Follows the player horizontally while maintaining a fixed vertical position
-to keep both ceiling and floor visible at all times.
+In multiplayer: Follows the leading player and pushes trailing players forward.
+In single player: Follows the player horizontally while maintaining fixed vertical position.
 Uses GameState level configuration for dynamic bounds.
 """
 class_name CameraController
@@ -18,23 +18,43 @@ extends Camera2D
 @export var max_x_position: float = INF
 @export var use_auto_bounds: bool = true  # Automatically calculate bounds from GameState
 
+# Multiplayer camera settings
+@export var push_margin: float = 100.0  # Distance from left edge where players get pushed
+@export var lead_margin: float = 300.0  # Distance ahead of leading player
+
 # Will be set from GameState level configuration
 var bounds_margin: float = 480.0  # Default, overridden by GameState
+
+# For multiplayer tracking
+var all_players: Array[Node2D] = []
+var is_multiplayer_camera: bool = false
 
 func _ready() -> void:
 	"""Initialize the camera controller."""
 	print("CameraController: Initializing...")
 	
-	# If no target is set, try to find the player automatically
-	if not target_player:
-		target_player = get_parent()
-		print("CameraController: Using parent as target player")
-	
-	# Set initial position
-	if target_player:
-		global_position.x = target_player.global_position.x + horizontal_offset
-		global_position.y = fixed_y_position
-		print("CameraController: Initial position set to (", global_position.x, ", ", global_position.y, ")")
+	# Check if we're in multiplayer mode
+	if GameState.game_mode == "multi":
+		is_multiplayer_camera = true
+		print("CameraController: Multiplayer mode detected")
+		
+		# For multiplayer, we need a shared camera not attached to any player
+		if get_parent().name.begins_with("player_"):
+			# This is a player-attached camera, disable it
+			print("CameraController: Disabling player-attached camera in multiplayer")
+			queue_free()
+			return
+	else:
+		# Single player mode
+		if not target_player:
+			target_player = get_parent()
+			print("CameraController: Using parent as target player")
+		
+		# Set initial position
+		if target_player:
+			global_position.x = target_player.global_position.x + horizontal_offset
+			global_position.y = fixed_y_position
+			print("CameraController: Initial position set to (", global_position.x, ", ", global_position.y, ")")
 	
 	# Make this camera current
 	make_current()
@@ -47,11 +67,21 @@ func _ready() -> void:
 
 func _process(delta: float) -> void:
 	"""Update camera position each frame."""
+	if is_multiplayer_camera:
+		_update_multiplayer_camera(delta)
+	else:
+		_update_single_player_camera(delta)
+	
+	# Keep camera at fixed vertical position
+	global_position.y = fixed_y_position
+
+func _update_single_player_camera(delta: float) -> void:
+	"""Update camera for single player mode."""
 	if not target_player:
 		return
 	
 	# Stop following if the player is dead
-	if target_player.has_method("is_alive") and not target_player.is_alive():
+	if target_player.has_method("is_alive") and not target_player.is_alive:
 		return
 	
 	# Calculate target horizontal position
@@ -66,9 +96,63 @@ func _process(delta: float) -> void:
 		global_position.x = lerp(global_position.x, target_x, follow_smoothing * delta)
 	else:
 		global_position.x = target_x
+
+func _update_multiplayer_camera(delta: float) -> void:
+	"""Update camera for multiplayer mode - follow leader, push followers."""
+	# Find all alive players
+	_update_player_list()
 	
-	# Keep camera at fixed vertical position
-	global_position.y = fixed_y_position
+	if all_players.is_empty():
+		return
+	
+	# Find the leading player (rightmost)
+	var leading_player: Node2D = null
+	var max_x: float = -INF
+	
+	for player in all_players:
+		if player.has_method("is_alive") and not player.is_alive:
+			continue
+		if player.global_position.x > max_x:
+			max_x = player.global_position.x
+			leading_player = player
+	
+	if not leading_player:
+		return
+	
+	# Camera follows the leader with some margin ahead
+	var target_x = leading_player.global_position.x + lead_margin
+	
+	# Apply horizontal bounds
+	if min_x_position != -INF and max_x_position != INF:
+		target_x = clamp(target_x, min_x_position, max_x_position)
+	
+	# Smoothly move camera
+	if follow_smoothing > 0:
+		global_position.x = lerp(global_position.x, target_x, follow_smoothing * delta)
+	else:
+		global_position.x = target_x
+	
+	# Push trailing players if they fall too far behind
+	var camera_left_edge = global_position.x - get_viewport_rect().size.x / 2 + push_margin
+	
+	for player in all_players:
+		if player.has_method("is_alive") and not player.is_alive:
+			continue
+		if player.global_position.x < camera_left_edge:
+			# Push the player forward
+			player.global_position.x = camera_left_edge
+			if player.has_method("linear_velocity"):
+				player.linear_velocity.x = max(player.linear_velocity.x, 0)
+			print("CameraController: Pushing player ", player.name, " forward")
+
+func _update_player_list() -> void:
+	"""Update the list of all players in the scene."""
+	all_players.clear()
+	var level = get_tree().current_scene
+	if level:
+		for child in level.get_children():
+			if child.name.begins_with("player_") and child.has_method("is_alive"):
+				all_players.append(child)
 
 func _calculate_level_bounds() -> void:
 	"""Calculate camera bounds from GameState level configuration."""

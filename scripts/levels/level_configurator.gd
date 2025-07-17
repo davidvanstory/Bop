@@ -28,6 +28,11 @@ func _ready() -> void:
 	_configure_gravity_zones(config)
 	
 	print("LevelConfigurator: Level configuration complete")
+	
+	# Set up multiplayer spawning if needed
+	if NetworkManager:
+		NetworkManager.setup_level(self)
+		print("LevelConfigurator: NetworkManager setup complete")
 
 func _configure_walls(config: Dictionary) -> void:
 	"""Configure wall positions based on level configuration."""

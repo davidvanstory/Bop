@@ -86,4 +86,3 @@ shape = SubResource("RectangleShape2D_lower_gravity")
 
 [node name="Player" parent="." instance=ExtResource("1_player")]
 position = Vector2(960, 540)
-gravity_scale = 0.0

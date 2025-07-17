@@ -20,6 +20,7 @@ config/icon="res://BopAssets/assets/player/ball.png"
 
 SoundManager="*res://scripts/singletons/SoundManager.tscn"
 GameState="*res://scripts/singletons/GameState.gd"
+NetworkManager="*res://scripts/singletons/NetworkManager.gd"
 
 [display]
 
