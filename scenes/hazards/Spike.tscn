@@ -1,4 +1,4 @@
-[gd_scene load_steps=3 format=3 uid="uid://b8h1v5p2k3nar"]
+[gd_scene load_steps=3 format=3 uid="uid://w66smgtibpt7"]
 
 [ext_resource type="Script" path="res://scripts/hazards/spike.gd" id="2_spike_script"]
 

@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3 uid="uid://b8h1v5p2k3nar"]
+
+[ext_resource type="Script" path="res://scripts/hazards/base_spike.gd" id="2_spike_script"]
+
+[node name="BaseSpike" type="Area2D" groups=["hazards"]]
+collision_layer = 4
+collision_mask = 2
+script = ExtResource("2_spike_script")

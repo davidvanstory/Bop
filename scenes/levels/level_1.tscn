@@ -3,11 +3,14 @@
 [ext_resource type="PackedScene" uid="uid://c1fnn1l64pxpx" path="res://scenes/player/player.tscn" id="1_player"]
 [ext_resource type="TileSet" uid="uid://bvqowixejw8pm" path="res://resources/ground_tileset.tres" id="2_tileset"]
 [ext_resource type="Script" path="res://scripts/tilemap_painter.gd" id="3_painter"]
-[ext_resource type="PackedScene" uid="uid://b8h1v5p2k3nar" path="res://scenes/hazards/Spike.tscn" id="4_spike"]
-[ext_resource type="Script" path="res://scripts/levels/level_configurator.gd" id="5_configurator"]
-[ext_resource type="PackedScene" uid="uid://b2lav7w8x1m4n" path="res://scenes/environment/WoodPlatform.tscn" id="6_wood_platform"]
-[ext_resource type="PackedScene" uid="uid://d4v8x7n2m9k3l" path="res://scenes/environment/WoodBlock.tscn" id="7_wood_block"]
-[ext_resource type="PackedScene" uid="uid://b5k8m1n4p7q2r" path="res://scenes/environment/WoodPlatformSmall.tscn" id="8_wood_platform_small"]
+[ext_resource type="PackedScene" uid="uid://bs1k2m3n4o5p6" path="res://scenes/hazards/SpikeBottomStandard.tscn" id="4_spike_bottom_standard"]
+[ext_resource type="PackedScene" uid="uid://ct2l3m4n5o6p7" path="res://scenes/hazards/SpikeTopStandard.tscn" id="5_spike_top_standard"]
+[ext_resource type="PackedScene" uid="uid://du3m4n5o6p7q8" path="res://scenes/hazards/SpikeBottomLarge.tscn" id="6_spike_bottom_large"]
+[ext_resource type="PackedScene" uid="uid://ev4n5o6p7q8r9" path="res://scenes/hazards/SpikeTopLarge.tscn" id="7_spike_top_large"]
+[ext_resource type="Script" path="res://scripts/levels/level_configurator.gd" id="8_configurator"]
+[ext_resource type="PackedScene" uid="uid://b2lav7w8x1m4n" path="res://scenes/environment/WoodPlatform.tscn" id="9_wood_platform"]
+[ext_resource type="PackedScene" uid="uid://d4v8x7n2m9k3l" path="res://scenes/environment/WoodBlock.tscn" id="10_wood_block"]
+[ext_resource type="PackedScene" uid="uid://b5k8m1n4p7q2r" path="res://scenes/environment/WoodPlatformSmall.tscn" id="11_wood_platform_small"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_walls"]
 size = Vector2(100, 1080)
@@ -19,7 +22,7 @@ size = Vector2(11520, 540)
 size = Vector2(11520, 540)
 
 [node name="Level1" type="Node2D"]
-script = ExtResource("5_configurator")
+script = ExtResource("8_configurator")
 
 [node name="Environment" type="Node2D" parent="."]
 
@@ -42,189 +45,184 @@ shape = SubResource("RectangleShape2D_walls")
 
 [node name="Hazards" type="Node2D" parent="Environment"]
 
-[node name="BottomLargeSpike1" parent="Environment/Hazards" instance=ExtResource("4_spike")]
+[node name="BottomLargeSpike1" parent="Environment/Hazards" instance=ExtResource("6_spike_bottom_large")]
 position = Vector2(2000, 950)
-type = 2
 
-[node name="BottomLargeSpike2" parent="Environment/Hazards" instance=ExtResource("4_spike")]
+[node name="BottomLargeSpike2" parent="Environment/Hazards" instance=ExtResource("6_spike_bottom_large")]
 position = Vector2(2128, 950)
-type = 2
 
-[node name="BottomLargeSpike3" parent="Environment/Hazards" instance=ExtResource("4_spike")]
+[node name="BottomLargeSpike3" parent="Environment/Hazards" instance=ExtResource("6_spike_bottom_large")]
 position = Vector2(2256, 950)
-type = 2
 
-[node name="BottomSpike1" parent="Environment/Hazards" instance=ExtResource("4_spike")]
+[node name="BottomSpike1" parent="Environment/Hazards" instance=ExtResource("4_spike_bottom_standard")]
 position = Vector2(2800, 950)
 
-[node name="BottomSpike2" parent="Environment/Hazards" instance=ExtResource("4_spike")]
+[node name="BottomSpike2" parent="Environment/Hazards" instance=ExtResource("4_spike_bottom_standard")]
 position = Vector2(2864, 950)
 
-[node name="TopSpike1" parent="Environment/Hazards" instance=ExtResource("4_spike")]
+[node name="TopSpike1" parent="Environment/Hazards" instance=ExtResource("5_spike_top_standard")]
 position = Vector2(2400, 150)
-type = 1
 
-[node name="TopSpike2" parent="Environment/Hazards" instance=ExtResource("4_spike")]
+[node name="TopSpike2" parent="Environment/Hazards" instance=ExtResource("5_spike_top_standard")]
 position = Vector2(2464, 150)
-type = 1
 
 [node name="Platforms" type="Node2D" parent="Environment"]
 
-[node name="WoodPlatform" parent="Environment/Platforms" instance=ExtResource("6_wood_platform")]
+[node name="WoodPlatform" parent="Environment/Platforms" instance=ExtResource("9_wood_platform")]
 position = Vector2(7000, 540)
 
-[node name="WoodPlatformSmall" parent="Environment/Platforms" instance=ExtResource("8_wood_platform_small")]
+[node name="WoodPlatformSmall" parent="Environment/Platforms" instance=ExtResource("11_wood_platform_small")]
 position = Vector2(1000, 540)
 
 # Stack of wooden blocks between X 9000-9500 from floor to halfway up scene
 # Floor is at y=1024, halfway is at y=540, wood blocks are 70x70 pixels
 # Creating a 7x7 grid pattern
 
-[node name="WoodBlockStack1_1" parent="Environment/Platforms" instance=ExtResource("7_wood_block")]
+[node name="WoodBlockStack1_1" parent="Environment/Platforms" instance=ExtResource("10_wood_block")]
 position = Vector2(9035, 989)
 
-[node name="WoodBlockStack1_2" parent="Environment/Platforms" instance=ExtResource("7_wood_block")]
+[node name="WoodBlockStack1_2" parent="Environment/Platforms" instance=ExtResource("10_wood_block")]
 position = Vector2(9035, 919)
 
-[node name="WoodBlockStack1_3" parent="Environment/Platforms" instance=ExtResource("7_wood_block")]
+[node name="WoodBlockStack1_3" parent="Environment/Platforms" instance=ExtResource("10_wood_block")]
 position = Vector2(9035, 849)
 
-[node name="WoodBlockStack1_4" parent="Environment/Platforms" instance=ExtResource("7_wood_block")]
+[node name="WoodBlockStack1_4" parent="Environment/Platforms" instance=ExtResource("10_wood_block")]
 position = Vector2(9035, 779)
 
-[node name="WoodBlockStack1_5" parent="Environment/Platforms" instance=ExtResource("7_wood_block")]
+[node name="WoodBlockStack1_5" parent="Environment/Platforms" instance=ExtResource("10_wood_block")]
 position = Vector2(9035, 709)
 
-[node name="WoodBlockStack1_6" parent="Environment/Platforms" instance=ExtResource("7_wood_block")]
+[node name="WoodBlockStack1_6" parent="Environment/Platforms" instance=ExtResource("10_wood_block")]
 position = Vector2(9035, 639)
 
-[node name="WoodBlockStack1_7" parent="Environment/Platforms" instance=ExtResource("7_wood_block")]
+[node name="WoodBlockStack1_7" parent="Environment/Platforms" instance=ExtResource("10_wood_block")]
 position = Vector2(9035, 569)
 
-[node name="WoodBlockStack2_1" parent="Environment/Platforms" instance=ExtResource("7_wood_block")]
+[node name="WoodBlockStack2_1" parent="Environment/Platforms" instance=ExtResource("10_wood_block")]
 position = Vector2(9105, 989)
 
-[node name="WoodBlockStack2_2" parent="Environment/Platforms" instance=ExtResource("7_wood_block")]
+[node name="WoodBlockStack2_2" parent="Environment/Platforms" instance=ExtResource("10_wood_block")]
 position = Vector2(9105, 919)
 
-[node name="WoodBlockStack2_3" parent="Environment/Platforms" instance=ExtResource("7_wood_block")]
+[node name="WoodBlockStack2_3" parent="Environment/Platforms" instance=ExtResource("10_wood_block")]
 position = Vector2(9105, 849)
 
-[node name="WoodBlockStack2_4" parent="Environment/Platforms" instance=ExtResource("7_wood_block")]
+[node name="WoodBlockStack2_4" parent="Environment/Platforms" instance=ExtResource("10_wood_block")]
 position = Vector2(9105, 779)
 
-[node name="WoodBlockStack2_5" parent="Environment/Platforms" instance=ExtResource("7_wood_block")]
+[node name="WoodBlockStack2_5" parent="Environment/Platforms" instance=ExtResource("10_wood_block")]
 position = Vector2(9105, 709)
 
-[node name="WoodBlockStack2_6" parent="Environment/Platforms" instance=ExtResource("7_wood_block")]
+[node name="WoodBlockStack2_6" parent="Environment/Platforms" instance=ExtResource("10_wood_block")]
 position = Vector2(9105, 639)
 
-[node name="WoodBlockStack2_7" parent="Environment/Platforms" instance=ExtResource("7_wood_block")]
+[node name="WoodBlockStack2_7" parent="Environment/Platforms" instance=ExtResource("10_wood_block")]
 position = Vector2(9105, 569)
 
-[node name="WoodBlockStack3_1" parent="Environment/Platforms" instance=ExtResource("7_wood_block")]
+[node name="WoodBlockStack3_1" parent="Environment/Platforms" instance=ExtResource("10_wood_block")]
 position = Vector2(9175, 989)
 
-[node name="WoodBlockStack3_2" parent="Environment/Platforms" instance=ExtResource("7_wood_block")]
+[node name="WoodBlockStack3_2" parent="Environment/Platforms" instance=ExtResource("10_wood_block")]
 position = Vector2(9175, 919)
 
-[node name="WoodBlockStack3_3" parent="Environment/Platforms" instance=ExtResource("7_wood_block")]
+[node name="WoodBlockStack3_3" parent="Environment/Platforms" instance=ExtResource("10_wood_block")]
 position = Vector2(9175, 849)
 
-[node name="WoodBlockStack3_4" parent="Environment/Platforms" instance=ExtResource("7_wood_block")]
+[node name="WoodBlockStack3_4" parent="Environment/Platforms" instance=ExtResource("10_wood_block")]
 position = Vector2(9175, 779)
 
-[node name="WoodBlockStack3_5" parent="Environment/Platforms" instance=ExtResource("7_wood_block")]
+[node name="WoodBlockStack3_5" parent="Environment/Platforms" instance=ExtResource("10_wood_block")]
 position = Vector2(9175, 709)
 
-[node name="WoodBlockStack3_6" parent="Environment/Platforms" instance=ExtResource("7_wood_block")]
+[node name="WoodBlockStack3_6" parent="Environment/Platforms" instance=ExtResource("10_wood_block")]
 position = Vector2(9175, 639)
 
-[node name="WoodBlockStack3_7" parent="Environment/Platforms" instance=ExtResource("7_wood_block")]
+[node name="WoodBlockStack3_7" parent="Environment/Platforms" instance=ExtResource("10_wood_block")]
 position = Vector2(9175, 569)
 
-[node name="WoodBlockStack4_1" parent="Environment/Platforms" instance=ExtResource("7_wood_block")]
+[node name="WoodBlockStack4_1" parent="Environment/Platforms" instance=ExtResource("10_wood_block")]
 position = Vector2(9245, 989)
 
-[node name="WoodBlockStack4_2" parent="Environment/Platforms" instance=ExtResource("7_wood_block")]
+[node name="WoodBlockStack4_2" parent="Environment/Platforms" instance=ExtResource("10_wood_block")]
 position = Vector2(9245, 919)
 
-[node name="WoodBlockStack4_3" parent="Environment/Platforms" instance=ExtResource("7_wood_block")]
+[node name="WoodBlockStack4_3" parent="Environment/Platforms" instance=ExtResource("10_wood_block")]
 position = Vector2(9245, 849)
 
-[node name="WoodBlockStack4_4" parent="Environment/Platforms" instance=ExtResource("7_wood_block")]
+[node name="WoodBlockStack4_4" parent="Environment/Platforms" instance=ExtResource("10_wood_block")]
 position = Vector2(9245, 779)
 
-[node name="WoodBlockStack4_5" parent="Environment/Platforms" instance=ExtResource("7_wood_block")]
+[node name="WoodBlockStack4_5" parent="Environment/Platforms" instance=ExtResource("10_wood_block")]
 position = Vector2(9245, 709)
 
-[node name="WoodBlockStack4_6" parent="Environment/Platforms" instance=ExtResource("7_wood_block")]
+[node name="WoodBlockStack4_6" parent="Environment/Platforms" instance=ExtResource("10_wood_block")]
 position = Vector2(9245, 639)
 
-[node name="WoodBlockStack4_7" parent="Environment/Platforms" instance=ExtResource("7_wood_block")]
+[node name="WoodBlockStack4_7" parent="Environment/Platforms" instance=ExtResource("10_wood_block")]
 position = Vector2(9245, 569)
 
-[node name="WoodBlockStack5_1" parent="Environment/Platforms" instance=ExtResource("7_wood_block")]
+[node name="WoodBlockStack5_1" parent="Environment/Platforms" instance=ExtResource("10_wood_block")]
 position = Vector2(9315, 989)
 
-[node name="WoodBlockStack5_2" parent="Environment/Platforms" instance=ExtResource("7_wood_block")]
+[node name="WoodBlockStack5_2" parent="Environment/Platforms" instance=ExtResource("10_wood_block")]
 position = Vector2(9315, 919)
 
-[node name="WoodBlockStack5_3" parent="Environment/Platforms" instance=ExtResource("7_wood_block")]
+[node name="WoodBlockStack5_3" parent="Environment/Platforms" instance=ExtResource("10_wood_block")]
 position = Vector2(9315, 849)
 
-[node name="WoodBlockStack5_4" parent="Environment/Platforms" instance=ExtResource("7_wood_block")]
+[node name="WoodBlockStack5_4" parent="Environment/Platforms" instance=ExtResource("10_wood_block")]
 position = Vector2(9315, 779)
 
-[node name="WoodBlockStack5_5" parent="Environment/Platforms" instance=ExtResource("7_wood_block")]
+[node name="WoodBlockStack5_5" parent="Environment/Platforms" instance=ExtResource("10_wood_block")]
 position = Vector2(9315, 709)
 
-[node name="WoodBlockStack5_6" parent="Environment/Platforms" instance=ExtResource("7_wood_block")]
+[node name="WoodBlockStack5_6" parent="Environment/Platforms" instance=ExtResource("10_wood_block")]
 position = Vector2(9315, 639)
 
-[node name="WoodBlockStack5_7" parent="Environment/Platforms" instance=ExtResource("7_wood_block")]
+[node name="WoodBlockStack5_7" parent="Environment/Platforms" instance=ExtResource("10_wood_block")]
 position = Vector2(9315, 569)
 
-[node name="WoodBlockStack6_1" parent="Environment/Platforms" instance=ExtResource("7_wood_block")]
+[node name="WoodBlockStack6_1" parent="Environment/Platforms" instance=ExtResource("10_wood_block")]
 position = Vector2(9385, 989)
 
-[node name="WoodBlockStack6_2" parent="Environment/Platforms" instance=ExtResource("7_wood_block")]
+[node name="WoodBlockStack6_2" parent="Environment/Platforms" instance=ExtResource("10_wood_block")]
 position = Vector2(9385, 919)
 
-[node name="WoodBlockStack6_3" parent="Environment/Platforms" instance=ExtResource("7_wood_block")]
+[node name="WoodBlockStack6_3" parent="Environment/Platforms" instance=ExtResource("10_wood_block")]
 position = Vector2(9385, 849)
 
-[node name="WoodBlockStack6_4" parent="Environment/Platforms" instance=ExtResource("7_wood_block")]
+[node name="WoodBlockStack6_4" parent="Environment/Platforms" instance=ExtResource("10_wood_block")]
 position = Vector2(9385, 779)
 
-[node name="WoodBlockStack6_5" parent="Environment/Platforms" instance=ExtResource("7_wood_block")]
+[node name="WoodBlockStack6_5" parent="Environment/Platforms" instance=ExtResource("10_wood_block")]
 position = Vector2(9385, 709)
 
-[node name="WoodBlockStack6_6" parent="Environment/Platforms" instance=ExtResource("7_wood_block")]
+[node name="WoodBlockStack6_6" parent="Environment/Platforms" instance=ExtResource("10_wood_block")]
 position = Vector2(9385, 639)
 
-[node name="WoodBlockStack6_7" parent="Environment/Platforms" instance=ExtResource("7_wood_block")]
+[node name="WoodBlockStack6_7" parent="Environment/Platforms" instance=ExtResource("10_wood_block")]
 position = Vector2(9385, 569)
 
-[node name="WoodBlockStack7_1" parent="Environment/Platforms" instance=ExtResource("7_wood_block")]
+[node name="WoodBlockStack7_1" parent="Environment/Platforms" instance=ExtResource("10_wood_block")]
 position = Vector2(9455, 989)
 
-[node name="WoodBlockStack7_2" parent="Environment/Platforms" instance=ExtResource("7_wood_block")]
+[node name="WoodBlockStack7_2" parent="Environment/Platforms" instance=ExtResource("10_wood_block")]
 position = Vector2(9455, 919)
 
-[node name="WoodBlockStack7_3" parent="Environment/Platforms" instance=ExtResource("7_wood_block")]
+[node name="WoodBlockStack7_3" parent="Environment/Platforms" instance=ExtResource("10_wood_block")]
 position = Vector2(9455, 849)
 
-[node name="WoodBlockStack7_4" parent="Environment/Platforms" instance=ExtResource("7_wood_block")]
+[node name="WoodBlockStack7_4" parent="Environment/Platforms" instance=ExtResource("10_wood_block")]
 position = Vector2(9455, 779)
 
-[node name="WoodBlockStack7_5" parent="Environment/Platforms" instance=ExtResource("7_wood_block")]
+[node name="WoodBlockStack7_5" parent="Environment/Platforms" instance=ExtResource("10_wood_block")]
 position = Vector2(9455, 709)
 
-[node name="WoodBlockStack7_6" parent="Environment/Platforms" instance=ExtResource("7_wood_block")]
+[node name="WoodBlockStack7_6" parent="Environment/Platforms" instance=ExtResource("10_wood_block")]
 position = Vector2(9455, 639)
 
-[node name="WoodBlockStack7_7" parent="Environment/Platforms" instance=ExtResource("7_wood_block")]
+[node name="WoodBlockStack7_7" parent="Environment/Platforms" instance=ExtResource("10_wood_block")]
 position = Vector2(9455, 569)
 
 [node name="GravityZones" type="Node2D" parent="."]

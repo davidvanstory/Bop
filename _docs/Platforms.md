@@ -42,3 +42,5 @@ Step 4: Create the WoodPlatformSmall.tscn
     Add a CollisionShape2D as a child.
     Give it a New RectangleShape2D and resize it to fit this smaller platform sprite.
     Save the Scene: Save this new scene as WoodPlatformSmall.tscn in your scenes/environment/ folder.
+
+    

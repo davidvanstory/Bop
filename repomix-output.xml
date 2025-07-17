@@ -47,6 +47,7 @@ _docs/
   latency.md
   level1Ground.md
   Mainmenu.md
+  menusScenes.md
   MoreHazards.md
   multiplayer.md
   params.md
@@ -54,6 +55,7 @@ _docs/
   Platforms.md
   SFX.md
   spikeCommands.md
+  spikes.md
   style.md
 .cursor/
   rules/
@@ -65,12 +67,14 @@ _docs/
   editor/
     Balloon Escape Factory.mp3-54140b5b2b11b7904ee81e622b8af5f7.mp3str-folding-cdca4a205518c9274cf8e6ba790f32f2.cfg
     Balloon Escape Factory.mp3-a84b0e9981ac63b9aa18472c4c340af6.mp3str-folding-189a8f541b4a47fd3971a4d9e3b7a11f.cfg
+    BasePlatform.tscn-folding-927e3f2d72534289726eec6755028e3d.cfg
     bounce.mp3-40b4ac2a57340ad0a4800cce652f4adb.mp3str-folding-e343cc0128b6db116f9f30a762935757.cfg
     bounce.mp3-c83954d43e882cf41da4bb95039bb03d.mp3str-folding-55516b02daf01392d8688f4b8f89f64a.cfg
     coins.mp3-7dc50d0b845a91d46fb5cdd74a20d161.mp3str-folding-c548d5c5b19d7a3fbf8e66c2f4daf8e6.cfg
     coins.mp3-f6db493078653e3c3432ef7bfd892903.mp3str-folding-0d64863fe8d3bf25fbe0912c7454e90f.cfg
     editor_layout.cfg
     filesystem_cache8
+    filesystem_update4
     ground_tileset.tres-folding-e52dee9f563e26a12f4e5aad3cac946b.cfg
     Kenney Future Narrow.ttf-453e2fa23c1cd4a37e88d1e6aae31b2a.fontdata-folding-e8d1a76080fa29997781299cdf990c02.cfg
     Kenney Future Narrow.ttf-ef7e34836d9e5dc059ca737da9380cb7.fontdata-folding-fbd84f9eb9b2e81eef7a82dcac6d5cba.cfg
@@ -80,16 +84,23 @@ _docs/
     level_1.tscn-folding-446b1ed11cc7129b20b35ff4df2b3752.cfg
     mvp_test.tscn-editstate-fe3744c47e6b07da1a0149c06c8d251d.cfg
     mvp_test.tscn-folding-fe3744c47e6b07da1a0149c06c8d251d.cfg
+    player.tscn-editstate-c2c62cb8c73458cd122faf659769dc80.cfg
     player.tscn-folding-c2c62cb8c73458cd122faf659769dc80.cfg
     pop.mp3-67e17343cda83c66845025dcce55cb20.mp3str-folding-9bc5f4cf8ad755cc90b7ee014331c3a4.cfg
     pop.mp3-8a0c1ee8b23ba0bce4af1df1b73a2c47.mp3str-folding-e15f8994f0fa46149533a1fdf0bc16a2.cfg
     project_metadata.cfg
     recent_dirs
     script_editor_cache.cfg
+    spike.gd-folding-3562348e838fe1868afad3b22d724d72.cfg
     Spike.tscn-editstate-b37a4370de225980df34a70d5c4a4d45.cfg
     Spike.tscn-folding-b37a4370de225980df34a70d5c4a4d45.cfg
     success.mp3-2f4cfc1e2ce208c30d0192cb1e366d1a.mp3str-folding-fb8faa49ddd5890251ea8d15ba9b3111.cfg
     success.mp3-8c2123d5a82507e48393b4843ef40866.mp3str-folding-c5c275bd1e1bdf5c4dcf5f6917521fc5.cfg
+    WoodBlock.tscn-editstate-d1f831fe6c4ca080984fe9f005db8ccd.cfg
+    WoodBlock.tscn-folding-d1f831fe6c4ca080984fe9f005db8ccd.cfg
+    WoodPlatform.tscn-editstate-3724555d070f99417b43122929fc3b2a.cfg
+    WoodPlatform.tscn-folding-3724555d070f99417b43122929fc3b2a.cfg
+    WoodPlatformSmall.tscn-folding-a4dc599498a11519fdfe1cbd06d216be.cfg
   imported/
     ball.png-b42bc1a78430fc3412eda843a2d529ba.md5
     ball.png-b8e6aa06c746a4928b1493a1566800b7.md5
@@ -165,6 +176,7 @@ _docs/
     success.mp3-2f4cfc1e2ce208c30d0192cb1e366d1a.md5
     success.mp3-8c2123d5a82507e48393b4843ef40866.md5
     top_spike.png-e726383dcdf8172a339f8dc7c5ed0b51.md5
+    woodblock.png-6ef5c51be5d1e9b59e37e855684a6353.md5
   .gdignore
   global_script_class_cache.cfg
   scene_groups_cache.cfg
@@ -278,6 +290,11 @@ BopAssets/
 resources/
   ground_tileset.tres
 scenes/
+  environment/
+    BasePlatform.tscn
+    WoodBlock.tscn
+    WoodPlatform.tscn
+    WoodPlatformSmall.tscn
   hazards/
     Spike.tscn
   levels/
@@ -312,38 +329,19 @@ project.godot
 <files>
 This section contains the contents of the repository's files.
 
-<file path="_docs/Platforms.md">
-Creating Reusable Platforms
-This follows the exact same "Great Approach" (scene inheritance) that we used for the spikes. It's the cleanest and most powerful way.
-
-Part 1: Create the BasePlatform.tscn Scene
-    This scene will contain the shared physics properties for all platforms.
-    Create a New Scene: Go to Scene -> New Scene.
-    Choose Root Node: Select Other Node and choose StaticBody2D. Rename it to BasePlatform.
-    Set Physics Layer: Select the BasePlatform node. In the Inspector, under Collision, set its Layer to world (Layer 1). This ensures the player will bounce off it correctly.
-    Save the Scene: Save it as BasePlatform.tscn inside a new folder: scenes/environment/.
-
-Part 2: Create the Reusable WoodPlatform.tscn
-    This is the actual, visible block you will place in your levels.
-    Create an Inherited Scene: Go to Scene -> New Inherited Scene... and select your newly created BasePlatform.tscn.
-    Add Visuals:
-    Add a Sprite2D node as a child of BasePlatform.
-    Drag the ground_wood.png texture from assets/sprites/environment/ into the Texture slot of the Sprite2D.
-    Add Collision:
-    Add a CollisionShape2D node as a child of BasePlatform.
-    Give it a New RectangleShape2D and resize it to tightly fit the wood sprite.
-    Save the Scene: Save this new scene as WoodPlatform.tscn inside scenes/environment/.
+<file path="_docs/spikes.md">
+There are 4 types of spikes. 
 
 
-I need to place a new wooden platform in scenes/levels/level_1.tscn.
-Create a new Node2D named Platforms to keep the scene organized.
-Create an instance of the scenes/environment/WoodPlatform.tscn scene as a child of Platforms.
-Set the global_position of this new platform instance to x: 7000, y: 540.
-</file>
+bottom_spike
+top_spike
+spikes_large_bottom
+spikes_large_top 
 
-<file path=".godot/imported/ball2.png-6f28e0ca618c24193f185628b0b67a48.md5">
-source_md5="12861f5444f4a9bca3b81495e59abde2"
-dest_md5="7d3e31cbeee34f7376a6903acb5d636e"
+currently the spikes are all controlled by the 
+spike.tscn and spike.gd
+
+I want the strucutre of the spikes to be refactored to match the style of the Platform.md
 </file>
 
 <file path="_docs/GameOver.md">
@@ -613,6 +611,16 @@ Ready to proceed with **Sub-task 4.2: Add Hazards and Pop Effect** in the develo
 *All tasks from original instructions completed successfully! 🎉*
 </file>
 
+<file path="_docs/menusScenes.md">
+Architectural Flow
+    Start Game: project.godot loads MainMenu.tscn.
+    Player Clicks "Start": MainMenu.tscn tells GameState the game mode and then calls get_tree().change_scene_to_file("res://scenes/levels/level_1.tscn").
+    Player Dies (Last Life): In level_1.tscn, the player's death triggers a player_died signal on the GameState singleton.
+    Game Over Logic: GameState detects this is the last life. It starts a 5-second timer.
+    Transition to Game Over: After the timer finishes, GameState calls get_tree().change_scene_to_file("res://scenes/ui/game_over.tscn").
+    Return to Menu: From the GameOver.tscn, the player will click a button to go back to the MainMenu.tscn, completing the loop.
+</file>
+
 <file path="_docs/MoreHazards.md">
 Guidance to Keep in Mind:
 Goal: We want a single Spike.tscn that can be configured to be any of the four spike types.
@@ -827,6 +835,53 @@ Here is a breakdown of the key physics parameters you will use in Godot for "Bop
         Spike: Belongs to the "hazards" layer. Its mask only needs to include "player." This is an important optimization—you don't need to check if a spike is colliding with another spike.
 
         Golden Hoop: Belongs to the "collectibles" layer. Its mask only needs to include "player."
+</file>
+
+<file path="_docs/Platforms.md">
+Creating Reusable Platforms
+This follows the exact same "Great Approach" (scene inheritance) that we used for the spikes. It's the cleanest and most powerful way.
+
+Part 1: Create the BasePlatform.tscn Scene
+    This scene will contain the shared physics properties for all platforms.
+    Create a New Scene: Go to Scene -> New Scene.
+    Choose Root Node: Select Other Node and choose StaticBody2D. Rename it to BasePlatform.
+    Set Physics Layer: Select the BasePlatform node. In the Inspector, under Collision, set its Layer to world (Layer 1). This ensures the player will bounce off it correctly.
+    Save the Scene: Save it as BasePlatform.tscn inside a new folder: scenes/environment/.
+
+Part 2: Create the Reusable WoodPlatform.tscn
+    This is the actual, visible block you will place in your levels.
+    Create an Inherited Scene: Go to Scene -> New Inherited Scene... and select your newly created BasePlatform.tscn.
+    Add Visuals:
+    Add a Sprite2D node as a child of BasePlatform.
+    Drag the ground_wood.png texture from assets/sprites/environment/ into the Texture slot of the Sprite2D.
+    Add Collision:
+    Add a CollisionShape2D node as a child of BasePlatform.
+    Give it a New RectangleShape2D and resize it to tightly fit the wood sprite.
+    Save the Scene: Save this new scene as WoodPlatform.tscn inside scenes/environment/.
+
+Step 3: Create the WoodBlock.tscn
+    This will be your general-purpose, square-ish wooden obstacle.
+    Create an Inherited Scene: Go to the top menu: Scene -> New Inherited Scene....
+    Select the Base: A file dialog will open. Find and select your BasePlatform.tscn from scenes/environment/.
+    Add the Visuals:
+    Select the BasePlatform root node.
+    Add a Sprite2D as a child.
+    Drag your ground_wood.png texture into the Texture slot of the Sprite2D.
+    Add the Collision Shape:
+    Add a CollisionShape2D as another child of BasePlatform.
+    Give it a New RectangleShape2D and resize the blue collision box to tightly fit the wood block sprite.
+    Save the Scene: Press Cmd+S (or Ctrl+S) and save this scene as WoodBlock.tscn inside your scenes/environment/ folder.
+
+Step 4: Create the WoodPlatformSmall.tscn
+    This will be your smaller wooden platform.
+    Create another Inherited Scene: Go to Scene -> New Inherited Scene... and again select BasePlatform.tscn.
+    Add the Visuals:
+    Add a Sprite2D as a child.
+    Drag your ground_wood_small.png texture into its Texture slot.
+    Add the Collision Shape:
+    Add a CollisionShape2D as a child.
+    Give it a New RectangleShape2D and resize it to fit this smaller platform sprite.
+    Save the Scene: Save this new scene as WoodPlatformSmall.tscn in your scenes/environment/ folder.
 </file>
 
 <file path="_docs/SFX.md">
@@ -1398,6 +1453,14 @@ sections_unfolded=PackedStringArray()
 sections_unfolded=PackedStringArray()
 </file>
 
+<file path=".godot/editor/BasePlatform.tscn-folding-927e3f2d72534289726eec6755028e3d.cfg">
+[folding]
+
+node_unfolds=[NodePath("."), PackedStringArray("Collision")]
+resource_unfolds=[]
+nodes_folded=[]
+</file>
+
 <file path=".godot/editor/bounce.mp3-40b4ac2a57340ad0a4800cce652f4adb.mp3str-folding-e343cc0128b6db116f9f30a762935757.cfg">
 [folding]
 
@@ -1452,195 +1515,6 @@ sections_unfolded=PackedStringArray()
 sections_unfolded=PackedStringArray()
 </file>
 
-<file path=".godot/editor/level_1.tscn-folding-446b1ed11cc7129b20b35ff4df2b3752.cfg">
-[folding]
-
-node_unfolds=[NodePath("Environment/LeftWall"), PackedStringArray("Transform"), NodePath("Environment/RightWall"), PackedStringArray("Transform"), NodePath("GravityZones/UpperGravityZone"), PackedStringArray("Transform"), NodePath("GravityZones/LowerGravityZone"), PackedStringArray("Transform"), NodePath("Player"), PackedStringArray("Transform")]
-resource_unfolds=["res://scenes/levels/level_1.tscn::RectangleShape2D_walls", PackedStringArray("Resource"), "res://scenes/levels/level_1.tscn::RectangleShape2D_upper_gravity", PackedStringArray("Resource"), "res://scenes/levels/level_1.tscn::RectangleShape2D_lower_gravity", PackedStringArray("Resource")]
-nodes_folded=[]
-</file>
-
-<file path=".godot/editor/mvp_test.tscn-editstate-fe3744c47e6b07da1a0149c06c8d251d.cfg">
-[editor_states]
-
-Anim={
-"visible": false
-}
-2D={
-"grid_offset": Vector2(0, 0),
-"grid_snap_active": false,
-"grid_step": Vector2(8, 8),
-"grid_visibility": 1,
-"ofs": Vector2(-366.156, -125),
-"primary_grid_step": Vector2i(8, 8),
-"show_group_gizmos": true,
-"show_guides": true,
-"show_helpers": false,
-"show_lock_gizmos": true,
-"show_origin": true,
-"show_position_gizmos": true,
-"show_rulers": true,
-"show_transformation_gizmos": true,
-"show_viewport": true,
-"show_zoom_control": true,
-"smart_snap_active": false,
-"snap_guides": true,
-"snap_node_anchors": true,
-"snap_node_center": true,
-"snap_node_parent": true,
-"snap_node_sides": true,
-"snap_other_nodes": true,
-"snap_pixel": true,
-"snap_relative": false,
-"snap_rotation": false,
-"snap_rotation_offset": 0.0,
-"snap_rotation_step": 0.261799,
-"snap_scale": false,
-"snap_scale_step": 0.1,
-"zoom": 0.25
-}
-3D={
-"fov": 70.01,
-"gizmos_status": {
-"AudioListener3D": 0,
-"AudioStreamPlayer3D": 0,
-"CPUParticles3D": 0,
-"CSGShape3D": 0,
-"Camera3D": 0,
-"CollisionObject3D": 0,
-"CollisionPolygon3D": 0,
-"CollisionShape3D": 0,
-"Decal": 0,
-"FogVolume": 0,
-"GPUParticles3D": 0,
-"GPUParticlesCollision3D": 0,
-"Joint3D": 0,
-"Light3D": 0,
-"LightmapGI": 0,
-"LightmapProbe": 0,
-"Marker3D": 0,
-"MeshInstance3DCustomAABB": 0,
-"NavigationLink3D": 0,
-"NavigationRegion3D": 0,
-"OccluderInstance3D": 0,
-"Path3D": 0,
-"PhysicalBone3D": 0,
-"RayCast3D": 0,
-"ReflectionProbe": 0,
-"ShapeCast3D": 0,
-"Skeleton3D": 0,
-"SoftBody3D": 0,
-"SpringArm3D": 0,
-"VehicleWheel3D": 0,
-"VisibleOnScreenNotifier3D": 0,
-"VoxelGI": 0
-},
-"local_coords": false,
-"preview_sun_env": {
-"environ_ao_enabled": false,
-"environ_enabled": true,
-"environ_energy": 1.0,
-"environ_gi_enabled": false,
-"environ_glow_enabled": true,
-"environ_ground_color": Color(0.2, 0.169, 0.133, 1),
-"environ_sky_color": Color(0.385, 0.454, 0.55, 1),
-"environ_tonemap_enabled": true,
-"sun_color": Color(1, 1, 1, 1),
-"sun_enabled": true,
-"sun_energy": 1.0,
-"sun_max_distance": 100.0,
-"sun_rotation": Vector2(-1.0472, 2.61799)
-},
-"rotate_snap": 15.0,
-"scale_snap": 10.0,
-"show_grid": true,
-"show_origin": true,
-"snap_enabled": false,
-"translate_snap": 1.0,
-"viewport_mode": 1,
-"viewports": [{
-"auto_orthogonal": false,
-"auto_orthogonal_enabled": true,
-"cinematic_preview": false,
-"display_mode": 21,
-"distance": 4.0,
-"doppler": false,
-"frame_time": false,
-"gizmos": true,
-"half_res": false,
-"information": false,
-"listener": true,
-"lock_rotation": false,
-"orthogonal": false,
-"position": Vector3(0, 0, 0),
-"use_environment": false,
-"view_type": 0,
-"x_rotation": 0.5,
-"y_rotation": -0.5
-}, {
-"auto_orthogonal": false,
-"auto_orthogonal_enabled": true,
-"cinematic_preview": false,
-"display_mode": 21,
-"distance": 4.0,
-"doppler": false,
-"frame_time": false,
-"gizmos": true,
-"half_res": false,
-"information": false,
-"listener": false,
-"lock_rotation": false,
-"orthogonal": false,
-"position": Vector3(0, 0, 0),
-"use_environment": false,
-"view_type": 0,
-"x_rotation": 0.5,
-"y_rotation": -0.5
-}, {
-"auto_orthogonal": false,
-"auto_orthogonal_enabled": true,
-"cinematic_preview": false,
-"display_mode": 21,
-"distance": 4.0,
-"doppler": false,
-"frame_time": false,
-"gizmos": true,
-"half_res": false,
-"information": false,
-"listener": false,
-"lock_rotation": false,
-"orthogonal": false,
-"position": Vector3(0, 0, 0),
-"use_environment": false,
-"view_type": 0,
-"x_rotation": 0.5,
-"y_rotation": -0.5
-}, {
-"auto_orthogonal": false,
-"auto_orthogonal_enabled": true,
-"cinematic_preview": false,
-"display_mode": 21,
-"distance": 4.0,
-"doppler": false,
-"frame_time": false,
-"gizmos": true,
-"half_res": false,
-"information": false,
-"listener": false,
-"lock_rotation": false,
-"orthogonal": false,
-"position": Vector3(0, 0, 0),
-"use_environment": false,
-"view_type": 0,
-"x_rotation": 0.5,
-"y_rotation": -0.5
-}],
-"zfar": 4000.01,
-"znear": 0.05
-}
-selected_nodes=Array[NodePath]([])
-</file>
-
 <file path=".godot/editor/mvp_test.tscn-folding-fe3744c47e6b07da1a0149c06c8d251d.cfg">
 [folding]
 
@@ -1661,7 +1535,25 @@ sections_unfolded=PackedStringArray()
 sections_unfolded=PackedStringArray()
 </file>
 
-<file path=".godot/editor/Spike.tscn-editstate-b37a4370de225980df34a70d5c4a4d45.cfg">
+<file path=".godot/editor/spike.gd-folding-3562348e838fe1868afad3b22d724d72.cfg">
+[folding]
+
+sections_unfolded=PackedStringArray("Resource")
+</file>
+
+<file path=".godot/editor/success.mp3-2f4cfc1e2ce208c30d0192cb1e366d1a.mp3str-folding-fb8faa49ddd5890251ea8d15ba9b3111.cfg">
+[folding]
+
+sections_unfolded=PackedStringArray()
+</file>
+
+<file path=".godot/editor/success.mp3-8c2123d5a82507e48393b4843ef40866.mp3str-folding-c5c275bd1e1bdf5c4dcf5f6917521fc5.cfg">
+[folding]
+
+sections_unfolded=PackedStringArray()
+</file>
+
+<file path=".godot/editor/WoodBlock.tscn-editstate-d1f831fe6c4ca080984fe9f005db8ccd.cfg">
 [editor_states]
 
 Anim={
@@ -1672,7 +1564,7 @@ Anim={
 "grid_snap_active": false,
 "grid_step": Vector2(8, 8),
 "grid_visibility": 1,
-"ofs": Vector2(-180, -125),
+"ofs": Vector2(-285.348, -146.577),
 "primary_grid_step": Vector2i(8, 8),
 "show_group_gizmos": true,
 "show_guides": true,
@@ -1698,7 +1590,7 @@ Anim={
 "snap_rotation_step": 0.261799,
 "snap_scale": false,
 "snap_scale_step": 0.1,
-"zoom": 0.25
+"zoom": 1.18921
 }
 3D={
 "fov": 70.01,
@@ -1842,24 +1734,209 @@ Anim={
 selected_nodes=Array[NodePath]([])
 </file>
 
-<file path=".godot/editor/Spike.tscn-folding-b37a4370de225980df34a70d5c4a4d45.cfg">
+<file path=".godot/editor/WoodBlock.tscn-folding-d1f831fe6c4ca080984fe9f005db8ccd.cfg">
 [folding]
 
 node_unfolds=[]
-resource_unfolds=["res://scenes/hazards/Spike.tscn::RectangleShape2D_spike", PackedStringArray("Resource")]
+resource_unfolds=["res://scenes/environment/WoodBlock.tscn::RectangleShape2D_wood_block", PackedStringArray("Resource")]
 nodes_folded=[]
 </file>
 
-<file path=".godot/editor/success.mp3-2f4cfc1e2ce208c30d0192cb1e366d1a.mp3str-folding-fb8faa49ddd5890251ea8d15ba9b3111.cfg">
-[folding]
+<file path=".godot/editor/WoodPlatform.tscn-editstate-3724555d070f99417b43122929fc3b2a.cfg">
+[editor_states]
 
-sections_unfolded=PackedStringArray()
+Anim={
+"visible": false
+}
+2D={
+"grid_offset": Vector2(0, 0),
+"grid_snap_active": false,
+"grid_step": Vector2(8, 8),
+"grid_visibility": 1,
+"ofs": Vector2(-288.099, -140.095),
+"primary_grid_step": Vector2i(8, 8),
+"show_group_gizmos": true,
+"show_guides": true,
+"show_helpers": false,
+"show_lock_gizmos": true,
+"show_origin": true,
+"show_position_gizmos": true,
+"show_rulers": true,
+"show_transformation_gizmos": true,
+"show_viewport": true,
+"show_zoom_control": true,
+"smart_snap_active": false,
+"snap_guides": true,
+"snap_node_anchors": true,
+"snap_node_center": true,
+"snap_node_parent": true,
+"snap_node_sides": true,
+"snap_other_nodes": true,
+"snap_pixel": true,
+"snap_relative": false,
+"snap_rotation": false,
+"snap_rotation_offset": 0.0,
+"snap_rotation_step": 0.261799,
+"snap_scale": false,
+"snap_scale_step": 0.1,
+"zoom": 1.41421
+}
+3D={
+"fov": 70.01,
+"gizmos_status": {
+"AudioListener3D": 0,
+"AudioStreamPlayer3D": 0,
+"CPUParticles3D": 0,
+"CSGShape3D": 0,
+"Camera3D": 0,
+"CollisionObject3D": 0,
+"CollisionPolygon3D": 0,
+"CollisionShape3D": 0,
+"Decal": 0,
+"FogVolume": 0,
+"GPUParticles3D": 0,
+"GPUParticlesCollision3D": 0,
+"Joint3D": 0,
+"Light3D": 0,
+"LightmapGI": 0,
+"LightmapProbe": 0,
+"Marker3D": 0,
+"MeshInstance3DCustomAABB": 0,
+"NavigationLink3D": 0,
+"NavigationRegion3D": 0,
+"OccluderInstance3D": 0,
+"Path3D": 0,
+"PhysicalBone3D": 0,
+"RayCast3D": 0,
+"ReflectionProbe": 0,
+"ShapeCast3D": 0,
+"Skeleton3D": 0,
+"SoftBody3D": 0,
+"SpringArm3D": 0,
+"VehicleWheel3D": 0,
+"VisibleOnScreenNotifier3D": 0,
+"VoxelGI": 0
+},
+"local_coords": false,
+"preview_sun_env": {
+"environ_ao_enabled": false,
+"environ_enabled": true,
+"environ_energy": 1.0,
+"environ_gi_enabled": false,
+"environ_glow_enabled": true,
+"environ_ground_color": Color(0.2, 0.169, 0.133, 1),
+"environ_sky_color": Color(0.385, 0.454, 0.55, 1),
+"environ_tonemap_enabled": true,
+"sun_color": Color(1, 1, 1, 1),
+"sun_enabled": true,
+"sun_energy": 1.0,
+"sun_max_distance": 100.0,
+"sun_rotation": Vector2(-1.0472, 2.61799)
+},
+"rotate_snap": 15.0,
+"scale_snap": 10.0,
+"show_grid": true,
+"show_origin": true,
+"snap_enabled": false,
+"translate_snap": 1.0,
+"viewport_mode": 1,
+"viewports": [{
+"auto_orthogonal": false,
+"auto_orthogonal_enabled": true,
+"cinematic_preview": false,
+"display_mode": 21,
+"distance": 4.0,
+"doppler": false,
+"frame_time": false,
+"gizmos": true,
+"half_res": false,
+"information": false,
+"listener": true,
+"lock_rotation": false,
+"orthogonal": false,
+"position": Vector3(0, 0, 0),
+"use_environment": false,
+"view_type": 0,
+"x_rotation": 0.5,
+"y_rotation": -0.5
+}, {
+"auto_orthogonal": false,
+"auto_orthogonal_enabled": true,
+"cinematic_preview": false,
+"display_mode": 21,
+"distance": 4.0,
+"doppler": false,
+"frame_time": false,
+"gizmos": true,
+"half_res": false,
+"information": false,
+"listener": false,
+"lock_rotation": false,
+"orthogonal": false,
+"position": Vector3(0, 0, 0),
+"use_environment": false,
+"view_type": 0,
+"x_rotation": 0.5,
+"y_rotation": -0.5
+}, {
+"auto_orthogonal": false,
+"auto_orthogonal_enabled": true,
+"cinematic_preview": false,
+"display_mode": 21,
+"distance": 4.0,
+"doppler": false,
+"frame_time": false,
+"gizmos": true,
+"half_res": false,
+"information": false,
+"listener": false,
+"lock_rotation": false,
+"orthogonal": false,
+"position": Vector3(0, 0, 0),
+"use_environment": false,
+"view_type": 0,
+"x_rotation": 0.5,
+"y_rotation": -0.5
+}, {
+"auto_orthogonal": false,
+"auto_orthogonal_enabled": true,
+"cinematic_preview": false,
+"display_mode": 21,
+"distance": 4.0,
+"doppler": false,
+"frame_time": false,
+"gizmos": true,
+"half_res": false,
+"information": false,
+"listener": false,
+"lock_rotation": false,
+"orthogonal": false,
+"position": Vector3(0, 0, 0),
+"use_environment": false,
+"view_type": 0,
+"x_rotation": 0.5,
+"y_rotation": -0.5
+}],
+"zfar": 4000.01,
+"znear": 0.05
+}
+selected_nodes=Array[NodePath]([NodePath("/root/@EditorNode@16894/@Panel@13/@VBoxContainer@14/DockHSplitLeftL/DockHSplitLeftR/DockHSplitMain/@VBoxContainer@25/DockVSplitCenter/@VSplitContainer@52/@VBoxContainer@53/@PanelContainer@98/MainScreen/@CanvasItemEditor@9280/@VSplitContainer@9102/@HSplitContainer@9104/@HSplitContainer@9106/@Control@9107/@SubViewportContainer@9108/@SubViewport@9109/WoodPlatform/CollisionShape2D")])
 </file>
 
-<file path=".godot/editor/success.mp3-8c2123d5a82507e48393b4843ef40866.mp3str-folding-c5c275bd1e1bdf5c4dcf5f6917521fc5.cfg">
+<file path=".godot/editor/WoodPlatform.tscn-folding-3724555d070f99417b43122929fc3b2a.cfg">
 [folding]
 
-sections_unfolded=PackedStringArray()
+node_unfolds=[NodePath("."), PackedStringArray("Collision")]
+resource_unfolds=["res://scenes/environment/WoodPlatform.tscn::RectangleShape2D_wood_platform", PackedStringArray("Resource")]
+nodes_folded=[]
+</file>
+
+<file path=".godot/editor/WoodPlatformSmall.tscn-folding-a4dc599498a11519fdfe1cbd06d216be.cfg">
+[folding]
+
+node_unfolds=[]
+resource_unfolds=["res://scenes/environment/WoodPlatformSmall.tscn::RectangleShape2D_wood_platform_small", PackedStringArray("Resource")]
+nodes_folded=[]
 </file>
 
 <file path=".godot/imported/ball.png-b42bc1a78430fc3412eda843a2d529ba.md5">
@@ -1870,6 +1947,11 @@ dest_md5="9d6747fe590124247dbd599adf5ce103"
 <file path=".godot/imported/ball.png-b8e6aa06c746a4928b1493a1566800b7.md5">
 source_md5="589e5402feb2283eda54799d19992166"
 dest_md5="9d6747fe590124247dbd599adf5ce103"
+</file>
+
+<file path=".godot/imported/ball2.png-6f28e0ca618c24193f185628b0b67a48.md5">
+source_md5="12861f5444f4a9bca3b81495e59abde2"
+dest_md5="7d3e31cbeee34f7376a6903acb5d636e"
 </file>
 
 <file path=".godot/imported/bg_layer1.png-448a8143e3892073d6b96852c0d29f68.md5">
@@ -2155,6 +2237,11 @@ dest_md5="4ace03504f26253cc6b783a534a54cca"
 <file path=".godot/imported/top_spike.png-e726383dcdf8172a339f8dc7c5ed0b51.md5">
 source_md5="4a1cc490238f5192676e6c74b755715d"
 dest_md5="1a775301c8e17aba8c435d3a1dcc6e50"
+</file>
+
+<file path=".godot/imported/woodblock.png-6ef5c51be5d1e9b59e37e855684a6353.md5">
+source_md5="46dfda4cb0b1ed47dd1f4dadc48d75cd"
+dest_md5="fb3a918e1a75209a01c7c06790a593fb"
 </file>
 
 <file path=".godot/.gdignore">
@@ -3274,6 +3361,69 @@ physics_layer_0/collision_mask = 0
 sources/0 = SubResource("TileSetAtlasSource_1")
 </file>
 
+<file path="scenes/environment/BasePlatform.tscn">
+[gd_scene load_steps=1 format=3 uid="uid://cq8d4v2n3lx9r"]
+
+[node name="BasePlatform" type="StaticBody2D"]
+collision_layer = 1
+collision_mask = 0
+</file>
+
+<file path="scenes/environment/WoodBlock.tscn">
+[gd_scene load_steps=4 format=3 uid="uid://d4v8x7n2m9k3l"]
+
+[ext_resource type="PackedScene" uid="uid://cq8d4v2n3lx9r" path="res://scenes/environment/BasePlatform.tscn" id="1_base_platform"]
+[ext_resource type="Texture2D" uid="uid://rdcv5yjkplnw" path="res://assets/sprites/environment/woodblock.png" id="2_wood_texture"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_wood_block"]
+size = Vector2(70, 70)
+
+[node name="WoodBlock" instance=ExtResource("1_base_platform")]
+
+[node name="Sprite2D" type="Sprite2D" parent="." index="0"]
+texture = ExtResource("2_wood_texture")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." index="1"]
+shape = SubResource("RectangleShape2D_wood_block")
+</file>
+
+<file path="scenes/environment/WoodPlatform.tscn">
+[gd_scene load_steps=4 format=3 uid="uid://b2lav7w8x1m4n"]
+
+[ext_resource type="PackedScene" uid="uid://cq8d4v2n3lyar" path="res://scenes/environment/BasePlatform.tscn" id="1_base_platform"]
+[ext_resource type="Texture2D" uid="uid://cw35d765qafl6" path="res://assets/sprites/environment/ground_stone.png" id="2_wood_texture"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_wood_platform"]
+size = Vector2(400, 104)
+
+[node name="WoodPlatform" instance=ExtResource("1_base_platform")]
+
+[node name="Sprite2D" type="Sprite2D" parent="." index="0"]
+texture = ExtResource("2_wood_texture")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." index="1"]
+position = Vector2(20.5, 3)
+shape = SubResource("RectangleShape2D_wood_platform")
+</file>
+
+<file path="scenes/environment/WoodPlatformSmall.tscn">
+[gd_scene load_steps=4 format=3 uid="uid://b5k8m1n4p7q2r"]
+
+[ext_resource type="PackedScene" uid="uid://cq8d4v2n3lx9r" path="res://scenes/environment/BasePlatform.tscn" id="1_base_platform"]
+[ext_resource type="Texture2D" uid="uid://bqtsiecipmjfq" path="res://assets/sprites/environment/ground_wood_small.png" id="2_wood_small_texture"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_wood_platform_small"]
+size = Vector2(150, 80)
+
+[node name="WoodPlatformSmall" instance=ExtResource("1_base_platform")]
+
+[node name="Sprite2D" type="Sprite2D" parent="." index="0"]
+texture = ExtResource("2_wood_small_texture")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." index="1"]
+shape = SubResource("RectangleShape2D_wood_platform_small")
+</file>
+
 <file path="scenes/ui/game_over.tscn">
 [gd_scene load_steps=3 format=3 uid="uid://c4j5n8m1x3k9p"]
 
@@ -3731,7 +3881,15 @@ Step 3: Set the Main Scene for the Project
 Testing: After this step, when you run your project, you should see your "Bop" title screen. Clicking the "Start Game" button should load and start level_1.tscn exactly as it did before.
 </file>
 
-<file path=".godot/editor/level_1.tscn-editstate-446b1ed11cc7129b20b35ff4df2b3752.cfg">
+<file path=".godot/editor/level_1.tscn-folding-446b1ed11cc7129b20b35ff4df2b3752.cfg">
+[folding]
+
+node_unfolds=[NodePath("Environment/LeftWall"), PackedStringArray("Transform"), NodePath("Environment/RightWall"), PackedStringArray("Transform"), NodePath("Environment/Hazards/BottomLargeSpike1"), PackedStringArray("Collision", "Input", "Transform"), NodePath("GravityZones/UpperGravityZone"), PackedStringArray("Transform"), NodePath("GravityZones/LowerGravityZone"), PackedStringArray("Transform"), NodePath("Player"), PackedStringArray("Transform")]
+resource_unfolds=["res://scenes/levels/level_1.tscn::RectangleShape2D_walls", PackedStringArray("Resource"), "res://scenes/levels/level_1.tscn::RectangleShape2D_upper_gravity", PackedStringArray("Resource"), "res://scenes/levels/level_1.tscn::RectangleShape2D_lower_gravity", PackedStringArray("Resource")]
+nodes_folded=[]
+</file>
+
+<file path=".godot/editor/mvp_test.tscn-editstate-fe3744c47e6b07da1a0149c06c8d251d.cfg">
 [editor_states]
 
 Anim={
@@ -3742,7 +3900,7 @@ Anim={
 "grid_snap_active": false,
 "grid_step": Vector2(8, 8),
 "grid_visibility": 1,
-"ofs": Vector2(-317.547, -229.278),
+"ofs": Vector2(-423.932, -226.378),
 "primary_grid_step": Vector2i(8, 8),
 "show_group_gizmos": true,
 "show_guides": true,
@@ -3768,7 +3926,7 @@ Anim={
 "snap_rotation_step": 0.261799,
 "snap_scale": false,
 "snap_scale_step": 0.1,
-"zoom": 0.707107
+"zoom": 0.749154
 }
 3D={
 "fov": 70.01,
@@ -3912,12 +4070,185 @@ Anim={
 selected_nodes=Array[NodePath]([])
 </file>
 
-<file path=".godot/editor/player.tscn-folding-c2c62cb8c73458cd122faf659769dc80.cfg">
-[folding]
+<file path=".godot/editor/player.tscn-editstate-c2c62cb8c73458cd122faf659769dc80.cfg">
+[editor_states]
 
-node_unfolds=[NodePath("."), PackedStringArray("Collision")]
-resource_unfolds=["res://scenes/player/player.tscn::CircleShape2D_1", PackedStringArray("Resource")]
-nodes_folded=[]
+Anim={
+"visible": false
+}
+2D={
+"grid_offset": Vector2(0, 0),
+"grid_snap_active": false,
+"grid_step": Vector2(8, 8),
+"grid_visibility": 1,
+"ofs": Vector2(-2430.35, -1633.5),
+"primary_grid_step": Vector2i(8, 8),
+"show_group_gizmos": true,
+"show_guides": true,
+"show_helpers": false,
+"show_lock_gizmos": true,
+"show_origin": true,
+"show_position_gizmos": true,
+"show_rulers": true,
+"show_transformation_gizmos": true,
+"show_viewport": true,
+"show_zoom_control": true,
+"smart_snap_active": false,
+"snap_guides": true,
+"snap_node_anchors": true,
+"snap_node_center": true,
+"snap_node_parent": true,
+"snap_node_sides": true,
+"snap_other_nodes": true,
+"snap_pixel": true,
+"snap_relative": false,
+"snap_rotation": false,
+"snap_rotation_offset": 0.0,
+"snap_rotation_step": 0.261799,
+"snap_scale": false,
+"snap_scale_step": 0.1,
+"zoom": 0.111362
+}
+3D={
+"fov": 70.01,
+"gizmos_status": {
+"AudioListener3D": 0,
+"AudioStreamPlayer3D": 0,
+"CPUParticles3D": 0,
+"CSGShape3D": 0,
+"Camera3D": 0,
+"CollisionObject3D": 0,
+"CollisionPolygon3D": 0,
+"CollisionShape3D": 0,
+"Decal": 0,
+"FogVolume": 0,
+"GPUParticles3D": 0,
+"GPUParticlesCollision3D": 0,
+"Joint3D": 0,
+"Light3D": 0,
+"LightmapGI": 0,
+"LightmapProbe": 0,
+"Marker3D": 0,
+"MeshInstance3DCustomAABB": 0,
+"NavigationLink3D": 0,
+"NavigationRegion3D": 0,
+"OccluderInstance3D": 0,
+"Path3D": 0,
+"PhysicalBone3D": 0,
+"RayCast3D": 0,
+"ReflectionProbe": 0,
+"ShapeCast3D": 0,
+"Skeleton3D": 0,
+"SoftBody3D": 0,
+"SpringArm3D": 0,
+"VehicleWheel3D": 0,
+"VisibleOnScreenNotifier3D": 0,
+"VoxelGI": 0
+},
+"local_coords": false,
+"preview_sun_env": {
+"environ_ao_enabled": false,
+"environ_enabled": true,
+"environ_energy": 1.0,
+"environ_gi_enabled": false,
+"environ_glow_enabled": true,
+"environ_ground_color": Color(0.2, 0.169, 0.133, 1),
+"environ_sky_color": Color(0.385, 0.454, 0.55, 1),
+"environ_tonemap_enabled": true,
+"sun_color": Color(1, 1, 1, 1),
+"sun_enabled": true,
+"sun_energy": 1.0,
+"sun_max_distance": 100.0,
+"sun_rotation": Vector2(-1.0472, 2.61799)
+},
+"rotate_snap": 15.0,
+"scale_snap": 10.0,
+"show_grid": true,
+"show_origin": true,
+"snap_enabled": false,
+"translate_snap": 1.0,
+"viewport_mode": 1,
+"viewports": [{
+"auto_orthogonal": false,
+"auto_orthogonal_enabled": true,
+"cinematic_preview": false,
+"display_mode": 21,
+"distance": 4.0,
+"doppler": false,
+"frame_time": false,
+"gizmos": true,
+"half_res": false,
+"information": false,
+"listener": true,
+"lock_rotation": false,
+"orthogonal": false,
+"position": Vector3(0, 0, 0),
+"use_environment": false,
+"view_type": 0,
+"x_rotation": 0.5,
+"y_rotation": -0.5
+}, {
+"auto_orthogonal": false,
+"auto_orthogonal_enabled": true,
+"cinematic_preview": false,
+"display_mode": 21,
+"distance": 4.0,
+"doppler": false,
+"frame_time": false,
+"gizmos": true,
+"half_res": false,
+"information": false,
+"listener": false,
+"lock_rotation": false,
+"orthogonal": false,
+"position": Vector3(0, 0, 0),
+"use_environment": false,
+"view_type": 0,
+"x_rotation": 0.5,
+"y_rotation": -0.5
+}, {
+"auto_orthogonal": false,
+"auto_orthogonal_enabled": true,
+"cinematic_preview": false,
+"display_mode": 21,
+"distance": 4.0,
+"doppler": false,
+"frame_time": false,
+"gizmos": true,
+"half_res": false,
+"information": false,
+"listener": false,
+"lock_rotation": false,
+"orthogonal": false,
+"position": Vector3(0, 0, 0),
+"use_environment": false,
+"view_type": 0,
+"x_rotation": 0.5,
+"y_rotation": -0.5
+}, {
+"auto_orthogonal": false,
+"auto_orthogonal_enabled": true,
+"cinematic_preview": false,
+"display_mode": 21,
+"distance": 4.0,
+"doppler": false,
+"frame_time": false,
+"gizmos": true,
+"half_res": false,
+"information": false,
+"listener": false,
+"lock_rotation": false,
+"orthogonal": false,
+"position": Vector3(0, 0, 0),
+"use_environment": false,
+"view_type": 0,
+"x_rotation": 0.5,
+"y_rotation": -0.5
+}],
+"zfar": 4000.01,
+"znear": 0.05
+}
+selected_nodes=Array[NodePath]([])
 </file>
 
 <file path=".godot/editor/recent_dirs">
@@ -3925,137 +4256,193 @@ res://scenes/ui
 res://scenes/levels
 </file>
 
-<file path="scripts/hazards/spike.gd">
-"""
-Spike Hazard Script
-Handles collision detection with the player and triggers death sequence.
-Uses Area2D body_entered signal to detect when player touches the spike.
-Modular design supports multiple spike types through enum configuration.
-"""
-class_name Spike
-extends Area2D
+<file path=".godot/editor/Spike.tscn-editstate-b37a4370de225980df34a70d5c4a4d45.cfg">
+[editor_states]
 
-# Enum for different spike types
-enum SpikeType {
-	BOTTOM,
-	TOP,
-	BOTTOM_LARGE,
-	TOP_LARGE
+Anim={
+"visible": false
 }
+2D={
+"grid_offset": Vector2(0, 0),
+"grid_snap_active": false,
+"grid_step": Vector2(8, 8),
+"grid_visibility": 1,
+"ofs": Vector2(-190.772, -85.1558),
+"primary_grid_step": Vector2i(8, 8),
+"show_group_gizmos": true,
+"show_guides": true,
+"show_helpers": false,
+"show_lock_gizmos": true,
+"show_origin": true,
+"show_position_gizmos": true,
+"show_rulers": true,
+"show_transformation_gizmos": true,
+"show_viewport": true,
+"show_zoom_control": true,
+"smart_snap_active": false,
+"snap_guides": true,
+"snap_node_anchors": true,
+"snap_node_center": true,
+"snap_node_parent": true,
+"snap_node_sides": true,
+"snap_other_nodes": true,
+"snap_pixel": true,
+"snap_relative": false,
+"snap_rotation": false,
+"snap_rotation_offset": 0.0,
+"snap_rotation_step": 0.261799,
+"snap_scale": false,
+"snap_scale_step": 0.1,
+"zoom": 1.68179
+}
+3D={
+"fov": 70.01,
+"gizmos_status": {
+"AudioListener3D": 0,
+"AudioStreamPlayer3D": 0,
+"CPUParticles3D": 0,
+"CSGShape3D": 0,
+"Camera3D": 0,
+"CollisionObject3D": 0,
+"CollisionPolygon3D": 0,
+"CollisionShape3D": 0,
+"Decal": 0,
+"FogVolume": 0,
+"GPUParticles3D": 0,
+"GPUParticlesCollision3D": 0,
+"Joint3D": 0,
+"Light3D": 0,
+"LightmapGI": 0,
+"LightmapProbe": 0,
+"Marker3D": 0,
+"MeshInstance3DCustomAABB": 0,
+"NavigationLink3D": 0,
+"NavigationRegion3D": 0,
+"OccluderInstance3D": 0,
+"Path3D": 0,
+"PhysicalBone3D": 0,
+"RayCast3D": 0,
+"ReflectionProbe": 0,
+"ShapeCast3D": 0,
+"Skeleton3D": 0,
+"SoftBody3D": 0,
+"SpringArm3D": 0,
+"VehicleWheel3D": 0,
+"VisibleOnScreenNotifier3D": 0,
+"VoxelGI": 0
+},
+"local_coords": false,
+"preview_sun_env": {
+"environ_ao_enabled": false,
+"environ_enabled": true,
+"environ_energy": 1.0,
+"environ_gi_enabled": false,
+"environ_glow_enabled": true,
+"environ_ground_color": Color(0.2, 0.169, 0.133, 1),
+"environ_sky_color": Color(0.385, 0.454, 0.55, 1),
+"environ_tonemap_enabled": true,
+"sun_color": Color(1, 1, 1, 1),
+"sun_enabled": true,
+"sun_energy": 1.0,
+"sun_max_distance": 100.0,
+"sun_rotation": Vector2(-1.0472, 2.61799)
+},
+"rotate_snap": 15.0,
+"scale_snap": 10.0,
+"show_grid": true,
+"show_origin": true,
+"snap_enabled": false,
+"translate_snap": 1.0,
+"viewport_mode": 1,
+"viewports": [{
+"auto_orthogonal": false,
+"auto_orthogonal_enabled": true,
+"cinematic_preview": false,
+"display_mode": 21,
+"distance": 4.0,
+"doppler": false,
+"frame_time": false,
+"gizmos": true,
+"half_res": false,
+"information": false,
+"listener": true,
+"lock_rotation": false,
+"orthogonal": false,
+"position": Vector3(0, 0, 0),
+"use_environment": false,
+"view_type": 0,
+"x_rotation": 0.5,
+"y_rotation": -0.5
+}, {
+"auto_orthogonal": false,
+"auto_orthogonal_enabled": true,
+"cinematic_preview": false,
+"display_mode": 21,
+"distance": 4.0,
+"doppler": false,
+"frame_time": false,
+"gizmos": true,
+"half_res": false,
+"information": false,
+"listener": false,
+"lock_rotation": false,
+"orthogonal": false,
+"position": Vector3(0, 0, 0),
+"use_environment": false,
+"view_type": 0,
+"x_rotation": 0.5,
+"y_rotation": -0.5
+}, {
+"auto_orthogonal": false,
+"auto_orthogonal_enabled": true,
+"cinematic_preview": false,
+"display_mode": 21,
+"distance": 4.0,
+"doppler": false,
+"frame_time": false,
+"gizmos": true,
+"half_res": false,
+"information": false,
+"listener": false,
+"lock_rotation": false,
+"orthogonal": false,
+"position": Vector3(0, 0, 0),
+"use_environment": false,
+"view_type": 0,
+"x_rotation": 0.5,
+"y_rotation": -0.5
+}, {
+"auto_orthogonal": false,
+"auto_orthogonal_enabled": true,
+"cinematic_preview": false,
+"display_mode": 21,
+"distance": 4.0,
+"doppler": false,
+"frame_time": false,
+"gizmos": true,
+"half_res": false,
+"information": false,
+"listener": false,
+"lock_rotation": false,
+"orthogonal": false,
+"position": Vector3(0, 0, 0),
+"use_environment": false,
+"view_type": 0,
+"x_rotation": 0.5,
+"y_rotation": -0.5
+}],
+"zfar": 4000.01,
+"znear": 0.05
+}
+selected_nodes=Array[NodePath]([])
+</file>
 
-# Export variables for configuration
-@export var type: SpikeType = SpikeType.BOTTOM
-@export var damage_sound: AudioStream
-@export var is_enabled: bool = true
+<file path=".godot/editor/Spike.tscn-folding-b37a4370de225980df34a70d5c4a4d45.cfg">
+[folding]
 
-# Node references
-@onready var sprite: Sprite2D = $Sprite2D
-@onready var collision_shape: CollisionShape2D = $CollisionShape2D
-
-func _ready() -> void:
-	"""Initialize the spike hazard with appropriate texture and collision size."""
-	print("Spike: Initializing ", SpikeType.keys()[type], " spike at position ", global_position)
-	
-	# Configure spike based on type
-	_configure_spike_type()
-	
-	# Connect the body_entered signal to our collision handler
-	body_entered.connect(_on_body_entered)
-	
-	# Make sure the Area2D is monitoring for bodies
-	monitoring = true
-	monitorable = true
-	
-	print("Spike: Ready and monitoring for collisions")
-
-func _configure_spike_type() -> void:
-	"""Configure the spike's texture and collision size based on its type."""
-	var texture_path: String
-	var collision_size: Vector2
-	
-	match type:
-		SpikeType.BOTTOM:
-			texture_path = "res://assets/sprites/hazards/bottom_spike.png"
-			collision_size = Vector2(64, 64)
-			print("Spike: Configuring as BOTTOM spike")
-		SpikeType.TOP:
-			texture_path = "res://assets/sprites/hazards/top_spike.png"
-			collision_size = Vector2(64, 64)
-			print("Spike: Configuring as TOP spike")
-		SpikeType.BOTTOM_LARGE:
-			texture_path = "res://assets/sprites/hazards/spikes_large_bottom.png"
-			collision_size = Vector2(128, 64)
-			print("Spike: Configuring as BOTTOM_LARGE spike")
-		SpikeType.TOP_LARGE:
-			texture_path = "res://assets/sprites/hazards/spikes_large_top.png"
-			collision_size = Vector2(128, 64)
-			print("Spike: Configuring as TOP_LARGE spike")
-	
-	# Load and set the texture
-	var texture = load(texture_path)
-	if texture:
-		sprite.texture = texture
-		print("Spike: Texture loaded successfully: ", texture_path)
-	else:
-		print("Spike: ERROR - Failed to load texture: ", texture_path)
-	
-	# Update collision shape size
-	if collision_shape.shape is RectangleShape2D:
-		var rect_shape = collision_shape.shape as RectangleShape2D
-		rect_shape.size = collision_size
-		print("Spike: Collision size set to ", collision_size)
-
-func _on_body_entered(body: Node2D) -> void:
-	"""Handle when a body enters the spike area."""
-	print("Spike: Body entered - ", body.name, " (type: ", body.get_class(), ")")
-	
-	# Check if it's the player and connect to its hit signal for immediate detection
-	if body.is_in_group("player") and is_enabled:
-		print("Spike: Player detected! Connecting to hit signal and triggering collision")
-		
-		# Connect to the player's hit signal if not already connected
-		if not body.hit.is_connected(_on_player_hit):
-			body.hit.connect(_on_player_hit)
-			print("Spike: Connected to player hit signal")
-		
-		# Trigger the hazard collision immediately
-		if body.has_method("_handle_hazard_collision"):
-			print("Spike: Calling player's hazard collision method")
-			body._handle_hazard_collision()
-		else:
-			print("Spike: Player missing _handle_hazard_collision method, triggering direct death")
-			_trigger_player_death()
-
-func _on_player_hit() -> void:
-	"""Handle when the player emits a hit signal."""
-	print("Spike: Received player hit signal!")
-	_trigger_player_death()
-
-func _trigger_player_death() -> void:
-	"""Trigger the player death sequence directly."""
-	print("Spike: Triggering player death sequence")
-	
-	# Play pop sound through SoundManager
-	if has_node("/root/SoundManager"):
-		get_node("/root/SoundManager").play_sfx("pop")
-		print("Spike: Pop sound triggered")
-	
-	# Emit signal to GameState for life management
-	if has_node("/root/GameState"):
-		get_node("/root/GameState").emit_signal("player_died")
-		print("Spike: Player death signal emitted")
-
-func disable_spike() -> void:
-	"""Temporarily disable the spike."""
-	is_enabled = false
-	modulate = Color(0.5, 0.5, 0.5, 0.5)  # Make it semi-transparent
-	print("Spike: Disabled")
-
-func enable_spike() -> void:
-	"""Re-enable the spike."""
-	is_enabled = true
-	modulate = Color.WHITE
-	print("Spike: Enabled")
+node_unfolds=[NodePath("."), PackedStringArray("Collision")]
+resource_unfolds=["res://scenes/hazards/Spike.tscn::RectangleShape2D_spike", PackedStringArray("Resource")]
+nodes_folded=[]
 </file>
 
 <file path="scripts/ui/game_over.gd">
@@ -4478,6 +4865,20 @@ alwaysApply: true
     - Guideline: Your code should define behavior. Your Resources should define data. Your level scenes should be as "dumb" as possible. Action: Create a new script that extends Resource. Call it LevelData.gd. In it, define exported variables: @export var spike_positions : Array[Vector2], @export var powerup_data : Array[Dictionary], @export var level_goal_position : Vector2. For each level, create a new LevelData resource file (level_1.tres, level_2.tres, etc.). Click on it and fill in all the data in the Inspector. Your main Level.tscn script will have one @export var level_data : LevelData. You just drag your desired .tres file into it. The script then reads this data and programmatically places the spikes and power-ups. Now you can design dozens of levels without ever changing your core level scene code.
 </file>
 
+<file path=".godot/editor/level_1.tscn-editstate-446b1ed11cc7129b20b35ff4df2b3752.cfg">
+[editor_states]
+
+selected_nodes=Array[NodePath]([])
+</file>
+
+<file path=".godot/editor/player.tscn-folding-c2c62cb8c73458cd122faf659769dc80.cfg">
+[folding]
+
+node_unfolds=[NodePath("."), PackedStringArray("Collision", "player_texture")]
+resource_unfolds=["res://scenes/player/player.tscn::CircleShape2D_1", PackedStringArray("Resource")]
+nodes_folded=[]
+</file>
+
 <file path=".godot/imported/Balloon Escape Factory.mp3-54140b5b2b11b7904ee81e622b8af5f7.md5">
 source_md5="769ae3b87f06767814d4e71ef332b99b"
 dest_md5="517e3dd92a8ed29119012085d2681038"
@@ -4577,122 +4978,137 @@ script = ExtResource("2_spike_script")
 shape = SubResource("RectangleShape2D_spike")
 </file>
 
-<file path="scenes/levels/level_1.tscn">
-[gd_scene load_steps=9 format=3 uid="uid://o4dpd5iks8mj"]
+<file path="scripts/hazards/spike.gd">
+"""
+Spike Hazard Script
+Handles collision detection with the player and triggers death sequence.
+Uses Area2D body_entered signal to detect when player touches the spike.
+Modular design supports multiple spike types through enum configuration.
+"""
+class_name Spike
+extends Area2D
 
-[ext_resource type="PackedScene" uid="uid://c1fnn1l64pxpx" path="res://scenes/player/player.tscn" id="1_player"]
-[ext_resource type="TileSet" uid="uid://bvqowixejw8pm" path="res://resources/ground_tileset.tres" id="2_tileset"]
-[ext_resource type="Script" path="res://scripts/tilemap_painter.gd" id="3_painter"]
-[ext_resource type="PackedScene" uid="uid://b8h1v5p2k3nar" path="res://scenes/hazards/Spike.tscn" id="4_spike"]
-[ext_resource type="Script" path="res://scripts/levels/level_configurator.gd" id="5_configurator"]
+# Enum for different spike types
+enum SpikeType {
+	BOTTOM,
+	TOP,
+	BOTTOM_LARGE,
+	TOP_LARGE
+}
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_walls"]
-size = Vector2(100, 1080)
+# Export variables for configuration
+@export var type: SpikeType = SpikeType.BOTTOM
+@export var damage_sound: AudioStream
+@export var is_enabled: bool = true
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_upper_gravity"]
-size = Vector2(11520, 540)
+# Node references
+@onready var sprite: Sprite2D = $Sprite2D
+@onready var collision_shape: CollisionShape2D = $CollisionShape2D
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_lower_gravity"]
-size = Vector2(11520, 540)
+func _ready() -> void:
+	"""Initialize the spike hazard with appropriate texture and collision size."""
+	print("Spike: Initializing ", SpikeType.keys()[type], " spike at position ", global_position)
+	
+	# Configure spike based on type
+	_configure_spike_type()
+	
+	# Connect the body_entered signal to our collision handler
+	body_entered.connect(_on_body_entered)
+	
+	# Make sure the Area2D is monitoring for bodies
+	monitoring = true
+	monitorable = true
+	
+	print("Spike: Ready and monitoring for collisions")
 
-[node name="Level1" type="Node2D"]
-script = ExtResource("5_configurator")
+func _configure_spike_type() -> void:
+	"""Configure the spike's texture and collision size based on its type."""
+	var texture_path: String
+	var collision_size: Vector2
+	
+	match type:
+		SpikeType.BOTTOM:
+			texture_path = "res://assets/sprites/hazards/bottom_spike.png"
+			collision_size = Vector2(64, 64)
+			print("Spike: Configuring as BOTTOM spike")
+		SpikeType.TOP:
+			texture_path = "res://assets/sprites/hazards/top_spike.png"
+			collision_size = Vector2(64, 64)
+			print("Spike: Configuring as TOP spike")
+		SpikeType.BOTTOM_LARGE:
+			texture_path = "res://assets/sprites/hazards/spikes_large_bottom.png"
+			collision_size = Vector2(128, 64)
+			print("Spike: Configuring as BOTTOM_LARGE spike")
+		SpikeType.TOP_LARGE:
+			texture_path = "res://assets/sprites/hazards/spikes_large_top.png"
+			collision_size = Vector2(128, 64)
+			print("Spike: Configuring as TOP_LARGE spike")
+	
+	# Load and set the texture
+	var texture = load(texture_path)
+	if texture:
+		sprite.texture = texture
+		print("Spike: Texture loaded successfully: ", texture_path)
+	else:
+		print("Spike: ERROR - Failed to load texture: ", texture_path)
+	
+	# Update collision shape size
+	if collision_shape.shape is RectangleShape2D:
+		var rect_shape = collision_shape.shape as RectangleShape2D
+		rect_shape.size = collision_size
+		print("Spike: Collision size set to ", collision_size)
 
-[node name="Environment" type="Node2D" parent="."]
+func _on_body_entered(body: Node2D) -> void:
+	"""Handle when a body enters the spike area."""
+	print("Spike: Body entered - ", body.name, " (type: ", body.get_class(), ")")
+	
+	# Check if it's the player and connect to its hit signal for immediate detection
+	if body.is_in_group("player") and is_enabled:
+		print("Spike: Player detected! Connecting to hit signal and triggering collision")
+		
+		# Connect to the player's hit signal if not already connected
+		if not body.hit.is_connected(_on_player_hit):
+			body.hit.connect(_on_player_hit)
+			print("Spike: Connected to player hit signal")
+		
+		# Trigger the hazard collision immediately
+		if body.has_method("_handle_hazard_collision"):
+			print("Spike: Calling player's hazard collision method")
+			body._handle_hazard_collision()
+		else:
+			print("Spike: Player missing _handle_hazard_collision method, triggering direct death")
+			_trigger_player_death()
 
-[node name="TileMapLayer" type="TileMapLayer" parent="Environment"]
-modulate = Color(1, 0.5, 0.5, 1)
-tile_set = ExtResource("2_tileset")
-script = ExtResource("3_painter")
+func _on_player_hit() -> void:
+	"""Handle when the player emits a hit signal."""
+	print("Spike: Received player hit signal!")
+	_trigger_player_death()
 
-[node name="LeftWall" type="StaticBody2D" parent="Environment"]
-position = Vector2(50, 540)
+func _trigger_player_death() -> void:
+	"""Trigger the player death sequence directly."""
+	print("Spike: Triggering player death sequence")
+	
+	# Play pop sound through SoundManager
+	if has_node("/root/SoundManager"):
+		get_node("/root/SoundManager").play_sfx("pop")
+		print("Spike: Pop sound triggered")
+	
+	# Emit signal to GameState for life management
+	if has_node("/root/GameState"):
+		get_node("/root/GameState").emit_signal("player_died")
+		print("Spike: Player death signal emitted")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Environment/LeftWall"]
-shape = SubResource("RectangleShape2D_walls")
+func disable_spike() -> void:
+	"""Temporarily disable the spike."""
+	is_enabled = false
+	modulate = Color(0.5, 0.5, 0.5, 0.5)  # Make it semi-transparent
+	print("Spike: Disabled")
 
-[node name="RightWall" type="StaticBody2D" parent="Environment"]
-position = Vector2(11370, 540)
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Environment/RightWall"]
-shape = SubResource("RectangleShape2D_walls")
-
-[node name="Hazards" type="Node2D" parent="Environment"]
-
-[node name="BottomLargeSpike1" parent="Environment/Hazards" instance=ExtResource("4_spike")]
-position = Vector2(2000, 950)
-type = 2
-
-[node name="BottomLargeSpike2" parent="Environment/Hazards" instance=ExtResource("4_spike")]
-position = Vector2(2128, 950)
-type = 2
-
-[node name="BottomLargeSpike3" parent="Environment/Hazards" instance=ExtResource("4_spike")]
-position = Vector2(2256, 950)
-type = 2
-
-[node name="BottomSpike1" parent="Environment/Hazards" instance=ExtResource("4_spike")]
-position = Vector2(2800, 950)
-type = 0
-
-[node name="BottomSpike2" parent="Environment/Hazards" instance=ExtResource("4_spike")]
-position = Vector2(2864, 950)
-type = 0
-
-[node name="TopSpike1" parent="Environment/Hazards" instance=ExtResource("4_spike")]
-position = Vector2(2400, 150)
-type = 1
-
-[node name="TopSpike2" parent="Environment/Hazards" instance=ExtResource("4_spike")]
-position = Vector2(2464, 150)
-type = 1
-
-#[node name="GauntletBottom1" parent="Environment/Hazards" instance=ExtResource("4_spike")]
-#position = Vector2(4000, 950)
-#type = 0
-
-#[node name="GauntletTop1" parent="Environment/Hazards" instance=ExtResource("4_spike")]
-#position = Vector2(4128, 150)
-#type = 1
-
-#[node name="GauntletBottom2" parent="Environment/Hazards" instance=ExtResource("4_spike")]
-#position = Vector2(4256, 950)
-#type = 0
-
-#[node name="GauntletTop2" parent="Environment/Hazards" instance=ExtResource("4_spike")]
-#position = Vector2(4384, 150)
-#type = 1
-
-#[node name="GauntletBottom3" parent="Environment/Hazards" instance=ExtResource("4_spike")]
-#position = Vector2(4512, 950)
-#type = 0
-
-#[node name="GauntletTop3" parent="Environment/Hazards" instance=ExtResource("4_spike")]
-#position = Vector2(4640, 150)
-#type = 1
-
-
-[node name="GravityZones" type="Node2D" parent="."]
-
-[node name="UpperGravityZone" type="Area2D" parent="GravityZones"]
-position = Vector2(5760, 270)
-gravity_point_center = Vector2(0, -1)
-gravity_direction = Vector2(0, -1)
-gravity = 1400.0
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="GravityZones/UpperGravityZone"]
-shape = SubResource("RectangleShape2D_upper_gravity")
-
-[node name="LowerGravityZone" type="Area2D" parent="GravityZones"]
-position = Vector2(5760, 810)
-gravity = 1400.0
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="GravityZones/LowerGravityZone"]
-shape = SubResource("RectangleShape2D_lower_gravity")
-
-[node name="Player" parent="." instance=ExtResource("1_player")]
-position = Vector2(960, 540)
-gravity_scale = 0.0
+func enable_spike() -> void:
+	"""Re-enable the spike."""
+	is_enabled = true
+	modulate = Color.WHITE
+	print("Spike: Enabled")
 </file>
 
 <file path="scripts/player/camera_controller.gd">
@@ -4809,36 +5225,6 @@ func get_bounds() -> Vector2:
 	return Vector2(min_x_position, max_x_position)
 </file>
 
-<file path=".godot/editor/script_editor_cache.cfg">
-[res://scripts/player/player.gd]
-
-state={
-"bookmarks": PackedInt32Array(),
-"breakpoints": PackedInt32Array(),
-"column": 0,
-"folded_lines": Array[int]([]),
-"h_scroll_position": 0,
-"row": 178,
-"scroll_position": 7.0,
-"selection": false,
-"syntax_highlighter": "GDScript"
-}
-
-[res://scripts/hazards/spike.gd]
-
-state={
-"bookmarks": PackedInt32Array(),
-"breakpoints": PackedInt32Array(),
-"column": 0,
-"folded_lines": Array[int]([]),
-"h_scroll_position": 0,
-"row": 0,
-"scroll_position": 0.0,
-"selection": false,
-"syntax_highlighter": "GDScript"
-}
-</file>
-
 <file path=".godot/global_script_class_cache.cfg">
 list=Array[Dictionary]([{
 "base": &"Camera2D",
@@ -4871,6 +5257,259 @@ list=Array[Dictionary]([{
 "language": &"GDScript",
 "path": "res://scripts/hazards/spike.gd"
 }])
+</file>
+
+<file path="scenes/levels/level_1.tscn">
+[gd_scene load_steps=10 format=3 uid="uid://o4dpd5iks8mj"]
+
+[ext_resource type="PackedScene" uid="uid://c1fnn1l64pxpx" path="res://scenes/player/player.tscn" id="1_player"]
+[ext_resource type="TileSet" uid="uid://bvqowixejw8pm" path="res://resources/ground_tileset.tres" id="2_tileset"]
+[ext_resource type="Script" path="res://scripts/tilemap_painter.gd" id="3_painter"]
+[ext_resource type="PackedScene" uid="uid://b8h1v5p2k3nar" path="res://scenes/hazards/Spike.tscn" id="4_spike"]
+[ext_resource type="Script" path="res://scripts/levels/level_configurator.gd" id="5_configurator"]
+[ext_resource type="PackedScene" uid="uid://b2lav7w8x1m4n" path="res://scenes/environment/WoodPlatform.tscn" id="6_wood_platform"]
+[ext_resource type="PackedScene" uid="uid://d4v8x7n2m9k3l" path="res://scenes/environment/WoodBlock.tscn" id="7_wood_block"]
+[ext_resource type="PackedScene" uid="uid://b5k8m1n4p7q2r" path="res://scenes/environment/WoodPlatformSmall.tscn" id="8_wood_platform_small"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_walls"]
+size = Vector2(100, 1080)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_upper_gravity"]
+size = Vector2(11520, 540)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_lower_gravity"]
+size = Vector2(11520, 540)
+
+[node name="Level1" type="Node2D"]
+script = ExtResource("5_configurator")
+
+[node name="Environment" type="Node2D" parent="."]
+
+[node name="TileMapLayer" type="TileMapLayer" parent="Environment"]
+modulate = Color(1, 0.5, 0.5, 1)
+tile_set = ExtResource("2_tileset")
+script = ExtResource("3_painter")
+
+[node name="LeftWall" type="StaticBody2D" parent="Environment"]
+position = Vector2(50, 540)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Environment/LeftWall"]
+shape = SubResource("RectangleShape2D_walls")
+
+[node name="RightWall" type="StaticBody2D" parent="Environment"]
+position = Vector2(11370, 540)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Environment/RightWall"]
+shape = SubResource("RectangleShape2D_walls")
+
+[node name="Hazards" type="Node2D" parent="Environment"]
+
+[node name="BottomLargeSpike1" parent="Environment/Hazards" instance=ExtResource("4_spike")]
+position = Vector2(2000, 950)
+type = 2
+
+[node name="BottomLargeSpike2" parent="Environment/Hazards" instance=ExtResource("4_spike")]
+position = Vector2(2128, 950)
+type = 2
+
+[node name="BottomLargeSpike3" parent="Environment/Hazards" instance=ExtResource("4_spike")]
+position = Vector2(2256, 950)
+type = 2
+
+[node name="BottomSpike1" parent="Environment/Hazards" instance=ExtResource("4_spike")]
+position = Vector2(2800, 950)
+
+[node name="BottomSpike2" parent="Environment/Hazards" instance=ExtResource("4_spike")]
+position = Vector2(2864, 950)
+
+[node name="TopSpike1" parent="Environment/Hazards" instance=ExtResource("4_spike")]
+position = Vector2(2400, 150)
+type = 1
+
+[node name="TopSpike2" parent="Environment/Hazards" instance=ExtResource("4_spike")]
+position = Vector2(2464, 150)
+type = 1
+
+[node name="Platforms" type="Node2D" parent="Environment"]
+
+[node name="WoodPlatform" parent="Environment/Platforms" instance=ExtResource("6_wood_platform")]
+position = Vector2(7000, 540)
+
+[node name="WoodPlatformSmall" parent="Environment/Platforms" instance=ExtResource("8_wood_platform_small")]
+position = Vector2(1000, 540)
+
+# Stack of wooden blocks between X 9000-9500 from floor to halfway up scene
+# Floor is at y=1024, halfway is at y=540, wood blocks are 70x70 pixels
+# Creating a 7x7 grid pattern
+
+[node name="WoodBlockStack1_1" parent="Environment/Platforms" instance=ExtResource("7_wood_block")]
+position = Vector2(9035, 989)
+
+[node name="WoodBlockStack1_2" parent="Environment/Platforms" instance=ExtResource("7_wood_block")]
+position = Vector2(9035, 919)
+
+[node name="WoodBlockStack1_3" parent="Environment/Platforms" instance=ExtResource("7_wood_block")]
+position = Vector2(9035, 849)
+
+[node name="WoodBlockStack1_4" parent="Environment/Platforms" instance=ExtResource("7_wood_block")]
+position = Vector2(9035, 779)
+
+[node name="WoodBlockStack1_5" parent="Environment/Platforms" instance=ExtResource("7_wood_block")]
+position = Vector2(9035, 709)
+
+[node name="WoodBlockStack1_6" parent="Environment/Platforms" instance=ExtResource("7_wood_block")]
+position = Vector2(9035, 639)
+
+[node name="WoodBlockStack1_7" parent="Environment/Platforms" instance=ExtResource("7_wood_block")]
+position = Vector2(9035, 569)
+
+[node name="WoodBlockStack2_1" parent="Environment/Platforms" instance=ExtResource("7_wood_block")]
+position = Vector2(9105, 989)
+
+[node name="WoodBlockStack2_2" parent="Environment/Platforms" instance=ExtResource("7_wood_block")]
+position = Vector2(9105, 919)
+
+[node name="WoodBlockStack2_3" parent="Environment/Platforms" instance=ExtResource("7_wood_block")]
+position = Vector2(9105, 849)
+
+[node name="WoodBlockStack2_4" parent="Environment/Platforms" instance=ExtResource("7_wood_block")]
+position = Vector2(9105, 779)
+
+[node name="WoodBlockStack2_5" parent="Environment/Platforms" instance=ExtResource("7_wood_block")]
+position = Vector2(9105, 709)
+
+[node name="WoodBlockStack2_6" parent="Environment/Platforms" instance=ExtResource("7_wood_block")]
+position = Vector2(9105, 639)
+
+[node name="WoodBlockStack2_7" parent="Environment/Platforms" instance=ExtResource("7_wood_block")]
+position = Vector2(9105, 569)
+
+[node name="WoodBlockStack3_1" parent="Environment/Platforms" instance=ExtResource("7_wood_block")]
+position = Vector2(9175, 989)
+
+[node name="WoodBlockStack3_2" parent="Environment/Platforms" instance=ExtResource("7_wood_block")]
+position = Vector2(9175, 919)
+
+[node name="WoodBlockStack3_3" parent="Environment/Platforms" instance=ExtResource("7_wood_block")]
+position = Vector2(9175, 849)
+
+[node name="WoodBlockStack3_4" parent="Environment/Platforms" instance=ExtResource("7_wood_block")]
+position = Vector2(9175, 779)
+
+[node name="WoodBlockStack3_5" parent="Environment/Platforms" instance=ExtResource("7_wood_block")]
+position = Vector2(9175, 709)
+
+[node name="WoodBlockStack3_6" parent="Environment/Platforms" instance=ExtResource("7_wood_block")]
+position = Vector2(9175, 639)
+
+[node name="WoodBlockStack3_7" parent="Environment/Platforms" instance=ExtResource("7_wood_block")]
+position = Vector2(9175, 569)
+
+[node name="WoodBlockStack4_1" parent="Environment/Platforms" instance=ExtResource("7_wood_block")]
+position = Vector2(9245, 989)
+
+[node name="WoodBlockStack4_2" parent="Environment/Platforms" instance=ExtResource("7_wood_block")]
+position = Vector2(9245, 919)
+
+[node name="WoodBlockStack4_3" parent="Environment/Platforms" instance=ExtResource("7_wood_block")]
+position = Vector2(9245, 849)
+
+[node name="WoodBlockStack4_4" parent="Environment/Platforms" instance=ExtResource("7_wood_block")]
+position = Vector2(9245, 779)
+
+[node name="WoodBlockStack4_5" parent="Environment/Platforms" instance=ExtResource("7_wood_block")]
+position = Vector2(9245, 709)
+
+[node name="WoodBlockStack4_6" parent="Environment/Platforms" instance=ExtResource("7_wood_block")]
+position = Vector2(9245, 639)
+
+[node name="WoodBlockStack4_7" parent="Environment/Platforms" instance=ExtResource("7_wood_block")]
+position = Vector2(9245, 569)
+
+[node name="WoodBlockStack5_1" parent="Environment/Platforms" instance=ExtResource("7_wood_block")]
+position = Vector2(9315, 989)
+
+[node name="WoodBlockStack5_2" parent="Environment/Platforms" instance=ExtResource("7_wood_block")]
+position = Vector2(9315, 919)
+
+[node name="WoodBlockStack5_3" parent="Environment/Platforms" instance=ExtResource("7_wood_block")]
+position = Vector2(9315, 849)
+
+[node name="WoodBlockStack5_4" parent="Environment/Platforms" instance=ExtResource("7_wood_block")]
+position = Vector2(9315, 779)
+
+[node name="WoodBlockStack5_5" parent="Environment/Platforms" instance=ExtResource("7_wood_block")]
+position = Vector2(9315, 709)
+
+[node name="WoodBlockStack5_6" parent="Environment/Platforms" instance=ExtResource("7_wood_block")]
+position = Vector2(9315, 639)
+
+[node name="WoodBlockStack5_7" parent="Environment/Platforms" instance=ExtResource("7_wood_block")]
+position = Vector2(9315, 569)
+
+[node name="WoodBlockStack6_1" parent="Environment/Platforms" instance=ExtResource("7_wood_block")]
+position = Vector2(9385, 989)
+
+[node name="WoodBlockStack6_2" parent="Environment/Platforms" instance=ExtResource("7_wood_block")]
+position = Vector2(9385, 919)
+
+[node name="WoodBlockStack6_3" parent="Environment/Platforms" instance=ExtResource("7_wood_block")]
+position = Vector2(9385, 849)
+
+[node name="WoodBlockStack6_4" parent="Environment/Platforms" instance=ExtResource("7_wood_block")]
+position = Vector2(9385, 779)
+
+[node name="WoodBlockStack6_5" parent="Environment/Platforms" instance=ExtResource("7_wood_block")]
+position = Vector2(9385, 709)
+
+[node name="WoodBlockStack6_6" parent="Environment/Platforms" instance=ExtResource("7_wood_block")]
+position = Vector2(9385, 639)
+
+[node name="WoodBlockStack6_7" parent="Environment/Platforms" instance=ExtResource("7_wood_block")]
+position = Vector2(9385, 569)
+
+[node name="WoodBlockStack7_1" parent="Environment/Platforms" instance=ExtResource("7_wood_block")]
+position = Vector2(9455, 989)
+
+[node name="WoodBlockStack7_2" parent="Environment/Platforms" instance=ExtResource("7_wood_block")]
+position = Vector2(9455, 919)
+
+[node name="WoodBlockStack7_3" parent="Environment/Platforms" instance=ExtResource("7_wood_block")]
+position = Vector2(9455, 849)
+
+[node name="WoodBlockStack7_4" parent="Environment/Platforms" instance=ExtResource("7_wood_block")]
+position = Vector2(9455, 779)
+
+[node name="WoodBlockStack7_5" parent="Environment/Platforms" instance=ExtResource("7_wood_block")]
+position = Vector2(9455, 709)
+
+[node name="WoodBlockStack7_6" parent="Environment/Platforms" instance=ExtResource("7_wood_block")]
+position = Vector2(9455, 639)
+
+[node name="WoodBlockStack7_7" parent="Environment/Platforms" instance=ExtResource("7_wood_block")]
+position = Vector2(9455, 569)
+
+[node name="GravityZones" type="Node2D" parent="."]
+
+[node name="UpperGravityZone" type="Area2D" parent="GravityZones"]
+position = Vector2(5760, 270)
+gravity_point_center = Vector2(0, -1)
+gravity_direction = Vector2(0, -1)
+gravity = 1400.0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="GravityZones/UpperGravityZone"]
+shape = SubResource("RectangleShape2D_upper_gravity")
+
+[node name="LowerGravityZone" type="Area2D" parent="GravityZones"]
+position = Vector2(5760, 810)
+gravity = 1400.0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="GravityZones/LowerGravityZone"]
+shape = SubResource("RectangleShape2D_lower_gravity")
+
+[node name="Player" parent="." instance=ExtResource("1_player")]
+position = Vector2(960, 540)
+gravity_scale = 0.0
 </file>
 
 <file path="scripts/singletons/GameState.gd">
@@ -5176,6 +5815,36 @@ textures/canvas_textures/default_texture_filter=0
 environment/defaults/default_clear_color=Color(0.301961, 0.301961, 0.301961, 1)
 </file>
 
+<file path=".godot/editor/script_editor_cache.cfg">
+[res://scripts/player/player.gd]
+
+state={
+"bookmarks": PackedInt32Array(),
+"breakpoints": PackedInt32Array(),
+"column": 0,
+"folded_lines": Array[int]([]),
+"h_scroll_position": 0,
+"row": 178,
+"scroll_position": 7.0,
+"selection": false,
+"syntax_highlighter": "GDScript"
+}
+
+[res://scripts/hazards/spike.gd]
+
+state={
+"bookmarks": PackedInt32Array(),
+"breakpoints": PackedInt32Array(),
+"column": 0,
+"folded_lines": Array[int]([]),
+"h_scroll_position": 0,
+"row": 0,
+"scroll_position": 13.0,
+"selection": false,
+"syntax_highlighter": "GDScript"
+}
+</file>
+
 <file path="scenes/levels/mvp_test.tscn">
 [gd_scene load_steps=8 format=3 uid="uid://f084u3jvf7o0"]
 
@@ -5268,6 +5937,17 @@ position = Vector2(960, 540)
 gravity_scale = 0.0
 </file>
 
+<file path=".godot/editor/filesystem_update4">
+res://scenes/levels/mvp_test.tscn
+res://resources/ground_tileset.tres
+res://scenes/levels/level_1.tscn
+res://scenes/hazards/Spike.tscn
+res://scripts/hazards/spike.gd
+res://scenes/player/player.tscn
+res://scenes/environment/WoodPlatform.tscn
+res://scenes/environment/WoodBlock.tscn
+</file>
+
 <file path=".godot/editor/editor_layout.cfg">
 [docks]
 
@@ -5281,23 +5961,23 @@ dock_split_2=0
 dock_split_3=0
 dock_hsplit_1=0
 dock_hsplit_2=540
-dock_hsplit_3=-432
+dock_hsplit_3=-606
 dock_hsplit_4=0
 dock_filesystem_h_split_offset=480
 dock_filesystem_v_split_offset=0
 dock_filesystem_display_mode=0
 dock_filesystem_file_sort=0
 dock_filesystem_file_list_display_mode=1
-dock_filesystem_selected_paths=PackedStringArray("res://scenes/player/player.tscn")
-dock_filesystem_uncollapsed_paths=PackedStringArray("Favorites", "res://", "res://scenes/", "res://scenes/player/", "res://scenes/levels/", "res://scenes/hazards/")
+dock_filesystem_selected_paths=PackedStringArray("res://scenes/levels/level_1.tscn")
+dock_filesystem_uncollapsed_paths=PackedStringArray("Favorites", "res://", "res://scripts/", "res://scripts/hazards/", "res://scenes/", "res://scenes/player/", "res://scenes/levels/", "res://scenes/environment/")
 dock_3="Scene,Import"
 dock_4="FileSystem"
 dock_5="Inspector,Node,History"
 
 [EditorNode]
 
-open_scenes=PackedStringArray("res://scenes/levels/mvp_test.tscn", "res://scenes/levels/level_1.tscn", "res://scenes/hazards/Spike.tscn", "res://scenes/player/player.tscn")
-current_scene="res://scenes/player/player.tscn"
+open_scenes=PackedStringArray("res://scenes/levels/mvp_test.tscn", "res://scenes/levels/level_1.tscn", "res://scenes/hazards/Spike.tscn", "res://scenes/player/player.tscn", "res://scenes/environment/BasePlatform.tscn", "res://scenes/environment/WoodPlatform.tscn", "res://scenes/environment/WoodPlatformSmall.tscn", "res://scenes/environment/WoodBlock.tscn")
+current_scene="res://scenes/levels/level_1.tscn"
 center_split_offset=-854
 selected_default_debugger_tab_idx=1
 selected_main_editor_idx=0
@@ -5318,161 +5998,6 @@ open_shaders=[]
 split_offset=0
 selected_shader=""
 text_shader_zoom_factor=1.0
-</file>
-
-<file path=".godot/editor/filesystem_cache8">
-ea4bc82a6ad023ab7ee23ee620429895
-::res://::1752690990
-repomix-output.xml::TextFile::-1::1752690990::0::1::::<><>::
-::res://_docs/::1752698538
-GameOver.md::TextFile::-1::1752684323::0::1::::<><>::
-GameplayDesign.md::TextFile::-1::1752675392::0::1::::<><>::
-Hazard.md::TextFile::-1::1752676842::0::1::::<><>::
-latency.md::TextFile::-1::1752675392::0::1::::<><>::
-level1Ground.md::TextFile::-1::1752675392::0::1::::<><>::
-Mainmenu.md::TextFile::-1::1752685113::0::1::::<><>::
-menusScenes.md::TextFile::-1::1752682953::0::1::::<><>::
-MoreHazards.md::TextFile::-1::1752697507::0::1::::<><>::
-multiplayer.md::TextFile::-1::1752691860::0::1::::<><>::
-params.md::TextFile::-1::1752695119::0::1::::<><>::
-physics.md::TextFile::-1::1752675392::0::1::::<><>::
-SFX.md::TextFile::-1::1752675392::0::1::::<><>::
-spikeCommands.md::TextFile::-1::1752698528::0::1::::<><>::
-style.md::TextFile::-1::1752675392::0::1::::<><>::
-::res://assets/::1752693342
-::res://assets/audio/::1752675588
-Balloon Escape Factory.mp3::AudioStreamMP3::8206070679105260282::1752675392::1752675588::1::::<><>::
-bounce.mp3::AudioStreamMP3::9107122368181559716::1752675392::1752675588::1::::<><>::
-coins.mp3::AudioStreamMP3::7901847376389709318::1752675392::1752675588::1::::<><>::
-pop.mp3::AudioStreamMP3::2058950163202925655::1752675392::1752675588::1::::<><>::
-success.mp3::AudioStreamMP3::3151194912288285675::1752675392::1752675588::1::::<><>::
-::res://assets/fonts/::1752675588
-Kenney Future Narrow.ttf::FontFile::8513457004296160927::1752675392::1752675588::1::::<><>::
-Kenney Future.ttf::FontFile::1191888830290857463::1752675392::1752675588::1::::<><>::
-::res://assets/sprites/::1752693349
-::res://assets/sprites/background/::1752675588
-bg_layer1.png::CompressedTexture2D::9055781292271014096::1752675392::1752675588::1::::<><>::
-::res://assets/sprites/collectibles_and_powerups/::1752677558
-endLevel.png::CompressedTexture2D::7271042764840761317::1752675392::1752677558::1::::<><>::
-gold_1.png::CompressedTexture2D::7770782626171002347::1752675392::1752675588::1::::<><>::
-gold_2.png::CompressedTexture2D::4961529463577090600::1752675392::1752675588::1::::<><>::
-gold_3.png::CompressedTexture2D::197269280592586432::1752675392::1752675588::1::::<><>::
-jetpack.png::CompressedTexture2D::2475813519409685781::1752675392::1752675588::1::::<><>::
-jetpack_item.png::CompressedTexture2D::5246885340615533327::1752675392::1752675588::1::::<><>::
-::res://assets/sprites/environment/::1752675588
-ground_stone.png::CompressedTexture2D::6376627101721888681::1752675392::1752675588::1::::<><>::
-ground_stone_broken.png::CompressedTexture2D::1217873350915114682::1752675392::1752675588::1::::<><>::
-ground_stone_small.png::CompressedTexture2D::1898771885991249189::1752675392::1752675588::1::::<><>::
-ground_stone_small_broken.png::CompressedTexture2D::1934413432216654678::1752675392::1752675588::1::::<><>::
-ground_wood.png::CompressedTexture2D::165595163471498862::1752675392::1752675588::1::::<><>::
-ground_wood_broken.png::CompressedTexture2D::1881575544315897996::1752675392::1752675588::1::::<><>::
-ground_wood_small.png::CompressedTexture2D::3549772765016810542::1752675392::1752675588::1::::<><>::
-ground_wood_small_broken.png::CompressedTexture2D::6660159512624062090::1752675392::1752675588::1::::<><>::
-platformPack_tile004.png::CompressedTexture2D::5893765852238350109::1752675392::1752675588::1::::<><>::
-platformPack_tile034.png::CompressedTexture2D::1199564023964960820::1752675392::1752675588::1::::<><>::
-::res://assets/sprites/hazards/::1752693667
-bottom_spike.png::CompressedTexture2D::1952382968673477592::1752675392::1752693667::1::::<><>::
-spikes_large_bottom.png::CompressedTexture2D::8203667586019862508::1752675392::1752693667::1::::<><>::
-spikes_large_top.png::CompressedTexture2D::4645057525981595265::1752675392::1752693667::1::::<><>::
-spring.png::CompressedTexture2D::57287654817836701::1752675392::1752675588::1::::<><>::
-spring_in.png::CompressedTexture2D::8022793080425135513::1752675392::1752675588::1::::<><>::
-spring_out.png::CompressedTexture2D::7851334279652825319::1752675392::1752675588::1::::<><>::
-top_spike.png::CompressedTexture2D::6486924403349916602::1752675392::1752693667::1::::<><>::
-::res://assets/sprites/player/::1752701728
-ball2.png::CompressedTexture2D::2125709361648216457::1752701701::1752701728::1::::<><>::
-ball.png::CompressedTexture2D::8220970251950762316::1752675392::1752675588::1::::<><>::
-death.png::CompressedTexture2D::4715324376886946804::1752675392::1752677558::1::::<><>::
-::res://assets/sprites/ui/::1752685457
-lives_coin_bronze.png::CompressedTexture2D::5825732135293081176::1752675392::1752675588::1::::<><>::
-start.png::CompressedTexture2D::1808320205836561332::1752684630::1752685457::1::::<><>::
-::res://BopAssets/::1752675392
-::res://BopAssets/assets/::1752675392
-::res://BopAssets/assets/background/::1752675588
-bg_layer1.png::CompressedTexture2D::6945879680719127106::1752675392::1752675588::1::::<><>::
-::res://BopAssets/assets/collectibles_and_powerups/::1752675960
-gold_1.png::CompressedTexture2D::1825224882516228972::1752675392::1752675588::1::::<><>::
-gold_2.png::CompressedTexture2D::1190387119302935012::1752675392::1752675588::1::::<><>::
-gold_3.png::CompressedTexture2D::2512755368299904449::1752675392::1752675588::1::::<><>::
-jetpack.png::CompressedTexture2D::2931813711614556912::1752675392::1752675588::1::::<><>::
-jetpack_item.png::CompressedTexture2D::7878243431060436377::1752675392::1752675588::1::::<><>::
-::res://BopAssets/assets/environment/::1752675588
-ground_stone.png::CompressedTexture2D::547254746964749841::1752675392::1752675588::1::::<><>::
-ground_stone_broken.png::CompressedTexture2D::7182484478301215561::1752675392::1752675588::1::::<><>::
-ground_stone_small.png::CompressedTexture2D::5920530557858546565::1752675392::1752675588::1::::<><>::
-ground_stone_small_broken.png::CompressedTexture2D::6862542807011331575::1752675392::1752675588::1::::<><>::
-ground_wood.png::CompressedTexture2D::2762796157845493017::1752675392::1752675588::1::::<><>::
-ground_wood_broken.png::CompressedTexture2D::1920911236381604898::1752675392::1752675588::1::::<><>::
-ground_wood_small.png::CompressedTexture2D::5259545193054983935::1752675392::1752675588::1::::<><>::
-ground_wood_small_broken.png::CompressedTexture2D::2167022817881405705::1752675392::1752675588::1::::<><>::
-platformPack_tile004.png::CompressedTexture2D::4959656382865155942::1752675392::1752675588::1::::<><>::
-platformPack_tile034.png::CompressedTexture2D::2691896846324894211::1752675392::1752675588::1::::<><>::
-::res://BopAssets/assets/hazards/::1752675588
-spikes_bottom.png::CompressedTexture2D::663950830898210423::1752675392::1752675588::1::::<><>::
-spikes_top.png::CompressedTexture2D::8358873055094092465::1752675392::1752675588::1::::<><>::
-spike_bottom.png::CompressedTexture2D::3883150255362487646::1752675392::1752675588::1::::<><>::
-spike_top.png::CompressedTexture2D::2459527082247234580::1752675392::1752675588::1::::<><>::
-spring.png::CompressedTexture2D::4173908731025172797::1752675392::1752675588::1::::<><>::
-spring_in.png::CompressedTexture2D::6480400973107942546::1752675392::1752675588::1::::<><>::
-spring_out.png::CompressedTexture2D::2318680103272890803::1752675392::1752675588::1::::<><>::
-::res://BopAssets/assets/player/::1752675907
-ball.png::CompressedTexture2D::7132219559505673927::1752675392::1752675588::1::::<><>::
-::res://BopAssets/assets/ui/::1752675588
-lives_coin_bronze.png::CompressedTexture2D::3399006749739018670::1752675392::1752675588::1::::<><>::
-::res://BopAssets/font/::1752675588
-Kenney Future Narrow.ttf::FontFile::7000552542377076331::1752675392::1752675588::1::::<><>::
-Kenney Future.ttf::FontFile::5090768802296251228::1752675392::1752675588::1::::<><>::
-::res://BopAssets/SFX/::1752675588
-Balloon Escape Factory.mp3::AudioStreamMP3::8415698812563648905::1752675392::1752675588::1::::<><>::
-bounce.mp3::AudioStreamMP3::3881155579214223749::1752675392::1752675588::1::::<><>::
-coins.mp3::AudioStreamMP3::4713675940845734844::1752675392::1752675588::1::::<><>::
-pop.mp3::AudioStreamMP3::4996625001048486516::1752675392::1752675588::1::::<><>::
-success.mp3::AudioStreamMP3::3071999385586472187::1752675392::1752675588::1::::<><>::
-::res://resources/::1752690021
-ground_tileset.tres::TileSet::3894306225433350542::1752690021::0::1::::<><>::uid://cw35d765qafl6::::res://assets/sprites/environment/ground_stone.png
-::res://scenes/::1752685272
-::res://scenes/hazards/::1752690396
-Spike.tscn::PackedScene::4718720911624324965::1752697872::0::1::::<><>::res://scripts/hazards/spike.gd
-::res://scenes/levels/::1752690396
-level_1.tscn::PackedScene::1042719907978835413::1752700819::0::1::::<><>::uid://c1fnn1l64pxpx::::res://scenes/player/player.tscn<>uid://bvqowixejw8pm::::res://resources/ground_tileset.tres<>res://scripts/tilemap_painter.gd<>uid://b8h1v5p2k3nar::::res://scenes/hazards/Spike.tscn<>res://scripts/levels/level_configurator.gd
-mvp_test.tscn::PackedScene::404610204984934029::1752690396::0::1::::<><>::uid://c1fnn1l64pxpx::::res://scenes/player/player.tscn<>uid://cw35d765qafl6::::res://assets/sprites/environment/ground_stone.png
-::res://scenes/player/::1752675392
-player.tscn::PackedScene::6608887111019891545::1752701771::0::1::::<><>::uid://5jyef0kutc6l::::res://assets/sprites/player/ball2.png<>res://scripts/player/player.gd<>res://scripts/player/camera_controller.gd
-::res://scenes/ui/::1752685739
-game_over.tscn::PackedScene::-1::1752686789::0::1::::<><>::
-main_menu.tscn::PackedScene::4303772224247790571::1752685314::0::1::::<><>::uid://ce7y17n27iqt6::::res://assets/fonts/Kenney Future.ttf<>res://scripts/ui/main_menu.gd
-::res://scripts/::1752699172
-tilemap_painter.gd::GDScript::-1::1752698996::0::1::::<>TileMapLayer<>::
-::res://scripts/hazards/::1752678112
-spike.gd::GDScript::-1::1752697863::0::1::::Spike<>Area2D<>::
-::res://scripts/levels/::1752699218
-level_configurator.gd::GDScript::-1::1752699219::0::1::::<>Node2D<>::
-::res://scripts/player/::1752680753
-camera_controller.gd::GDScript::-1::1752699264::0::1::::CameraController<>Camera2D<>::
-player.gd::GDScript::-1::1752695109::0::1::::Player<>RigidBody2D<>::
-::res://scripts/singletons/::1752675392
-GameState.gd::GDScript::-1::1752698981::0::1::::<>Node<>::
-SoundManager.gd::GDScript::-1::1752675392::0::1::::<>Node<>::
-SoundManager.tscn::PackedScene::3065715824871745611::1752675392::0::1::::<><>::res://scripts/singletons/SoundManager.gd
-::res://scripts/ui/::1752685793
-game_over.gd::GDScript::-1::1752689692::0::1::::GameOver<>Control<>::
-main_menu.gd::GDScript::-1::1752685305::0::1::::MainMenu<>Control<>::
-::res://tasks/::1752675392
-DevelopmentPlan.md::TextFile::-1::1752693045::0::1::::<><>::
-</file>
-
-<file path=".godot/editor/project_metadata.cfg">
-[editor_metadata]
-
-executable_path="/Applications/Godot.app/Contents/MacOS/Godot"
-
-[recent_files]
-
-scenes=["res://scenes/player/player.tscn", "res://scenes/levels/level_1.tscn", "res://scenes/hazards/Spike.tscn", "res://scenes/levels/mvp_test.tscn"]
-scripts=["res://scripts/hazards/spike.gd", "res://scripts/player/player.gd"]
-
-[dialog_bounds]
-
-project_settings=Rect2(4152, 3162, 2400, 1400)
 </file>
 
 <file path="tasks/DevelopmentPlan.md">
@@ -5632,6 +6157,167 @@ This plan ensures incremental builds with testing at each phase. We'll implement
 - scripts/singletons/SoundManager.gd - Sound effects management including pop sound
 </file>
 
+<file path=".godot/editor/filesystem_cache8">
+ea4bc82a6ad023ab7ee23ee620429895
+::res://::1752704479
+repomix-output.xml::TextFile::-1::1752675392::0::1::::<><>::
+::res://_docs/::1752703492
+GameOver.md::TextFile::-1::1752684323::0::1::::<><>::
+GameplayDesign.md::TextFile::-1::1752675392::0::1::::<><>::
+Hazard.md::TextFile::-1::1752676842::0::1::::<><>::
+latency.md::TextFile::-1::1752675392::0::1::::<><>::
+level1Ground.md::TextFile::-1::1752675392::0::1::::<><>::
+Mainmenu.md::TextFile::-1::1752685113::0::1::::<><>::
+menusScenes.md::TextFile::-1::1752682953::0::1::::<><>::
+MoreHazards.md::TextFile::-1::1752697507::0::1::::<><>::
+multiplayer.md::TextFile::-1::1752691860::0::1::::<><>::
+params.md::TextFile::-1::1752675392::0::1::::<><>::
+physics.md::TextFile::-1::1752675392::0::1::::<><>::
+Platforms.md::TextFile::-1::1752703511::0::1::::<><>::
+SFX.md::TextFile::-1::1752675392::0::1::::<><>::
+spikeCommands.md::TextFile::-1::1752698528::0::1::::<><>::
+style.md::TextFile::-1::1752675392::0::1::::<><>::
+::res://assets/::1752693342
+::res://assets/audio/::1752675588
+Balloon Escape Factory.mp3::AudioStreamMP3::8206070679105260282::1752675392::1752675588::1::::<><>::
+bounce.mp3::AudioStreamMP3::9107122368181559716::1752675392::1752675588::1::::<><>::
+coins.mp3::AudioStreamMP3::7901847376389709318::1752675392::1752675588::1::::<><>::
+pop.mp3::AudioStreamMP3::2058950163202925655::1752675392::1752675588::1::::<><>::
+success.mp3::AudioStreamMP3::3151194912288285675::1752675392::1752675588::1::::<><>::
+::res://assets/fonts/::1752675588
+Kenney Future Narrow.ttf::FontFile::8513457004296160927::1752675392::1752675588::1::::<><>::
+Kenney Future.ttf::FontFile::1191888830290857463::1752675392::1752675588::1::::<><>::
+::res://assets/sprites/::1752693349
+::res://assets/sprites/background/::1752675588
+bg_layer1.png::CompressedTexture2D::9055781292271014096::1752675392::1752675588::1::::<><>::
+::res://assets/sprites/collectibles_and_powerups/::1752677558
+endLevel.png::CompressedTexture2D::7271042764840761317::1752675392::1752677558::1::::<><>::
+gold_1.png::CompressedTexture2D::7770782626171002347::1752675392::1752675588::1::::<><>::
+gold_2.png::CompressedTexture2D::4961529463577090600::1752675392::1752675588::1::::<><>::
+gold_3.png::CompressedTexture2D::197269280592586432::1752675392::1752675588::1::::<><>::
+jetpack.png::CompressedTexture2D::2475813519409685781::1752675392::1752675588::1::::<><>::
+jetpack_item.png::CompressedTexture2D::5246885340615533327::1752675392::1752675588::1::::<><>::
+::res://assets/sprites/environment/::1752706712
+ground_stone.png::CompressedTexture2D::6376627101721888681::1752675392::1752675588::1::::<><>::
+ground_stone_broken.png::CompressedTexture2D::1217873350915114682::1752675392::1752675588::1::::<><>::
+ground_stone_small.png::CompressedTexture2D::1898771885991249189::1752675392::1752675588::1::::<><>::
+ground_stone_small_broken.png::CompressedTexture2D::1934413432216654678::1752675392::1752675588::1::::<><>::
+ground_wood.png::CompressedTexture2D::165595163471498862::1752675392::1752675588::1::::<><>::
+ground_wood_broken.png::CompressedTexture2D::1881575544315897996::1752675392::1752675588::1::::<><>::
+ground_wood_small.png::CompressedTexture2D::3549772765016810542::1752675392::1752675588::1::::<><>::
+ground_wood_small_broken.png::CompressedTexture2D::6660159512624062090::1752675392::1752675588::1::::<><>::
+platformPack_tile004.png::CompressedTexture2D::5893765852238350109::1752675392::1752675588::1::::<><>::
+woodblock.png::CompressedTexture2D::1199564023964960820::1752675392::1752707016::1::::<><>::
+::res://assets/sprites/hazards/::1752693667
+bottom_spike.png::CompressedTexture2D::1952382968673477592::1752675392::1752693667::1::::<><>::
+spikes_large_bottom.png::CompressedTexture2D::8203667586019862508::1752675392::1752693667::1::::<><>::
+spikes_large_top.png::CompressedTexture2D::4645057525981595265::1752675392::1752693667::1::::<><>::
+spring.png::CompressedTexture2D::57287654817836701::1752675392::1752675588::1::::<><>::
+spring_in.png::CompressedTexture2D::8022793080425135513::1752675392::1752675588::1::::<><>::
+spring_out.png::CompressedTexture2D::7851334279652825319::1752675392::1752675588::1::::<><>::
+top_spike.png::CompressedTexture2D::6486924403349916602::1752675392::1752693667::1::::<><>::
+::res://assets/sprites/player/::1752701728
+ball2.png::CompressedTexture2D::2125709361648216457::1752701701::1752701728::1::::<><>::
+ball.png::CompressedTexture2D::8220970251950762316::1752675392::1752675588::1::::<><>::
+death.png::CompressedTexture2D::4715324376886946804::1752675392::1752677558::1::::<><>::
+::res://assets/sprites/ui/::1752685457
+lives_coin_bronze.png::CompressedTexture2D::5825732135293081176::1752675392::1752675588::1::::<><>::
+start.png::CompressedTexture2D::1808320205836561332::1752684630::1752685457::1::::<><>::
+::res://BopAssets/::1752675392
+::res://BopAssets/assets/::1752675392
+::res://BopAssets/assets/background/::1752675588
+bg_layer1.png::CompressedTexture2D::6945879680719127106::1752675392::1752675588::1::::<><>::
+::res://BopAssets/assets/collectibles_and_powerups/::1752675960
+gold_1.png::CompressedTexture2D::1825224882516228972::1752675392::1752675588::1::::<><>::
+gold_2.png::CompressedTexture2D::1190387119302935012::1752675392::1752675588::1::::<><>::
+gold_3.png::CompressedTexture2D::2512755368299904449::1752675392::1752675588::1::::<><>::
+jetpack.png::CompressedTexture2D::2931813711614556912::1752675392::1752675588::1::::<><>::
+jetpack_item.png::CompressedTexture2D::7878243431060436377::1752675392::1752675588::1::::<><>::
+::res://BopAssets/assets/environment/::1752675588
+ground_stone.png::CompressedTexture2D::547254746964749841::1752675392::1752675588::1::::<><>::
+ground_stone_broken.png::CompressedTexture2D::7182484478301215561::1752675392::1752675588::1::::<><>::
+ground_stone_small.png::CompressedTexture2D::5920530557858546565::1752675392::1752675588::1::::<><>::
+ground_stone_small_broken.png::CompressedTexture2D::6862542807011331575::1752675392::1752675588::1::::<><>::
+ground_wood.png::CompressedTexture2D::2762796157845493017::1752675392::1752675588::1::::<><>::
+ground_wood_broken.png::CompressedTexture2D::1920911236381604898::1752675392::1752675588::1::::<><>::
+ground_wood_small.png::CompressedTexture2D::5259545193054983935::1752675392::1752675588::1::::<><>::
+ground_wood_small_broken.png::CompressedTexture2D::2167022817881405705::1752675392::1752675588::1::::<><>::
+platformPack_tile004.png::CompressedTexture2D::4959656382865155942::1752675392::1752675588::1::::<><>::
+platformPack_tile034.png::CompressedTexture2D::2691896846324894211::1752675392::1752675588::1::::<><>::
+::res://BopAssets/assets/hazards/::1752675588
+spikes_bottom.png::CompressedTexture2D::663950830898210423::1752675392::1752675588::1::::<><>::
+spikes_top.png::CompressedTexture2D::8358873055094092465::1752675392::1752675588::1::::<><>::
+spike_bottom.png::CompressedTexture2D::3883150255362487646::1752675392::1752675588::1::::<><>::
+spike_top.png::CompressedTexture2D::2459527082247234580::1752675392::1752675588::1::::<><>::
+spring.png::CompressedTexture2D::4173908731025172797::1752675392::1752675588::1::::<><>::
+spring_in.png::CompressedTexture2D::6480400973107942546::1752675392::1752675588::1::::<><>::
+spring_out.png::CompressedTexture2D::2318680103272890803::1752675392::1752675588::1::::<><>::
+::res://BopAssets/assets/player/::1752675907
+ball.png::CompressedTexture2D::7132219559505673927::1752675392::1752675588::1::::<><>::
+::res://BopAssets/assets/ui/::1752675588
+lives_coin_bronze.png::CompressedTexture2D::3399006749739018670::1752675392::1752675588::1::::<><>::
+::res://BopAssets/font/::1752675588
+Kenney Future Narrow.ttf::FontFile::7000552542377076331::1752675392::1752675588::1::::<><>::
+Kenney Future.ttf::FontFile::5090768802296251228::1752675392::1752675588::1::::<><>::
+::res://BopAssets/SFX/::1752675588
+Balloon Escape Factory.mp3::AudioStreamMP3::8415698812563648905::1752675392::1752675588::1::::<><>::
+bounce.mp3::AudioStreamMP3::3881155579214223749::1752675392::1752675588::1::::<><>::
+coins.mp3::AudioStreamMP3::4713675940845734844::1752675392::1752675588::1::::<><>::
+pop.mp3::AudioStreamMP3::4996625001048486516::1752675392::1752675588::1::::<><>::
+success.mp3::AudioStreamMP3::3071999385586472187::1752675392::1752675588::1::::<><>::
+::res://resources/::1752706048
+ground_tileset.tres::TileSet::3894306225433350542::1752706048::0::1::::<><>::uid://cw35d765qafl6::::res://assets/sprites/environment/ground_stone.png
+::res://scenes/::1752705652
+::res://scenes/environment/::1752706954
+BasePlatform.tscn::PackedScene::5964222415808844521::1752705662::0::1::::<><>::
+WoodBlock.tscn::PackedScene::-1::1752706950::0::1::::<><>::
+WoodPlatform.tscn::PackedScene::4304266835150679031::1752706330::0::1::::<><>::uid://cq8d4v2n3lyar::::res://scenes/environment/BasePlatform.tscn<>uid://cw35d765qafl6::::res://assets/sprites/environment/ground_stone.png
+WoodPlatformSmall.tscn::PackedScene::-1::1752706955::0::1::::<><>::
+::res://scenes/hazards/::1752706048
+Spike.tscn::PackedScene::4718720911624324965::1752706048::0::1::::<><>::res://scripts/hazards/spike.gd
+::res://scenes/levels/::1752706048
+level_1.tscn::PackedScene::1042719907978835413::1752706048::0::1::::<><>::uid://c1fnn1l64pxpx::::res://scenes/player/player.tscn<>uid://bvqowixejw8pm::::res://resources/ground_tileset.tres<>res://scripts/tilemap_painter.gd<>uid://b8h1v5p2k3nar::::res://scenes/hazards/Spike.tscn<>res://scripts/levels/level_configurator.gd<>uid://b2lav7w8x1m4n::::res://scenes/environment/WoodPlatform.tscn
+mvp_test.tscn::PackedScene::404610204984934029::1752706048::0::1::::<><>::uid://c1fnn1l64pxpx::::res://scenes/player/player.tscn<>uid://cw35d765qafl6::::res://assets/sprites/environment/ground_stone.png
+::res://scenes/player/::1752706048
+player.tscn::PackedScene::6608887111019891545::1752706048::0::1::::<><>::uid://dpekgc4qppjd1::::res://assets/sprites/player/ball.png<>res://scripts/player/player.gd<>res://scripts/player/camera_controller.gd
+::res://scenes/ui/::1752685739
+game_over.tscn::PackedScene::-1::1752686789::0::1::::<><>::
+main_menu.tscn::PackedScene::4303772224247790571::1752685314::0::1::::<><>::uid://ce7y17n27iqt6::::res://assets/fonts/Kenney Future.ttf<>res://scripts/ui/main_menu.gd
+::res://scripts/::1752699172
+tilemap_painter.gd::GDScript::-1::1752698996::0::1::::<>TileMapLayer<>::
+::res://scripts/hazards/::1752706048
+spike.gd::GDScript::-1::1752706048::0::1::::Spike<>Area2D<>::
+::res://scripts/levels/::1752699218
+level_configurator.gd::GDScript::-1::1752699219::0::1::::<>Node2D<>::
+::res://scripts/player/::1752680753
+camera_controller.gd::GDScript::-1::1752699264::0::1::::CameraController<>Camera2D<>::
+player.gd::GDScript::-1::1752695109::0::1::::Player<>RigidBody2D<>::
+::res://scripts/singletons/::1752675392
+GameState.gd::GDScript::-1::1752698981::0::1::::<>Node<>::
+SoundManager.gd::GDScript::-1::1752675392::0::1::::<>Node<>::
+SoundManager.tscn::PackedScene::3065715824871745611::1752675392::0::1::::<><>::res://scripts/singletons/SoundManager.gd
+::res://scripts/ui/::1752685793
+game_over.gd::GDScript::-1::1752689692::0::1::::GameOver<>Control<>::
+main_menu.gd::GDScript::-1::1752685305::0::1::::MainMenu<>Control<>::
+::res://tasks/::1752675392
+DevelopmentPlan.md::TextFile::-1::1752677575::0::1::::<><>::
+</file>
+
+<file path=".godot/editor/project_metadata.cfg">
+[editor_metadata]
+
+executable_path="/Applications/Godot.app/Contents/MacOS/Godot"
+
+[recent_files]
+
+scenes=["res://scenes/levels/level_1.tscn", "res://scenes/environment/WoodBlock.tscn", "res://scenes/environment/WoodPlatformSmall.tscn", "res://scenes/environment/WoodPlatform.tscn", "res://scenes/environment/BasePlatform.tscn", "res://scenes/player/player.tscn", "res://scenes/hazards/Spike.tscn", "res://scenes/levels/mvp_test.tscn"]
+scripts=["res://scripts/hazards/spike.gd", "res://scripts/player/player.gd"]
+
+[dialog_bounds]
+
+project_settings=Rect2(4152, 3162, 2400, 1400)
+</file>
+
 <file path="scenes/player/player.tscn">
 [gd_scene load_steps=5 format=3 uid="uid://c1fnn1l64pxpx"]
 
@@ -5645,7 +6331,7 @@ radius = 32.0
 [node name="player" type="RigidBody2D" groups=["player"]]
 collision_layer = 2
 collision_mask = 31
-gravity_scale = 0
+gravity_scale = 0.0
 script = ExtResource("2_player")
 player_texture = ExtResource("1_ball_texture")
 
@@ -5657,12 +6343,8 @@ shape = SubResource("CircleShape2D_1")
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
 
 [node name="Camera2D" type="Camera2D" parent="."]
-enabled = true
 script = ExtResource("3_camera")
-fixed_y_position = 540.0
 follow_smoothing = 8.0
-use_auto_bounds = true
-bounds_margin = 480.0
 </file>
 
 <file path="scripts/player/player.gd">
