@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://o4dpd5iks8mj"]
+[gd_scene load_steps=15 format=3 uid="uid://o4dpd5iks8mj"]
 
 [ext_resource type="PackedScene" uid="uid://c1fnn1l64pxpx" path="res://scenes/player/player.tscn" id="1_player"]
 [ext_resource type="TileSet" uid="uid://bvqowixejw8pm" path="res://resources/ground_tileset.tres" id="2_tileset"]
@@ -12,6 +12,7 @@
 [ext_resource type="PackedScene" uid="uid://d4v8x7n2m9k3l" path="res://scenes/environment/WoodBlock.tscn" id="10_wood_block"]
 [ext_resource type="PackedScene" uid="uid://b5k8m1n4p7q2r" path="res://scenes/environment/WoodPlatformSmall.tscn" id="11_wood_platform_small"]
 [ext_resource type="PackedScene" uid="uid://bx4end_level" path="res://scenes/collectibles/end_level.tscn" id="12_end_level"]
+[ext_resource type="Script" path="res://scripts/player/camera_controller.gd" id="3_camera"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_walls"]
 size = Vector2(100, 1080)
