@@ -127,8 +127,7 @@ func _integrate_forces(state: PhysicsDirectBodyState2D) -> void:
 
 func _handle_bounce_collision() -> void:
 	"""Handle normal bouncing collisions with sound effects."""
-	var current_time = Time.get_time_dict_from_system()
-	var time_stamp = current_time.hour * 3600 + current_time.minute * 60 + current_time.second + current_time.millisecond / 1000.0
+	var time_stamp = Time.get_ticks_msec() / 1000.0
 	
 	# Prevent sound spam with cooldown
 	if time_stamp - last_collision_time > collision_cooldown:
