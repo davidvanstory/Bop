@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3 uid="uid://cwo76gqj1wou2"]
+[gd_scene load_steps=17 format=3 uid="uid://cwo76gqj1wou2"]
 
 [ext_resource type="Script" path="res://scripts/levels/level_configurator.gd" id="1_configurator"]
 [ext_resource type="PackedScene" uid="uid://c1fnn1l64pxpx" path="res://scenes/player/player.tscn" id="2_player"]
@@ -12,8 +12,7 @@
 [ext_resource type="PackedScene" uid="uid://d4v8x7n2m9k3l" path="res://scenes/environment/WoodBlock.tscn" id="10_wood_block"]
 [ext_resource type="PackedScene" uid="uid://ev4n5o6p7q8r9" path="res://scenes/hazards/SpikeTopLarge.tscn" id="11_spike_top_large"]
 [ext_resource type="PackedScene" uid="uid://bx4end_level" path="res://scenes/collectibles/end_level.tscn" id="12_end_level"]
-[ext_resource type="PackedScene" path="res://scenes/hazards/SpikeMan.tscn" id="13_spike_man"]
-[ext_resource type="PackedScene" uid="uid://c6f7g8h9i0jkl" path="res://scenes/environment/background.tscn" id="14_background"]
+[ext_resource type="PackedScene" uid="uid://dvq2at3v5xibj" path="res://scenes/hazards/SpikeMan.tscn" id="13_spike_man"]
 [ext_resource type="PackedScene" uid="uid://c6f7g8h9i0jkl" path="res://scenes/environment/background.tscn" id="14_background"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_walls"]
@@ -24,3 +23,120 @@ size = Vector2(15360, 540)
 
 [node name="Level2" type="Node2D"]
 script = ExtResource("1_configurator")
+
+[node name="Background" parent="." instance=ExtResource("14_background")]
+
+[node name="Environment" type="Node2D" parent="."]
+
+[node name="TileMapLayer" type="TileMapLayer" parent="Environment"]
+modulate = Color(1, 0.5, 0.5, 1)
+tile_set = ExtResource("3_tileset")
+script = ExtResource("4_painter")
+
+[node name="LeftWall" type="StaticBody2D" parent="Environment"]
+position = Vector2(50, 540)
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Environment/LeftWall"]
+shape = SubResource("RectangleShape2D_walls")
+
+[node name="RightWall" type="StaticBody2D" parent="Environment"]
+position = Vector2(15210, 540)
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Environment/RightWall"]
+shape = SubResource("RectangleShape2D_walls")
+
+[node name="Hazards" type="Node2D" parent="Environment"]
+[node name="Spike1" parent="Environment/Hazards" instance=ExtResource("6_spike_bottom_standard")]
+position = Vector2(1500, 950)
+[node name="Spike2" parent="Environment/Hazards" instance=ExtResource("7_spike_top_standard")]
+position = Vector2(2600, 586)
+[node name="Spike3" parent="Environment/Hazards" instance=ExtResource("7_spike_top_standard")]
+position = Vector2(4000, 286)
+[node name="Spike4" parent="Environment/Hazards" instance=ExtResource("7_spike_top_standard")]
+position = Vector2(6200, 150)
+[node name="Spike5" parent="Environment/Hazards" instance=ExtResource("7_spike_top_standard")]
+position = Vector2(6500, 150)
+[node name="Spike6" parent="Environment/Hazards" instance=ExtResource("11_spike_top_large")]
+position = Vector2(7000, 150)
+[node name="Spike7" parent="Environment/Hazards" instance=ExtResource("11_spike_top_large")]
+position = Vector2(7200, 150)
+[node name="Spike8" parent="Environment/Hazards" instance=ExtResource("11_spike_top_large")]
+position = Vector2(7400, 150)
+[node name="Spike9" parent="Environment/Hazards" instance=ExtResource("11_spike_top_large")]
+position = Vector2(8000, 150)
+[node name="Spike10" parent="Environment/Hazards" instance=ExtResource("11_spike_top_large")]
+position = Vector2(8200, 150)
+[node name="Spike11" parent="Environment/Hazards" instance=ExtResource("11_spike_top_large")]
+position = Vector2(8400, 150)
+[node name="Spike12" parent="Environment/Hazards" instance=ExtResource("11_spike_top_large")]
+position = Vector2(9000, 150)
+[node name="Spike13" parent="Environment/Hazards" instance=ExtResource("5_spike_bottom_large")]
+position = Vector2(11500, 950)
+[node name="Spike14" parent="Environment/Hazards" instance=ExtResource("5_spike_bottom_large")]
+position = Vector2(11800, 950)
+[node name="Spike15" parent="Environment/Hazards" instance=ExtResource("7_spike_top_standard")]
+position = Vector2(14200, 150)
+[node name="Spike16" parent="Environment/Hazards" instance=ExtResource("6_spike_bottom_standard")]
+position = Vector2(14400, 950)
+[node name="SpikeMan" parent="Environment/Hazards" instance=ExtResource("13_spike_man")]
+position = Vector2(10000, 988)
+
+[node name="Platforms" type="Node2D" parent="Environment"]
+[node name="Platform1" parent="Environment/Platforms" instance=ExtResource("8_wood_platform_small")]
+position = Vector2(1200, 800)
+[node name="Platform2" parent="Environment/Platforms" instance=ExtResource("8_wood_platform_small")]
+position = Vector2(1800, 700)
+[node name="Platform3" parent="Environment/Platforms" instance=ExtResource("9_wood_platform")]
+position = Vector2(2500, 600)
+[node name="Platform4" parent="Environment/Platforms" instance=ExtResource("9_wood_platform")]
+position = Vector2(3500, 500)
+[node name="Platform5" parent="Environment/Platforms" instance=ExtResource("8_wood_platform_small")]
+position = Vector2(4200, 400)
+[node name="Platform6" parent="Environment/Platforms" instance=ExtResource("8_wood_platform_small")]
+position = Vector2(5000, 300)
+[node name="Platform7" parent="Environment/Platforms" instance=ExtResource("9_wood_platform")]
+position = Vector2(6000, 200)
+[node name="Platform8" parent="Environment/Platforms" instance=ExtResource("9_wood_platform")]
+position = Vector2(7000, 200)
+[node name="Platform9" parent="Environment/Platforms" instance=ExtResource("9_wood_platform")]
+position = Vector2(8000, 200)
+[node name="Platform10" parent="Environment/Platforms" instance=ExtResource("9_wood_platform")]
+position = Vector2(9000, 200)
+[node name="Block1" parent="Environment/Platforms" instance=ExtResource("10_wood_block")]
+position = Vector2(10500, 800)
+[node name="Block2" parent="Environment/Platforms" instance=ExtResource("10_wood_block")]
+position = Vector2(10570, 800)
+[node name="Block3" parent="Environment/Platforms" instance=ExtResource("10_wood_block")]
+position = Vector2(10640, 800)
+[node name="Block4" parent="Environment/Platforms" instance=ExtResource("10_wood_block")]
+position = Vector2(11000, 600)
+[node name="Block5" parent="Environment/Platforms" instance=ExtResource("10_wood_block")]
+position = Vector2(11070, 600)
+[node name="Platform11" parent="Environment/Platforms" instance=ExtResource("8_wood_platform_small")]
+position = Vector2(12500, 700)
+[node name="Platform12" parent="Environment/Platforms" instance=ExtResource("8_wood_platform_small")]
+position = Vector2(13000, 600)
+[node name="Platform13" parent="Environment/Platforms" instance=ExtResource("8_wood_platform_small")]
+position = Vector2(13500, 500)
+
+[node name="Collectibles" type="Node2D" parent="Environment"]
+[node name="EndLevel" parent="Environment/Collectibles" instance=ExtResource("12_end_level")]
+position = Vector2(14800, 540)
+
+[node name="GravityZones" type="Node2D" parent="."]
+
+[node name="UpperGravityZone" type="Area2D" parent="GravityZones"]
+position = Vector2(7680, 270)
+gravity_point_center = Vector2(0, -1)
+gravity_direction = Vector2(0, -1)
+gravity = 1400.0
+[node name="CollisionShape2D" type="CollisionShape2D" parent="GravityZones/UpperGravityZone"]
+shape = SubResource("RectangleShape2D_gravity")
+
+[node name="LowerGravityZone" type="Area2D" parent="GravityZones"]
+position = Vector2(7680, 810)
+gravity = 1400.0
+[node name="CollisionShape2D" type="CollisionShape2D" parent="GravityZones/LowerGravityZone"]
+shape = SubResource("RectangleShape2D_gravity")
+
+[node name="Player" parent="." instance=ExtResource("2_player")]
+position = Vector2(400, 800)
+gravity_scale = 0.0

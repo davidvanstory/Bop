@@ -13,3 +13,5 @@ res://scenes/hazards/SpikeTopLarge.tscn
 res://scenes/collectibles/end_level.tscn
 res://scenes/hazards/SpikeTopStandard.tscn
 res://scenes/hazards/SpikeMan.tscn
+res://scripts/ui/level_select.gd
+res://scripts/levels/level_configurator.gd
