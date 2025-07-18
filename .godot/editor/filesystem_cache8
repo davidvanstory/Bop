@@ -1,6 +1,5 @@
 ea4bc82a6ad023ab7ee23ee620429895
-::res://::1752800216
-repomix-output.xml::TextFile::-1::1752708638::0::1::::<><>::
+::res://::1752800262
 ::res://_docs/::1752708072
 GameOver.md::TextFile::-1::1752684323::0::1::::<><>::
 GameplayDesign.md::TextFile::-1::1752675392::0::1::::<><>::
@@ -49,8 +48,10 @@ ground_wood_small.png::CompressedTexture2D::3549772765016810542::1752675392::175
 ground_wood_small_broken.png::CompressedTexture2D::6660159512624062090::1752675392::1752675588::1::::<><>::
 platformPack_tile004.png::CompressedTexture2D::5893765852238350109::1752675392::1752675588::1::::<><>::
 woodblock.png::CompressedTexture2D::1199564023964960820::1752675392::1752707016::1::::<><>::
-::res://assets/sprites/hazards/::1752693667
+::res://assets/sprites/hazards/::1752803514
 bottom_spike.png::CompressedTexture2D::1952382968673477592::1752675392::1752693667::1::::<><>::
+spikeMan_walk1.png::CompressedTexture2D::7307175641064770113::1752803514::1752804143::1::::<><>::
+spikeMan_walk2.png::CompressedTexture2D::8570100302294484701::1752803514::1752804143::1::::<><>::
 spikes_large_bottom.png::CompressedTexture2D::8203667586019862508::1752675392::1752693667::1::::<><>::
 spikes_large_top.png::CompressedTexture2D::4645057525981595265::1752675392::1752693667::1::::<><>::
 spring.png::CompressedTexture2D::57287654817836701::1752675392::1752675588::1::::<><>::
@@ -123,14 +124,16 @@ SpikeBottomLarge.tscn::PackedScene::8621622622715897961::1752800150::0::1::::<><
 SpikeBottomStandard.tscn::PackedScene::3704149751311060085::1752800150::0::1::::<><>::uid://b8h1v5p2k3nar::::res://scenes/hazards/BaseSpike.tscn<>uid://220pymf0ptv1::::res://assets/sprites/hazards/bottom_spike.png
 SpikeTopLarge.tscn::PackedScene::1856987047847953544::1752800150::0::1::::<><>::uid://b8h1v5p2k3nar::::res://scenes/hazards/BaseSpike.tscn<>uid://b7gdoietst8oj::::res://assets/sprites/hazards/spikes_large_top.png
 SpikeTopStandard.tscn::PackedScene::6162886160729066570::1752800150::0::1::::<><>::uid://b8h1v5p2k3nar::::res://scenes/hazards/BaseSpike.tscn<>uid://cyokxx6vt27ny::::res://assets/sprites/hazards/top_spike.png
-::res://scenes/levels/::1752800150
+::res://scenes/levels/::1752801129
 level_1.tscn::PackedScene::1042719907978835413::1752799796::0::1::::<><>::uid://c1fnn1l64pxpx::::res://scenes/player/player.tscn<>uid://bvqowixejw8pm::::res://resources/ground_tileset.tres<>res://scripts/tilemap_painter.gd<>uid://bs1k2m3n4o5p6::::res://scenes/hazards/SpikeBottomStandard.tscn<>uid://ct2l3m4n5o6p7::::res://scenes/hazards/SpikeTopStandard.tscn<>uid://du3m4n5o6p7q8::::res://scenes/hazards/SpikeBottomLarge.tscn<>uid://1psknahnkd1i::::res://scenes/hazards/SpikeTopLarge.tscn<>res://scripts/levels/level_configurator.gd<>uid://b2lav7w8x1m4n::::res://scenes/environment/WoodPlatform.tscn<>uid://ied5qs22pct::::res://scenes/environment/WoodBlock.tscn<>uid://b5k8m1n4p7q2r::::res://scenes/environment/WoodPlatformSmall.tscn<>res://scenes/collectibles/end_level.tscn
+level_2.tscn::PackedScene::-1::1752801129::0::1::::<><>::
 mvp_test.tscn::PackedScene::404610204984934029::1752800150::0::1::::<><>::uid://c1fnn1l64pxpx::::res://scenes/player/player.tscn<>uid://cw35d765qafl6::::res://assets/sprites/environment/ground_stone.png
 ::res://scenes/player/::1752800150
 player.tscn::PackedScene::6608887111019891545::1752800150::0::1::::<><>::uid://dpekgc4qppjd1::::res://assets/sprites/player/ball.png<>res://scripts/player/player.gd<>res://scripts/player/camera_controller.gd
-::res://scenes/ui/::1752799796
+::res://scenes/ui/::1752801411
 game_over.tscn::PackedScene::-1::1752686789::0::1::::<><>::
 level_complete.tscn::PackedScene::2219913505995308898::1752721323::0::1::::<><>::uid://ce7y17n27iqt6::::res://assets/fonts/Kenney Future.ttf<>res://scripts/ui/level_complete.gd
+level_select.tscn::PackedScene::-1::1752801411::0::1::::<><>::
 main_menu.tscn::PackedScene::4303772224247790571::1752799796::0::1::::<><>::uid://ce7y17n27iqt6::::res://assets/fonts/Kenney Future.ttf<>res://scripts/ui/main_menu.gd
 ::res://scripts/::1752721175
 tilemap_painter.gd::GDScript::-1::1752698996::0::1::::<>TileMapLayer<>::
@@ -145,12 +148,13 @@ level_configurator.gd::GDScript::-1::1752799796::0::1::::<>Node2D<>::
 camera_controller.gd::GDScript::-1::1752800150::0::1::::CameraController<>Camera2D<>::
 player.gd::GDScript::-1::1752799796::0::1::::Player<>RigidBody2D<>::
 ::res://scripts/singletons/::1752799796
-GameState.gd::GDScript::-1::1752799796::0::1::::<>Node<>::
+GameState.gd::GDScript::-1::1752801129::0::1::::<>Node<>::
 SoundManager.gd::GDScript::-1::1752675392::0::1::::<>Node<>::
 SoundManager.tscn::PackedScene::3065715824871745611::1752675392::0::1::::<><>::res://scripts/singletons/SoundManager.gd
-::res://scripts/ui/::1752800150
+::res://scripts/ui/::1752801411
 game_over.gd::GDScript::-1::1752689692::0::1::::GameOver<>Control<>::
-level_complete.gd::GDScript::-1::1752721276::0::1::::<>Control<>::
-main_menu.gd::GDScript::-1::1752800150::0::1::::MainMenu<>Control<>::
+level_complete.gd::GDScript::-1::1752801662::0::1::::<>Control<>::
+level_select.gd::GDScript::-1::1752801411::0::1::::<>Control<>::
+main_menu.gd::GDScript::-1::1752801411::0::1::::MainMenu<>Control<>::
 ::res://tasks/::1752675392
 DevelopmentPlan.md::TextFile::-1::1752693045::0::1::::<><>::

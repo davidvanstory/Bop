@@ -12,6 +12,7 @@
 [ext_resource type="PackedScene" uid="uid://d4v8x7n2m9k3l" path="res://scenes/environment/WoodBlock.tscn" id="10_wood_block"]
 [ext_resource type="PackedScene" uid="uid://ev4n5o6p7q8r9" path="res://scenes/hazards/SpikeTopLarge.tscn" id="11_spike_top_large"]
 [ext_resource type="PackedScene" uid="uid://bx4end_level" path="res://scenes/collectibles/end_level.tscn" id="12_end_level"]
+[ext_resource type="PackedScene" path="res://scenes/hazards/SpikeMan.tscn" id="13_spike_man"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_walls"]
 size = Vector2(100, 1080)
@@ -76,6 +77,9 @@ position = Vector2(11800, 950)
 position = Vector2(14200, 150)
 [node name="SpikeBottomStandard4" parent="Environment/Hazards" instance=ExtResource("6_spike_bottom_standard")]
 position = Vector2(14400, 950)
+[node name="SpikeMan" parent="Environment/Hazards" instance=ExtResource("13_spike_man")]
+position = Vector2(3000, 903)
+move_distance = 400.0
 
 [node name="Platforms" type="Node2D" parent="Environment"]
 [node name="WoodPlatformSmall" parent="Environment/Platforms" instance=ExtResource("8_wood_platform_small")]
