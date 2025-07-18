@@ -12,4 +12,4 @@ size = Vector2(64, 64)
 texture = ExtResource("2_bottom_spike_texture")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." index="1"]
-shape = SubResource("RectangleShape2D_bottom_spike") 
+shape = SubResource("RectangleShape2D_bottom_spike")

@@ -31,12 +31,12 @@ var level_configs: Dictionary = {
 		"camera_margin": 480    # Camera boundary margin
 	},
 	2: {
-		"width_pixels": 7680,   # Future level 2 dimensions
-		"width_tiles": 120,
+		"width_pixels": 15360,   # Longer and trickier level 2
+		"width_tiles": 240,      # 15360 / 64
 		"left_wall_x": 50,
-		"right_wall_x": 7630,
-		"gravity_zone_center_x": 3840,
-		"gravity_zone_width": 7680,
+		"right_wall_x": 15210,   # 15360 - 150
+		"gravity_zone_center_x": 7680, # 15360 / 2
+		"gravity_zone_width": 15360,
 		"camera_margin": 480
 	}
 	# Add more levels as needed

@@ -58,14 +58,9 @@ func _on_start_button_pressed() -> void:
 		if SoundManager:
 			SoundManager.play_sfx("button_click")
 	
-	# Reset game state for new game session
-	if GameState:
-		GameState.reset_game()
-		print("MainMenu: Game state reset for new session")
-	
-	# Transition to level 1
-	print("MainMenu: Transitioning to level_1.tscn")
-	get_tree().change_scene_to_file("res://scenes/levels/level_1.tscn")
+	# Transition to the level select screen instead of directly to a level
+	print("MainMenu: Transitioning to level_select.tscn")
+	get_tree().change_scene_to_file("res://scenes/ui/level_select.tscn")
 
 # Handle input for accessibility (Enter key support)
 func _unhandled_input(event: InputEvent) -> void:

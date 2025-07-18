@@ -1,6 +1,11 @@
 extends Control
 
+@onready var level_complete_label: Label = $MenuContainer/LevelCompleteLabel
+
 func _ready():
+	if level_complete_label and GameState:
+		level_complete_label.text = "LEVEL %d COMPLETE!" % GameState.current_level
+	
 	visible = true
 	await get_tree().create_timer(3.0).timeout
 	_return_to_menu()
