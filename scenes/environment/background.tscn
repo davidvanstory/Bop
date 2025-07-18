@@ -13,7 +13,7 @@
 
 [node name="Background" type="ParallaxBackground"]
 
-[node name="BackgroundLayer" type="ParallaxLayer"]
+[node name="BackgroundLayer" type="ParallaxLayer" parent="."]
 motion_scale = Vector2(0.5, 1)
 motion_mirroring = Vector2(1920, 0)
 
@@ -21,7 +21,7 @@ motion_mirroring = Vector2(1920, 0)
 texture = ExtResource("1_bg_texture")
 centered = false
 
-[node name="CloudLayer" type="ParallaxLayer"]
+[node name="CloudLayer" type="ParallaxLayer" parent="."]
 motion_scale = Vector2(0.7, 1)
 
 [node name="Cloud1" type="Sprite2D" parent="CloudLayer"]

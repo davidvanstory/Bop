@@ -1,5 +1,5 @@
 ea4bc82a6ad023ab7ee23ee620429895
-::res://::1752800262
+::res://::1752808970
 ::res://_docs/::1752708072
 GameOver.md::TextFile::-1::1752684323::0::1::::<><>::
 GameplayDesign.md::TextFile::-1::1752675392::0::1::::<><>::
@@ -18,7 +18,7 @@ spikeCommands.md::TextFile::-1::1752698528::0::1::::<><>::
 spikes.md::TextFile::-1::1752709455::0::1::::<><>::
 style.md::TextFile::-1::1752675392::0::1::::<><>::
 ::res://assets/::1752693342
-::res://assets/audio/::1752806468
+::res://assets/audio/::1752806531
 Balloon Escape Factory.mp3::AudioStreamMP3::8206070679105260282::1752675392::1752675588::1::::<><>::
 bounce.mp3::AudioStreamMP3::9107122368181559716::1752675392::1752675588::1::::<><>::
 coins.mp3::AudioStreamMP3::7901847376389709318::1752675392::1752675588::1::::<><>::
@@ -29,8 +29,17 @@ success.mp3::AudioStreamMP3::3151194912288285675::1752675392::1752675588::1::::<
 Kenney Future Narrow.ttf::FontFile::8513457004296160927::1752675392::1752675588::1::::<><>::
 Kenney Future.ttf::FontFile::1191888830290857463::1752675392::1752675588::1::::<><>::
 ::res://assets/sprites/::1752693349
-::res://assets/sprites/background/::1752675588
+::res://assets/sprites/background/::1752808877
 bg_layer1.png::CompressedTexture2D::9055781292271014096::1752675392::1752675588::1::::<><>::
+cloud1.png::CompressedTexture2D::2958235727371040698::1752807356::1752808877::1::::<><>::
+cloud2.png::CompressedTexture2D::4502346863854757843::1752807356::1752808877::1::::<><>::
+cloud3.png::CompressedTexture2D::3220919216340844257::1752807356::1752808877::1::::<><>::
+cloud4.png::CompressedTexture2D::5663146947344411416::1752807356::1752808877::1::::<><>::
+cloud5.png::CompressedTexture2D::692678154545870472::1752807356::1752808877::1::::<><>::
+cloud6.png::CompressedTexture2D::658372759113300546::1752807356::1752808877::1::::<><>::
+cloud7.png::CompressedTexture2D::2689169683158063035::1752807356::1752808877::1::::<><>::
+cloud8.png::CompressedTexture2D::4233761123326877825::1752807356::1752808877::1::::<><>::
+cloud9.png::CompressedTexture2D::588677240851142427::1752807356::1752808877::1::::<><>::
 ::res://assets/sprites/collectibles_and_powerups/::1752677558
 endLevel.png::CompressedTexture2D::7271042764840761317::1752675392::1752677558::1::::<><>::
 gold_1.png::CompressedTexture2D::7770782626171002347::1752675392::1752675588::1::::<><>::
@@ -111,27 +120,28 @@ success.mp3::AudioStreamMP3::3071999385586472187::1752675392::1752675588::1::::<
 ::res://resources/::1752710431
 ground_tileset.tres::TileSet::3894306225433350542::1752710431::0::1::::<><>::uid://cw35d765qafl6::::res://assets/sprites/environment/ground_stone.png
 ::res://scenes/::1752721215
-::res://scenes/collectibles/::1752805770
-end_level.tscn::PackedScene::662366486935235818::1752805770::0::1::::<><>::uid://dbufan5uqp4sv::::res://assets/sprites/collectibles_and_powerups/endLevel.png<>res://scripts/collectibles/end_level.gd
-::res://scenes/environment/::1752805770
-BasePlatform.tscn::PackedScene::5964222415808844521::1752805770::0::1::::<><>::
-WoodBlock.tscn::PackedScene::16764848657631067::1752805770::0::1::::<><>::uid://cq8d4v2n3lyar::::res://scenes/environment/BasePlatform.tscn<>uid://rdcv5yjkplnw::::res://assets/sprites/environment/woodblock.png
-WoodPlatform.tscn::PackedScene::4304266835150679031::1752805770::0::1::::<><>::uid://cq8d4v2n3lyar::::res://scenes/environment/BasePlatform.tscn<>uid://cw35d765qafl6::::res://assets/sprites/environment/ground_stone.png
-WoodPlatformSmall.tscn::PackedScene::4984352269528832455::1752805770::0::1::::<><>::uid://cq8d4v2n3lyar::::res://scenes/environment/BasePlatform.tscn<>uid://bqtsiecipmjfq::::res://assets/sprites/environment/ground_wood_small.png
-::res://scenes/hazards/::1752805770
-BaseSpike.tscn::PackedScene::4718720911624324965::1752805770::0::1::::<><>::res://scripts/hazards/base_spike.gd
-Spike.tscn::PackedScene::7163944302795774346::1752805770::0::1::::<><>::res://scripts/hazards/spike.gd
-SpikeBottomLarge.tscn::PackedScene::8621622622715897961::1752805770::0::1::::<><>::uid://b8h1v5p2k3nar::::res://scenes/hazards/BaseSpike.tscn<>uid://do46ha2cfafh1::::res://assets/sprites/hazards/spikes_large_bottom.png
-SpikeBottomStandard.tscn::PackedScene::3704149751311060085::1752805770::0::1::::<><>::uid://b8h1v5p2k3nar::::res://scenes/hazards/BaseSpike.tscn<>uid://220pymf0ptv1::::res://assets/sprites/hazards/bottom_spike.png
-SpikeMan.tscn::PackedScene::8667898212540957827::1752805770::0::1::::<><>::res://scripts/hazards/spike_man.gd<>uid://dcdwd6gqd0fyf::::res://assets/sprites/hazards/spikeMan_walk1.png<>uid://dudokgwfbgya4::::res://assets/sprites/hazards/spikeMan_walk2.png
-SpikeTopLarge.tscn::PackedScene::1856987047847953544::1752805770::0::1::::<><>::uid://b8h1v5p2k3nar::::res://scenes/hazards/BaseSpike.tscn<>uid://b7gdoietst8oj::::res://assets/sprites/hazards/spikes_large_top.png
-SpikeTopStandard.tscn::PackedScene::6162886160729066570::1752805770::0::1::::<><>::uid://b8h1v5p2k3nar::::res://scenes/hazards/BaseSpike.tscn<>uid://cyokxx6vt27ny::::res://assets/sprites/hazards/top_spike.png
-::res://scenes/levels/::1752805770
-level_1.tscn::PackedScene::1042719907978835413::1752799796::0::1::::<><>::uid://c1fnn1l64pxpx::::res://scenes/player/player.tscn<>uid://bvqowixejw8pm::::res://resources/ground_tileset.tres<>res://scripts/tilemap_painter.gd<>uid://bs1k2m3n4o5p6::::res://scenes/hazards/SpikeBottomStandard.tscn<>uid://ct2l3m4n5o6p7::::res://scenes/hazards/SpikeTopStandard.tscn<>uid://du3m4n5o6p7q8::::res://scenes/hazards/SpikeBottomLarge.tscn<>uid://1psknahnkd1i::::res://scenes/hazards/SpikeTopLarge.tscn<>res://scripts/levels/level_configurator.gd<>uid://b2lav7w8x1m4n::::res://scenes/environment/WoodPlatform.tscn<>uid://ied5qs22pct::::res://scenes/environment/WoodBlock.tscn<>uid://b5k8m1n4p7q2r::::res://scenes/environment/WoodPlatformSmall.tscn<>res://scenes/collectibles/end_level.tscn
-level_2.tscn::PackedScene::-1::1752801129::0::1::::<><>::
-mvp_test.tscn::PackedScene::404610204984934029::1752805770::0::1::::<><>::uid://c1fnn1l64pxpx::::res://scenes/player/player.tscn<>uid://cw35d765qafl6::::res://assets/sprites/environment/ground_stone.png
-::res://scenes/player/::1752805770
-player.tscn::PackedScene::6608887111019891545::1752805770::0::1::::<><>::uid://dpekgc4qppjd1::::res://assets/sprites/player/ball.png<>res://scripts/player/player.gd<>res://scripts/player/camera_controller.gd
+::res://scenes/collectibles/::1752808939
+end_level.tscn::PackedScene::662366486935235818::1752808939::0::1::::<><>::uid://dbufan5uqp4sv::::res://assets/sprites/collectibles_and_powerups/endLevel.png<>res://scripts/collectibles/end_level.gd
+::res://scenes/environment/::1752808939
+background.tscn::PackedScene::-1::1752808682::0::1::::<><>::
+BasePlatform.tscn::PackedScene::5964222415808844521::1752808939::0::1::::<><>::
+WoodBlock.tscn::PackedScene::16764848657631067::1752808939::0::1::::<><>::uid://cq8d4v2n3lyar::::res://scenes/environment/BasePlatform.tscn<>uid://rdcv5yjkplnw::::res://assets/sprites/environment/woodblock.png
+WoodPlatform.tscn::PackedScene::4304266835150679031::1752808939::0::1::::<><>::uid://cq8d4v2n3lyar::::res://scenes/environment/BasePlatform.tscn<>uid://cw35d765qafl6::::res://assets/sprites/environment/ground_stone.png
+WoodPlatformSmall.tscn::PackedScene::4984352269528832455::1752808939::0::1::::<><>::uid://cq8d4v2n3lyar::::res://scenes/environment/BasePlatform.tscn<>uid://bqtsiecipmjfq::::res://assets/sprites/environment/ground_wood_small.png
+::res://scenes/hazards/::1752808939
+BaseSpike.tscn::PackedScene::4718720911624324965::1752808939::0::1::::<><>::res://scripts/hazards/base_spike.gd
+Spike.tscn::PackedScene::7163944302795774346::1752808939::0::1::::<><>::res://scripts/hazards/spike.gd
+SpikeBottomLarge.tscn::PackedScene::8621622622715897961::1752808939::0::1::::<><>::uid://b8h1v5p2k3nar::::res://scenes/hazards/BaseSpike.tscn<>uid://do46ha2cfafh1::::res://assets/sprites/hazards/spikes_large_bottom.png
+SpikeBottomStandard.tscn::PackedScene::3704149751311060085::1752808939::0::1::::<><>::uid://b8h1v5p2k3nar::::res://scenes/hazards/BaseSpike.tscn<>uid://220pymf0ptv1::::res://assets/sprites/hazards/bottom_spike.png
+SpikeMan.tscn::PackedScene::8667898212540957827::1752808939::0::1::::<><>::res://scripts/hazards/spike_man.gd<>uid://dcdwd6gqd0fyf::::res://assets/sprites/hazards/spikeMan_walk1.png<>uid://dudokgwfbgya4::::res://assets/sprites/hazards/spikeMan_walk2.png
+SpikeTopLarge.tscn::PackedScene::1856987047847953544::1752808939::0::1::::<><>::uid://b8h1v5p2k3nar::::res://scenes/hazards/BaseSpike.tscn<>uid://b7gdoietst8oj::::res://assets/sprites/hazards/spikes_large_top.png
+SpikeTopStandard.tscn::PackedScene::6162886160729066570::1752808939::0::1::::<><>::uid://b8h1v5p2k3nar::::res://scenes/hazards/BaseSpike.tscn<>uid://cyokxx6vt27ny::::res://assets/sprites/hazards/top_spike.png
+::res://scenes/levels/::1752808939
+level_1.tscn::PackedScene::1042719907978835413::1752808143::0::1::::<><>::uid://c1fnn1l64pxpx::::res://scenes/player/player.tscn<>uid://bvqowixejw8pm::::res://resources/ground_tileset.tres<>res://scripts/tilemap_painter.gd<>uid://bs1k2m3n4o5p6::::res://scenes/hazards/SpikeBottomStandard.tscn<>uid://ct2l3m4n5o6p7::::res://scenes/hazards/SpikeTopStandard.tscn<>uid://du3m4n5o6p7q8::::res://scenes/hazards/SpikeBottomLarge.tscn<>uid://1psknahnkd1i::::res://scenes/hazards/SpikeTopLarge.tscn<>res://scripts/levels/level_configurator.gd<>uid://b2lav7w8x1m4n::::res://scenes/environment/WoodPlatform.tscn<>uid://ied5qs22pct::::res://scenes/environment/WoodBlock.tscn<>uid://b5k8m1n4p7q2r::::res://scenes/environment/WoodPlatformSmall.tscn<>res://scenes/collectibles/end_level.tscn<>uid://c6f7g8iai0jkl::::res://scenes/environment/background.tscn
+level_2.tscn::PackedScene::6347895859660846699::1752808143::0::1::::<><>::res://scripts/levels/level_configurator.gd<>uid://c1fnn1l64pxpx::::res://scenes/player/player.tscn<>uid://bvqowixejw8pm::::res://resources/ground_tileset.tres<>res://scripts/tilemap_painter.gd<>uid://du3m4n5o6p7q8::::res://scenes/hazards/SpikeBottomLarge.tscn<>uid://bs1k2m3n4o5p6::::res://scenes/hazards/SpikeBottomStandard.tscn<>uid://ct2l3m4n5o6p7::::res://scenes/hazards/SpikeTopStandard.tscn<>uid://b5k8m1n4p7q2r::::res://scenes/environment/WoodPlatformSmall.tscn<>uid://b2lav7w8x1m4n::::res://scenes/environment/WoodPlatform.tscn<>uid://ied5qs22pct::::res://scenes/environment/WoodBlock.tscn<>uid://1psknahnkd1i::::res://scenes/hazards/SpikeTopLarge.tscn<>res://scenes/collectibles/end_level.tscn<>res://scenes/hazards/SpikeMan.tscn<>uid://c6f7g8iai0jkl::::res://scenes/environment/background.tscn<>uid://c6f7g8iai0jkl::::res://scenes/environment/background.tscn
+mvp_test.tscn::PackedScene::404610204984934029::1752808939::0::1::::<><>::uid://c1fnn1l64pxpx::::res://scenes/player/player.tscn<>uid://cw35d765qafl6::::res://assets/sprites/environment/ground_stone.png
+::res://scenes/player/::1752808939
+player.tscn::PackedScene::6608887111019891545::1752808939::0::1::::<><>::uid://dpekgc4qppjd1::::res://assets/sprites/player/ball.png<>res://scripts/player/player.gd<>res://scripts/player/camera_controller.gd
 ::res://scenes/ui/::1752801411
 game_over.tscn::PackedScene::-1::1752686789::0::1::::<><>::
 level_complete.tscn::PackedScene::2219913505995308898::1752721323::0::1::::<><>::uid://ce7y17n27iqt6::::res://assets/fonts/Kenney Future.ttf<>res://scripts/ui/level_complete.gd

@@ -2,6 +2,8 @@
 
 importer="texture"
 type="CompressedTexture2D"
+uid="uid://cmxjg5p5sk72s"
+path="res://.godot/imported/cloud4.png-e855a54889e3b4ad2c7e9867e795915e.ctex"
 metadata={
 "vram_texture": false
 }
@@ -9,6 +11,7 @@ metadata={
 [deps]
 
 source_file="res://assets/sprites/background/cloud4.png"
+dest_files=["res://.godot/imported/cloud4.png-e855a54889e3b4ad2c7e9867e795915e.ctex"]
 
 [params]
 
